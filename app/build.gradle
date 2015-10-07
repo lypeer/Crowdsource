@@ -11,6 +11,13 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    packagingOptions{
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+    lintOptions {
+        abortOnError false
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -24,4 +31,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
+
+    compile 'cn.leancloud.android:avoscloud-sdk:v3.+'
+    compile 'cn.leancloud.android:avoscloud-push:v3.+@aar'
+    compile 'cn.leancloud.android:Java-WebSocket:1.2.0-leancloud'
+    compile 'cn.leancloud.android:avoscloud-statistics:v3.+@aar'
+    compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
 }
