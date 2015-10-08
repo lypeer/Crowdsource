@@ -135,7 +135,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String phoneNum = etPhone.getText().toString().trim();
                 if (isPhoneNumber(phoneNum)) {
-                    Log.e("asd" , phoneNum + "");
                     isPhoneNumberExist(phoneNum);
                 }
             }
@@ -171,7 +170,6 @@ public class RegisterActivity extends AppCompatActivity {
      * @param phoneNum 用户所输入的手机号码
      */
     private void isPhoneNumberExist(final String phoneNum) {
-        Log.e("qwe" , phoneNum + "");
         App.showDialog(RegisterActivity.this , R.string.sending);
         AVQuery<AVUser> query = AVUser.getQuery();
 

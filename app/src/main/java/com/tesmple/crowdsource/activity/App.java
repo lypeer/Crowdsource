@@ -46,11 +46,9 @@ public class App extends Application {
      * @param titleRes 显示的dialog的title值
      */
     public static void showDialog(Context context , int titleRes){
-//        Log.e("aaa" , mAppContext.getString(titleRes));
-        Log.e("bbb" ,context.getPackageName());
-        mAlertDialog = new SpotsDialog(context , context.getString(titleRes));
+        mAlertDialog = new SpotsDialog(context , "123456");
 
-        mAlertDialog.show();
+//        mAlertDialog.show();
     }
 
     /**
