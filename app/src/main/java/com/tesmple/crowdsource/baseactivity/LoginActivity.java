@@ -20,6 +20,7 @@ public class LoginActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initToolbar();
+
         ButtonFlat btnForgetPassword = (ButtonFlat)findViewById(R.id.btn_forgetpassword);
 
         //下面这句代码其实修改的是button的文字颜色
