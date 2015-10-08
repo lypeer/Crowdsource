@@ -11,7 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    packagingOptions{
+    packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
@@ -24,6 +24,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+}
+repositories {
+    maven { url "https://jitpack.io" }
 }
 
 repositories {
@@ -35,6 +39,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
+    compile 'com.github.vajro:MaterialDesignLibrary:1.6'
 
     compile 'com.android.support:cardview-v7:23.0.1'
     compile 'com.github.vajro:MaterialDesignLibrary:1.6'
@@ -44,4 +49,6 @@ dependencies {
     compile 'cn.leancloud.android:Java-WebSocket:1.2.0-leancloud'
     compile 'cn.leancloud.android:avoscloud-statistics:v3.+@aar'
     compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
+
+    compile 'com.github.d-max:spots-dialog:0.4@aar'
 }

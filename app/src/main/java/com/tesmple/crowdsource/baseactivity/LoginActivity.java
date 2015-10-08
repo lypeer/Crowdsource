@@ -28,7 +28,7 @@ public class LoginActivity extends Activity{
     }
 
     private void initToolbar(){
-        Toolbar toolbar = (Toolbar)findViewById(R.id.login_toolbar);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("登陆账号");
     }
 }
