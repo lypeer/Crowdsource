@@ -28,14 +28,6 @@ public class ImageLinearLayout extends LinearLayout {
         childHeightSize = (childWidthSize * 3/5);
         widthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidthSize,MeasureSpec.EXACTLY);
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeightSize,MeasureSpec.EXACTLY);
-        //heightMeasureSpec = (int)((0.75)*((float)widthMeasureSpec));
-        //heightMeasureSpec = widthMeasureSpec * 3/4;
-        Log.i("widthpre",String.valueOf(widthMeasureSpec));
-        Log.i("heightpre", String.valueOf(heightMeasureSpec));
-
-        //heightMeasureSpec = widthMeasureSpec  * 3/4;
-        Log.i("widthend",String.valueOf(widthMeasureSpec));
-        Log.i("heightend", String.valueOf(heightMeasureSpec));
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

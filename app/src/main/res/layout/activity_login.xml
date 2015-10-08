@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,7 @@
     >
     <!--tools:context="com.tesmple.crowdsource.baseactivity.LoginActivity"
     -->
-    <android.support.design.widget.AppBarLayout
+    <!--<android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -22,8 +23,9 @@
             android:background="#00ccff"
             android:minHeight="?attr/actionBarSize"
             />
-    </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>-->
     <!-- Login progress -->
+    <include layout="@layout/inclued_toobar"></include>
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginBottom="8dp" android:visibility="gone" />
@@ -80,18 +82,16 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:background="@drawable/btn_loginbtn"
+            <com.gc.materialdesign.views.ButtonRectangle
+                android:id="@+id/button"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginRight="48dp"
                 android:layout_marginLeft="48dp"
-                android:text="@string/action_sign_in_short"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+                android:background="@color/colorPrimary"
+                android:text="@string/action_sign_in_short" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
@@ -99,7 +99,15 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp">
-                <TextView
+                <com.gc.materialdesign.views.ButtonFlat
+                    android:id="@+id/btn_forgetpassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/action_login_forgetpassword"
+                    android:textSize="16sp"
+                    android:layout_alignParentLeft="true"/>
+                <!--<TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -107,7 +115,7 @@
                     android:textColor="@color/colorGrey"
                     android:textSize="16sp"
                     android:background="@drawable/btn_forgetpassword"
-                    android:layout_alignParentLeft="true"/>
+                    android:layout_alignParentLeft="true"/>-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"

@@ -2,11 +2,13 @@ package com.tesmple.crowdsource.baseactivity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
 
 /**
@@ -18,6 +20,10 @@ public class LoginActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initToolbar();
+        ButtonFlat btnForgetPassword = (ButtonFlat)findViewById(R.id.btn_forgetpassword);
+
+        //下面这句代码其实修改的是button的文字颜色
+        btnForgetPassword.setBackgroundColor(getResources().getColor(R.color.colorGrey));
     }
 
     private void initToolbar(){
