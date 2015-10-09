@@ -1,22 +1,14 @@
-package com.tesmple.crowdsource.baseactivity;
+package com.tesmple.crowdsource.activity;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
@@ -62,6 +54,16 @@ public class LoginActivity extends Activity{
      */
     private LinearLayout loginLlProgressbar;
 
+    /**
+     * login界面的忘记密码按钮
+     */
+    private ButtonFlat loginBtnForgetpasswor;
+
+    /**
+     * login界面的注册账号按钮
+     */
+    private ButtonFlat loginBtnRegisteraccount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -82,6 +84,8 @@ public class LoginActivity extends Activity{
         loginProBarProgress = (ProgressBarCircularIndeterminate)findViewById(R.id.login_proBar_progress);
         loginBtnLogin = (ButtonRectangle)findViewById(R.id.login_btn_login);
         loginLlProgressbar = (LinearLayout)findViewById(R.id.login_ll_progressbar);
+        loginBtnForgetpasswor = (ButtonFlat)findViewById(R.id.login_btn_forgetpassword);
+        loginBtnRegisteraccount = (ButtonFlat)findViewById(R.id.login_btn_registeraccount);
     }
 
     /**
@@ -97,43 +101,32 @@ public class LoginActivity extends Activity{
             @Override
             public void onClick(View v) {
                 attempLogin();
+            }
+        });
 
+        loginBtnForgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this , ForgetPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
-
-
-
+        loginBtnRegisterAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this , RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     /**
-     * 设置login界面的EditText
+     * 设置login界面的EditText报错机制
      */
     private void setEditTexts(){
         loginEtPhone.setError(null);
         loginEtPassword.setError(null);
-        /*loginEtPhone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count == 1){
-                    int length = s.toString().length();
-                    if (length == 3 || length == 8){
-                        loginEtPhone.setText(s + " ");
-                        loginEtPhone.setSelection(loginEtPhone.getText().toString().length());
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
     }
 
     /**
@@ -162,58 +155,39 @@ public class LoginActivity extends Activity{
             // form field with an error.
             focusView.requestFocus();
         } else {
-            //// TODO: 2015/10/8
             //loginSvScrollForm.setVisibility(View.GONE);
             loginSvScrollForm.setAlpha(0.5f);
             loginLlProgressbar.setVisibility(View.VISIBLE);
             //AVUer设置
-            /*AVUser.logInInBackground("username", "password", new LogInCallback() {
+            AVUser.logInInBackground(userPhone , userPassword , new LogInCallback<AVUser>() {
                 public void done(AVUser user, AVException e) {
-                    if (user != null) {
-                        // 登录成功
-                    } else {
-                        // 登录失败
+                    if(e == null){
+                        if(user != null){
+                          Snackbar.make(loginEtPassword,"成功",Snackbar.LENGTH_LONG).show();
+                        }
+                    }else if(e.getCode() == 211){
+                        Snackbar.make(loginEtPassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
+                    }else if(e.getCode() == 210){
+                        Snackbar.make(loginEtPassword,R.string.error_invalid_password,Snackbar.LENGTH_LONG).show();
+                    }else {
+                        Snackbar.make(loginEtPassword,R.string.please_check_your_network,Snackbar.LENGTH_LONG).show();
                     }
+                    loginLlProgressbar.setVisibility(View.GONE);
+                    loginSvScrollForm.setAlpha(1.0f);
+                    //211 账号没注册
+                    //210 账号或密码错误
+                    //0 网络错误
+                    //其他问题 网络错误
                 }
-            });*/
+            });
         }
-
     }
 
     /**
      * 初始化toolbar
      */
     private void initToolbar(){
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle("登陆账号");
+        Toolbar loginToolbar = (Toolbar)findViewById(R.id.toolbar);
+        loginToolbar.setTitle("登陆账号");
     }
-
-    /**
-     * 添加TextWather实现phone的自动添加空格
-     */
-    /*private final TextWatcher etPhoneWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            DLog.d("----------beforeTextChanged----------\n");
-            DLog.d("s:" + s + "\n");
-            DLog.d("start:" + start + "\n");
-            DLog.d("count:" + count + "\n");
-            DLog.d("after:" + after + "\n");
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            DLog.d("----------onTextChanged----------\n");
-            DLog.d("s:" + s + "\n");
-            DLog.d("start:" + start + "\n");
-            DLog.d("before:" + before + "\n");
-            DLog.d("count:" + count + "\n");
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            DLog.d("----------afterTextChanged----------\n");
-            DLog.d("s:" + s + "\n");
-        }
-    }*/
 }

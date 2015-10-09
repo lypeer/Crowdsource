@@ -15,8 +15,8 @@
 
     <string name="action_sign_in_short">登陆</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_phone">This phone is invalid</string>
-    <string name="error_invalid_password">This password is invalid</string>
+    <string name="error_invalid_phone">请输入正确的手机号</string>
+    <string name="error_invalid_password">请输入正确的密码</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
@@ -40,7 +40,11 @@
     <string name="so_frequently">您的请求过于频繁！</string>
     <string name="error_phone_required">This phone is required</string>
     <string name="nimabi">你麻痹我看你冲不冲突</string>
-
     <string name="fuckgithub">fuckgithub</string>
+    <string name="error_phone_not_register">当前号码尚未注册</string>
+    <string name="forgetpassword_newpassword">新密码：</string>
+    <string name="forgetpassword_confirmpassword">再输一次：</string>
+    <string name="forgetpassword_bt_savepassword">保存</string>
+    <string name="error_newpassword_notsame">两次输入的密码不相同</string>
 
 </resources>
