@@ -15,7 +15,8 @@
 
     <string name="action_sign_in_short">登陆</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_phone">This phone is invalid</string>
+    <string name="error_invalid_password">This password is invalid</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
@@ -37,5 +38,6 @@
     <string name="please_check_your_network">请检查您的网络！</string>
     <string name="send_successfully">发送成功！</string>
     <string name="so_frequently">您的请求过于频繁！</string>
+    <string name="error_phone_required">This phone is required</string>
 
 </resources>
