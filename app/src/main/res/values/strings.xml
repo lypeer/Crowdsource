@@ -26,6 +26,18 @@
     <string name="login_password">密码：</string>
     <string name="action_login_forgetpassword">忘记密码？</string>
     <string name="action_login_register">注册账号</string>
+    <string name="phone_num">手机号</string>
+    <string name="prove_code">验证码</string>
+    <string name="get_prove_code">获取验证码</string>
+    <string name="know_and_agree">我已了解并同意《</string>
+    <string name="school_crowdresource_agreement">校园众包用户条约</string>
+    <string name="book_title_mark">》</string>
+    <string name="input_right_phone">请输入正确的手机号！</string>
+    <string name="sending">发送中…</string>
+    <string name="phone_has_registered">手机号已经注册过！</string>
+    <string name="please_check_your_network">请检查您的网络！</string>
+    <string name="send_successfully">发送成功！</string>
+    <string name="so_frequently">您的请求过于频繁！</string>
     <string name="error_phone_required">This phone is required</string>
 
 </resources>
