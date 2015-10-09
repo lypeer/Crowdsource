@@ -57,6 +57,9 @@ public class LoginActivity extends Activity{
      */
     private ButtonRectangle loginBtnLogin;
 
+    /**
+     * login界面的进度条外部layout
+     */
     private LinearLayout loginLlProgressbar;
 
     @Override
