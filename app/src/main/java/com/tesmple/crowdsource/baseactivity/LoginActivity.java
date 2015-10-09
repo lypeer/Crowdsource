@@ -97,6 +97,8 @@ public class LoginActivity extends Activity{
             @Override
             public void onClick(View v) {
                 attempLogin();
+
+
             }
         });
     }
