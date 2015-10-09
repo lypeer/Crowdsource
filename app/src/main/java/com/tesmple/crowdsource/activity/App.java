@@ -1,11 +1,16 @@
 package com.tesmple.crowdsource.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.avos.avoscloud.AVOSCloud;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
+import com.tesmple.crowdsource.R;
 
 import dmax.dialog.SpotsDialog;
 
@@ -20,9 +25,14 @@ public class App extends Application {
     private static Context mAppContext;
 
     /**
-     * 在加载数据或者是发送请求的时候弹出的对话框
+     * 进度条外部layout
      */
-    private static AlertDialog mAlertDialog;
+    private static LinearLayout llProgressbar;
+
+    /**
+     * 加载progressBar
+     */
+    private static ProgressBarCircularIndeterminate proBarProgress;
 
     @Override
     public void onCreate() {
@@ -42,21 +52,22 @@ public class App extends Application {
 
     /**
      * 显示正在加载的dialog
-     * @param context 发起带dialog的activity的context
-     * @param titleRes 显示的dialog的title值
+     * @param activity 发起带dialog的activity的activity
      */
-    public static void showDialog(Context context , int titleRes){
-//        Log.e("aaa" , mAppContext.getString(titleRes));
-         Log.e("bbb" ,context.getPackageName());
-        mAlertDialog = new SpotsDialog(context , context.getString(titleRes));
+    public static void showDialog(Activity activity ){
+        proBarProgress = (ProgressBarCircularIndeterminate)activity.findViewById(R.id.proBar_progress);
+        llProgressbar = (LinearLayout)activity.findViewById(R.id.ll_progressbar);
 
-        mAlertDialog.show();
+        llProgressbar.bringToFront();
+        llProgressbar.setAlpha(0.5f);
+        llProgressbar.setVisibility(View.VISIBLE);
     }
 
     /**
      * 隐藏正在加载的dialog
      */
     public static void dismissDialog(){
-        mAlertDialog.dismiss();
+        proBarProgress.setVisibility(View.GONE);
+        llProgressbar.setVisibility(View.GONE);
     }
 }
