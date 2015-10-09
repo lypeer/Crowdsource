@@ -39,6 +39,7 @@
     <string name="send_successfully">发送成功！</string>
     <string name="so_frequently">您的请求过于频繁！</string>
     <string name="error_phone_required">This phone is required</string>
+
     <string name="fuckgithub">fuckgithub</string>
 
 </resources>
