@@ -193,7 +193,7 @@ public class RegisterActivity extends AppCompatActivity {
                         sendMessage(phoneNum);
                     } else {
                         Log.e("Register_isExist", e.getMessage() + "===" + e.getCode());
-                         App.dismissDialog();
+                        App.dismissDialog();
                         Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
                                 .setAction("Action", null).show();
                     }

@@ -47,7 +47,7 @@ public class App extends Application {
      */
     public static void showDialog(Context context , int titleRes){
 //        Log.e("aaa" , mAppContext.getString(titleRes));
-        Log.e("bbb" ,context.getPackageName());
+         Log.e("bbb" ,context.getPackageName());
         mAlertDialog = new SpotsDialog(context , context.getString(titleRes));
 
         mAlertDialog.show();
