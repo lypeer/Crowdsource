@@ -13,6 +13,9 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
@@ -20,6 +23,7 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonRectangle;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.utils.ButtonUtils;
 import com.tesmple.crowdsource.utils.EditTextUtils;
@@ -31,20 +35,50 @@ public class LoginActivity extends Activity{
     /**
      *login界面的账户输入EditText
      */
-    AutoCompleteTextView loginEtPhone;
+    private AutoCompleteTextView loginEtPhone;
 
     /**
      * login界面的密码输入EditText
      */
-    AutoCompleteTextView loginEtPassword;
+    private AutoCompleteTextView loginEtPassword;
+
+    /**
+     * login界面的主区域外部ScrollView
+     */
+    private ScrollView loginSvScrollForm;
+
+    /**
+     * login界面的加载progressBar
+     */
+    private ProgressBarCircularIndeterminate loginProBarProgress;
+
+    /**
+     * login界面的登陆按钮
+     */
+    private ButtonRectangle loginBtnLogin;
+
+    private LinearLayout loginLlProgressbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        initViewBind();
         initToolbar();
         setButtons();
         setEditTexts();
+    }
+
+    /**
+     * 对控件绑定
+     */
+    private void initViewBind(){
+        loginEtPhone = (AutoCompleteTextView)findViewById(R.id.login_et_phone);
+        loginEtPassword = (AutoCompleteTextView)findViewById(R.id.login_et_password);
+        loginSvScrollForm = (ScrollView)findViewById(R.id.login_sv_scrollform);
+        loginProBarProgress = (ProgressBarCircularIndeterminate)findViewById(R.id.login_proBar_progress);
+        loginBtnLogin = (ButtonRectangle)findViewById(R.id.login_btn_login);
+        loginLlProgressbar = (LinearLayout)findViewById(R.id.login_ll_progressbar);
     }
 
     /**
@@ -53,7 +87,6 @@ public class LoginActivity extends Activity{
     private void setButtons(){
         ButtonFlat loginBtnForgetPassword = (ButtonFlat)findViewById(R.id.login_btn_forgetpassword);
         ButtonFlat loginBtnRegisterAccount = (ButtonFlat)findViewById(R.id.login_btn_registeraccount);
-        ButtonRectangle loginBtnLogin = (ButtonRectangle)findViewById(R.id.login_btn_login);
 
         ButtonUtils.setBtnFlatTextColor(loginBtnForgetPassword, getResources().getColor(R.color.colorGrey));
         ButtonUtils.setBtnFlatTextColor(loginBtnRegisterAccount, getResources().getColor(R.color.colorPrimaryDark));
@@ -69,11 +102,9 @@ public class LoginActivity extends Activity{
      * 设置login界面的EditText
      */
     private void setEditTexts(){
-        loginEtPhone = (AutoCompleteTextView)findViewById(R.id.login_et_phone);
-        loginEtPassword = (AutoCompleteTextView)findViewById(R.id.login_et_password);
         loginEtPhone.setError(null);
         loginEtPassword.setError(null);
-        loginEtPhone.addTextChangedListener(new TextWatcher() {
+        /*loginEtPhone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -94,7 +125,7 @@ public class LoginActivity extends Activity{
             public void afterTextChanged(Editable s) {
 
             }
-        });
+        });*/
     }
 
     /**
@@ -111,9 +142,11 @@ public class LoginActivity extends Activity{
         if( !(EditTextUtils.isPassword(userPassword)) ){
             loginEtPassword.setError(getString(R.string.error_invalid_password));
             cancel = !(EditTextUtils.isPassword(userPassword));
+            focusView = loginEtPassword;
         }else if( !(EditTextUtils.isPhoneNumber(userPhone)) ){
             loginEtPhone.setError(getString(R.string.error_invalid_phone));
             cancel = !(EditTextUtils.isPhoneNumber(userPhone));
+            focusView = loginEtPhone;
         }
 
         if (cancel) {
@@ -122,6 +155,9 @@ public class LoginActivity extends Activity{
             focusView.requestFocus();
         } else {
             //// TODO: 2015/10/8
+            //loginSvScrollForm.setVisibility(View.GONE);
+            loginSvScrollForm.setAlpha(0.5f);
+            loginLlProgressbar.setVisibility(View.VISIBLE);
             //AVUer设置
             /*AVUser.logInInBackground("username", "password", new LogInCallback() {
                 public void done(AVUser user, AVException e) {
