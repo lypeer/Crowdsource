@@ -1,7 +1,11 @@
 package com.tesmple.crowdsource.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +22,10 @@ import com.avos.avoscloud.UpdatePasswordCallback;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.utils.EditTextUtils;
+import com.tesmple.crowdsource.utils.StringUtils;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by ESIR on 2015/10/9.
@@ -46,7 +54,7 @@ public class ForgetPasswordActivity extends Activity{
     /**
      * 忘记密码界面的获取验证码按钮
      */
-    private ButtonRectangle forgetpasswordBtnGetProveCode;
+    private com.tesmple.crowdsource.layout.ButtonRectangle forgetpasswordBtnGetProveCode;
 
     /**
      * 忘记密码界面的保存按钮
@@ -63,6 +71,38 @@ public class ForgetPasswordActivity extends Activity{
      */
     private LinearLayout forgetpasswordLlProgressbar;
 
+    /**
+     * 计时器的对象
+     */
+    private Timer mTimer;
+
+    /**
+     * 倒计时的时间
+     */
+    private int countNum = 59;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case StringUtils.SEND_SUCCESSFULLY:
+                    btnCountDown();
+                    break;
+                case StringUtils.COUNT_DOWN:
+                    forgetpasswordBtnGetProveCode.setText(countNum + "");
+                    countNum--;
+                    if (countNum < 0) {
+                        countNum = 59;
+                        mTimer.cancel();
+                        forgetpasswordBtnGetProveCode.setClickable(true);
+                        forgetpasswordBtnGetProveCode.setText(App.getContext().getResources().getString(R.string.get_prove_code));
+                        forgetpasswordBtnGetProveCode.setBackgroundColor(App.getContext().getResources().getColor(R.color.colorPrimary));
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -92,7 +132,7 @@ public class ForgetPasswordActivity extends Activity{
         forgetpasswordEtConfirmpassword = (AutoCompleteTextView)findViewById(R.id.forgetpassword_et_confirmpassword);
         forgetpasswordEtProvecode = (AutoCompleteTextView)findViewById(R.id.forgetpassword_et_provecode);
 
-        forgetpasswordBtnGetProveCode = (ButtonRectangle)findViewById(R.id.forgetpassword_btn_getprovecode);
+        forgetpasswordBtnGetProveCode = (com.tesmple.crowdsource.layout.ButtonRectangle)findViewById(R.id.forgetpassword_btn_getprovecode);
         forgetpasswordBtnSavePassword = (ButtonRectangle)findViewById(R.id.forgetpassword_btn_savepassword);
 
         forgetpasswordSvScrollform = (ScrollView)findViewById(R.id.forgetpassword_sv_scrollform);
@@ -169,15 +209,14 @@ public class ForgetPasswordActivity extends Activity{
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.error_phone_not_register, Snackbar.LENGTH_LONG).show();
                     } else if(e.getCode() == AVException.USER_WITH_MOBILEPHONE_NOT_FOUND){
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
-                    } else if(e.getCode() == 600){
+                    } else if(e.getCode() == 600 || e.getCode() == 1){
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.so_frequently, Snackbar.LENGTH_LONG).show();
                     } else if(e.getCode() == 216){
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.error_phonenotprove,Snackbar.LENGTH_LONG).show();
                     } else  {
                         Snackbar.make(forgetpasswordBtnSavePassword,R.string.please_check_your_network,Snackbar.LENGTH_LONG).show();
                     }
-
-                    //Log.i("error", String.valueOf(e.getCode()));
+                    Log.i("getProveCodeError", String.valueOf(e.getCode() + "..." + e.getMessage()));
                     forgetpasswordSvScrollform.setAlpha(1.0f);
                     forgetpasswordLlProgressbar.setVisibility(View.GONE);
                 }
@@ -218,16 +257,38 @@ public class ForgetPasswordActivity extends Activity{
         if(cancel){
             focusView.requestFocus();
         }else {
-         AVUser.resetPasswordBySmsCodeInBackground(proveCode, userNewPassword , new UpdatePasswordCallback() {
-            @Override
-            public void done(AVException e) {
-                if(e == null){
-                    finish();
-                } else {
-                    Log.i("ecode", String.valueOf(e.getCode()));
-                }
-            }
-        });
+         AVUser.resetPasswordBySmsCodeInBackground(proveCode, userNewPassword, new UpdatePasswordCallback() {
+             @Override
+             public void done(AVException e) {
+                 if (e == null) {
+                     finish();
+                 } else {
+                     Log.i("ecode", String.valueOf(e.getCode()));
+                 }
+             }
+         });
         }
+    }
+
+    /**
+     * 使按钮呈现倒计时的样子
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void btnCountDown() {
+        forgetpasswordBtnGetProveCode.setFocusable(false);
+        forgetpasswordBtnGetProveCode.setFocusableInTouchMode(false);
+        forgetpasswordBtnGetProveCode.setPressed(false);
+        forgetpasswordBtnGetProveCode.setClickable(false);
+        forgetpasswordBtnGetProveCode.setBackgroundColor(App.getContext().getResources().getColor(R.color.colorGrey));
+
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = StringUtils.COUNT_DOWN;
+                mHandler.sendMessage(message);
+            }
+        }, 1000, 1000);
     }
 }
