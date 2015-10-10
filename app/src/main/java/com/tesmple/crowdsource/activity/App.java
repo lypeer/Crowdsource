@@ -30,6 +30,11 @@ public class App extends Application {
     private static LinearLayout llProgressbar;
 
     /**
+     * 进度条外部layout底下的那个linearlayout
+     */
+    private static LinearLayout llBackground;
+
+    /**
      * 加载progressBar
      */
     private static ProgressBarCircularIndeterminate proBarProgress;
@@ -57,9 +62,12 @@ public class App extends Application {
     public static void showDialog(Activity activity ){
         proBarProgress = (ProgressBarCircularIndeterminate)activity.findViewById(R.id.proBar_progress);
         llProgressbar = (LinearLayout)activity.findViewById(R.id.ll_progressbar);
+        llBackground = (LinearLayout)activity.findViewById(R.id.ll_background);
 
+        activity.findViewById(R.id.rl_dialog).bringToFront();
+        llBackground.bringToFront();
+        llBackground.setAlpha(0.5f);
         llProgressbar.bringToFront();
-        llProgressbar.setAlpha(0.5f);
         llProgressbar.setVisibility(View.VISIBLE);
     }
 
@@ -68,6 +76,7 @@ public class App extends Application {
      */
     public static void dismissDialog(){
         proBarProgress.setVisibility(View.GONE);
+        llBackground.setVisibility(View.GONE);
         llProgressbar.setVisibility(View.GONE);
     }
 }
