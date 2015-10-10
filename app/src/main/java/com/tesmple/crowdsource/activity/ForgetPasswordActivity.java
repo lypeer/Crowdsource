@@ -132,7 +132,7 @@ public class ForgetPasswordActivity extends Activity{
      * 尝试获取验证码
      */
     private void attempGetProveCode(){
-        String userPhone = forgetpasswordEtphone.getText().toString();
+        String userPhone = forgetpasswordEtphone.getText().toString().trim();
         String userNewPassword = forgetpasswordEtNewpassword.getText().toString();
         String userConfirmPassword = forgetpasswordEtConfirmpassword.getText().toString();
 
@@ -159,6 +159,7 @@ public class ForgetPasswordActivity extends Activity{
             forgetpasswordSvScrollform.setAlpha(0.5f);
             forgetpasswordEtProvecode.requestFocus();
             forgetpasswordLlProgressbar.setVisibility(View.VISIBLE);
+            Log.i("userPhone", forgetpasswordEtphone.getText().toString().trim());
             AVUser.requestPasswordResetBySmsCodeInBackground(userPhone, new RequestMobileCodeCallback() {
                 @Override
                 public void done(AVException e) {
@@ -168,13 +169,15 @@ public class ForgetPasswordActivity extends Activity{
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.error_phone_not_register, Snackbar.LENGTH_LONG).show();
                     } else if(e.getCode() == AVException.USER_WITH_MOBILEPHONE_NOT_FOUND){
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
-                    } else if(e.getCode() == 1){
+                    } else if(e.getCode() == 600){
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.so_frequently, Snackbar.LENGTH_LONG).show();
+                    } else if(e.getCode() == 216){
+                        Snackbar.make(forgetpasswordBtnSavePassword, R.string.error_phonenotprove,Snackbar.LENGTH_LONG).show();
                     } else  {
                         Snackbar.make(forgetpasswordBtnSavePassword,R.string.please_check_your_network,Snackbar.LENGTH_LONG).show();
                     }
 
-                    Log.i("error", String.valueOf(e.getCode()));
+                    //Log.i("error", String.valueOf(e.getCode()));
                     forgetpasswordSvScrollform.setAlpha(1.0f);
                     forgetpasswordLlProgressbar.setVisibility(View.GONE);
                 }
@@ -219,7 +222,9 @@ public class ForgetPasswordActivity extends Activity{
             @Override
             public void done(AVException e) {
                 if(e == null){
-                    //密码更改成功了！
+                    finish();
+                } else {
+                    Log.i("ecode", String.valueOf(e.getCode()));
                 }
             }
         });

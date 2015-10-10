@@ -51,7 +51,7 @@ public class EditTextUtils {
     }
 
     public static boolean isProveCode(String proveCode){
-        if(proveCode.length() == 8){
+        if(proveCode.length() == 6){
             Pattern pattern = Pattern.compile("^[0-9]+$");
             Matcher matcher = pattern.matcher(proveCode);
             return matcher.matches();

@@ -140,14 +140,14 @@ public class LoginActivity extends Activity{
         boolean cancel = false;
         View focusView = null;
 
-        if( !(EditTextUtils.isPassword(userPassword)) ){
-            loginEtPassword.setError(getString(R.string.error_invalid_password));
-            cancel = !(EditTextUtils.isPassword(userPassword));
-            focusView = loginEtPassword;
-        }else if( !(EditTextUtils.isPhoneNumber(userPhone)) ){
+        if( !(EditTextUtils.isPhoneNumber(userPhone)) ){
             loginEtPhone.setError(getString(R.string.error_invalid_phone));
             cancel = !(EditTextUtils.isPhoneNumber(userPhone));
             focusView = loginEtPhone;
+        } else if( !(EditTextUtils.isPassword(userPassword)) ){
+            loginEtPassword.setError(getString(R.string.error_invalid_password));
+            cancel = !(EditTextUtils.isPassword(userPassword));
+            focusView = loginEtPassword;
         }
 
         if (cancel) {
