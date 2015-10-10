@@ -100,7 +100,9 @@ public class LoginActivity extends Activity{
         loginBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attempLogin();
+                Intent intent = new Intent(LoginActivity.this, PostRequestActivity.class);
+                startActivity(intent);
+                //attempLogin();
             }
         });
 
@@ -163,7 +165,7 @@ public class LoginActivity extends Activity{
                 public void done(AVUser user, AVException e) {
                     if(e == null){
                         if(user != null){
-                          Snackbar.make(loginEtPassword,"成功",Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(loginEtPassword,"成功",Snackbar.LENGTH_LONG).show();
                         }
                     }else if(e.getCode() == 211){
                         Snackbar.make(loginEtPassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
