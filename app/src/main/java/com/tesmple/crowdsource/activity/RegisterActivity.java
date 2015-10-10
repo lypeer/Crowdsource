@@ -20,10 +20,9 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.RequestMobileCodeCallback;
-import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.CheckBox;
 import com.tesmple.crowdsource.R;
-import com.tesmple.crowdsource.object.User;
+import com.tesmple.crowdsource.layout.ButtonRectangle;
 import com.tesmple.crowdsource.utils.StringUtils;
 
 import java.util.List;
@@ -79,12 +78,12 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * handler对象用于处理异步请求
      */
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case StringUtils.SEND_SUCCESSFULLY :
+            switch (msg.what) {
+                case StringUtils.SEND_SUCCESSFULLY:
                     btnCountDown();
                     break;
                 case StringUtils.COUNT_DOWN:
@@ -95,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                         mTimer.cancel();
                         btnGetProveCode.setClickable(true);
                         btnGetProveCode.setText(App.getContext().getResources().getString(R.string.get_prove_code));
-                        btnGetProveCode.setBackgroundResource(R.color.colorPrimary);
+                        btnGetProveCode.setBackgroundColor(App.getContext().getResources().getColor(R.color.colorPrimary));
                     }
                     break;
             }
@@ -130,12 +129,14 @@ public class RegisterActivity extends AppCompatActivity {
 
         cbAgreeAgreement.setChecked(true);
 
+        btnGetProveCode.setText("565656");
+
         btnGetProveCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String phoneNum = etPhone.getText().toString().trim();
                 if (isPhoneNumber(phoneNum)) {
-                    isPhoneNumberExist(phoneNum);
+                    sendMessage(phoneNum);
                 }
             }
         });
@@ -164,40 +165,40 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 验证用户输入的号码是否已经注册过
-     *
-     * @param phoneNum 用户所输入的手机号码
-     */
-    private void isPhoneNumberExist(final String phoneNum) {
-        App.showDialog(RegisterActivity.this);
-        AVQuery<AVUser> query = AVUser.getQuery();
-        query.whereEqualTo("username", phoneNum);
-        query.findInBackground(new FindCallback<AVUser>() {
-
-            @Override
-            public void done(List<AVUser> list, AVException e) {
-                if (e == null) {
-                    if (list.get(0) != null) {
-                        App.dismissDialog();
-                        Snackbar.make(btnRegister, R.string.phone_has_registered, Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
-                    }
-                } else {
-                    //错误码为0表示找不到当前用户
-                    if (e.getCode() == 0) {
-                        sendMessage(phoneNum);
-                    } else {
-                        Log.e("Register_isExist", e.getMessage() + "===" + e.getCode());
-                        App.dismissDialog();
-                        Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
-                    }
-                }
-
-            }
-        });
-    }
+//    /**
+//     * 验证用户输入的号码是否已经注册过
+//     *
+//     * @param phoneNum 用户所输入的手机号码
+//     */
+//    private void isPhoneNumberExist(final String phoneNum) {
+//        App.showDialog(RegisterActivity.this);
+//        AVQuery<AVUser> query = AVUser.getQuery();
+//        query.whereEqualTo("username", phoneNum);
+//        query.findInBackground(new FindCallback<AVUser>() {
+//
+//            @Override
+//            public void done(List<AVUser> list, AVException e) {
+//                if (e == null) {
+//                    if (list.get(0) != null) {
+//                        App.dismissDialog();
+//                        Snackbar.make(btnRegister, R.string.phone_has_registered, Snackbar.LENGTH_SHORT)
+//                                .setAction("Action", null).show();
+//                    }
+//                } else {
+//                    //错误码为0表示找不到当前用户
+//                    if (e.getCode() == 0) {
+//                        sendMessage(phoneNum);
+//                    } else {
+//                        Log.e("Register_isExist", e.getMessage() + "===" + e.getCode());
+//                        App.dismissDialog();
+//                        Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+//                                .setAction("Action", null).show();
+//                    }
+//                }
+//
+//            }
+//        });
+//    }
 
     /**
      * 向指定手机号发送验证短信
@@ -205,30 +206,33 @@ public class RegisterActivity extends AppCompatActivity {
      * @param phoneNum 发送短信的手机号
      */
     private void sendMessage(String phoneNum) {
-        AVOSCloud.requestSMSCodeInBackground(phoneNum,
-                new RequestMobileCodeCallback() {
-                    @Override
-                    public void done(AVException e) {
-                        if (e == null) {
-                            Message message = new Message();
-                            message.what = StringUtils.SEND_SUCCESSFULLY;
-                            mHandler.sendMessage(message);
-                            App.dismissDialog();
-                            Snackbar.make(btnRegister, R.string.send_successfully, Snackbar.LENGTH_SHORT)
-                                    .setAction("Action", null).show();
-                        } else {
-                            if (e.getCode() == 600) {
-                                Snackbar.make(btnRegister, R.string.so_frequently, Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
-                            } else {
-                                Log.e("Register_send", e.getMessage() + "===" + e.getCode());
-                                Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
-                            }
-                            App.dismissDialog();
-                        }
-                    }
-                });
+       AVUser.requestMobilePhoneVerifyInBackground(phoneNum,
+               new RequestMobileCodeCallback() {
+                   @Override
+                   public void done(AVException e) {
+                       if (e == null) {
+                           Message message = new Message();
+                           message.what = StringUtils.SEND_SUCCESSFULLY;
+                           mHandler.sendMessage(message);
+                           App.dismissDialog();
+                           Snackbar.make(btnRegister, R.string.send_successfully, Snackbar.LENGTH_SHORT)
+                                   .setAction("Action", null).show();
+                       } else {
+                           if (e.getCode() == 600) {
+                               Snackbar.make(btnRegister, R.string.so_frequently, Snackbar.LENGTH_SHORT)
+                                       .setAction("Action", null).show();
+                           } if (e.getCode() == 600) {
+                               Snackbar.make(btnRegister, R.string.so_frequently, Snackbar.LENGTH_SHORT)
+                                       .setAction("Action", null).show();
+                           }else {
+                               Log.e("Register_send", e.getMessage() + "===" + e.getCode());
+                               Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                       .setAction("Action", null).show();
+                           }
+                           App.dismissDialog();
+                       }
+                   }
+               });
     }
 
     /**
@@ -240,7 +244,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnGetProveCode.setFocusableInTouchMode(false);
         btnGetProveCode.setPressed(false);
         btnGetProveCode.setClickable(false);
-        btnGetProveCode.setBackgroundResource(R.drawable.btn_gray_pressed);
+        btnGetProveCode.setBackgroundColor(App.getContext().getResources().getColor(R.color.colorGrey));
 
         mTimer = new Timer();
         mTimer.schedule(new TimerTask() {

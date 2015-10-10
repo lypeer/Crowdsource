@@ -87,7 +87,7 @@
 
                     </android.support.design.widget.TextInputLayout>
 
-                    <com.gc.materialdesign.views.ButtonRectangle
+                    <com.tesmple.crowdsource.layout.ButtonRectangle
                         android:id="@+id/register_btn_get_prove_code"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
@@ -96,7 +96,7 @@
                         android:background="@color/colorPrimary"
                         android:text="@string/get_prove_code">
 
-                    </com.gc.materialdesign.views.ButtonRectangle>
+                    </com.tesmple.crowdsource.layout.ButtonRectangle>
                 </LinearLayout>
 
                 <LinearLayout
@@ -135,7 +135,7 @@
                         android:text="@string/book_title_mark"/>
                 </LinearLayout>
 
-                <com.gc.materialdesign.views.ButtonRectangle
+                <com.tesmple.crowdsource.layout.ButtonRectangle
                     android:id="@+id/register_btn_register"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                     android:background="@color/colorPrimary"
                     android:text="@string/register">
 
-                </com.gc.materialdesign.views.ButtonRectangle>
+                </com.tesmple.crowdsource.layout.ButtonRectangle>
             </LinearLayout>
         </com.gc.materialdesign.views.ScrollView>
     </RelativeLayout>

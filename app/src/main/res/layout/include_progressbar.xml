@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/ll_progressbar"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:clickable="true"
-              android:focusableInTouchMode="true"
-              android:gravity="center"
-              android:orientation="vertical"
-              android:visibility="gone">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/rl_dialog"
+    android:layout_height="match_parent">
 
-    <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
-        android:id="@+id/proBar_progress"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@color/colorPrimaryDark"
-        />
-</LinearLayout>
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:id="@+id/ll_background"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:layout_height="match_parent">
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+            android:id="@+id/proBar_progress"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@color/colorPrimaryDark"
+            />
+    </LinearLayout>
+
+</RelativeLayout>
