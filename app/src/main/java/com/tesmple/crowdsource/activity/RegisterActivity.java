@@ -129,8 +129,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         cbAgreeAgreement.setChecked(true);
 
-        btnGetProveCode.setText("565656");
-
         btnGetProveCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,8 +219,8 @@ public class RegisterActivity extends AppCompatActivity {
                            if (e.getCode() == 600) {
                                Snackbar.make(btnRegister, R.string.so_frequently, Snackbar.LENGTH_SHORT)
                                        .setAction("Action", null).show();
-                           } if (e.getCode() == 600) {
-                               Snackbar.make(btnRegister, R.string.so_frequently, Snackbar.LENGTH_SHORT)
+                           } if (e.getCode() == 213) {
+                               Snackbar.make(btnRegister, R.string.error_phone_not_register, Snackbar.LENGTH_SHORT)
                                        .setAction("Action", null).show();
                            }else {
                                Log.e("Register_send", e.getMessage() + "===" + e.getCode());
@@ -238,7 +236,6 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * 使按钮呈现倒计时的样子
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void btnCountDown() {
         btnGetProveCode.setFocusable(false);
         btnGetProveCode.setFocusableInTouchMode(false);

@@ -17,15 +17,16 @@ import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ButtonUtils;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 
 /**
  * Created by ESIR on 2015/10/7.
  */
-public class LoginActivity extends Activity{
+public class LoginActivity extends Activity {
     /**
-     *login界面的账户输入EditText
+     * login界面的账户输入EditText
      */
     private AutoCompleteTextView loginEtPhone;
 
@@ -65,7 +66,7 @@ public class LoginActivity extends Activity{
     private ButtonFlat loginBtnRegisteraccount;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViewBind();
@@ -77,23 +78,23 @@ public class LoginActivity extends Activity{
     /**
      * 对控件绑定
      */
-    private void initViewBind(){
-        loginEtPhone = (AutoCompleteTextView)findViewById(R.id.login_et_phone);
-        loginEtPassword = (AutoCompleteTextView)findViewById(R.id.login_et_password);
-        loginSvScrollForm = (ScrollView)findViewById(R.id.login_sv_scrollform);
-        loginProBarProgress = (ProgressBarCircularIndeterminate)findViewById(R.id.login_proBar_progress);
-        loginBtnLogin = (ButtonRectangle)findViewById(R.id.login_btn_login);
-        loginLlProgressbar = (LinearLayout)findViewById(R.id.login_ll_progressbar);
-        loginBtnForgetpasswor = (ButtonFlat)findViewById(R.id.login_btn_forgetpassword);
-        loginBtnRegisteraccount = (ButtonFlat)findViewById(R.id.login_btn_registeraccount);
+    private void initViewBind() {
+        loginEtPhone = (AutoCompleteTextView) findViewById(R.id.login_et_phone);
+        loginEtPassword = (AutoCompleteTextView) findViewById(R.id.login_et_password);
+        loginSvScrollForm = (ScrollView) findViewById(R.id.login_sv_scrollform);
+        loginProBarProgress = (ProgressBarCircularIndeterminate) findViewById(R.id.login_proBar_progress);
+        loginBtnLogin = (ButtonRectangle) findViewById(R.id.login_btn_login);
+        loginLlProgressbar = (LinearLayout) findViewById(R.id.login_ll_progressbar);
+        loginBtnForgetpasswor = (ButtonFlat) findViewById(R.id.login_btn_forgetpassword);
+        loginBtnRegisteraccount = (ButtonFlat) findViewById(R.id.login_btn_registeraccount);
     }
 
     /**
      * 设置login界面的button
      */
-    private void setButtons(){
-        ButtonFlat loginBtnForgetPassword = (ButtonFlat)findViewById(R.id.login_btn_forgetpassword);
-        ButtonFlat loginBtnRegisterAccount = (ButtonFlat)findViewById(R.id.login_btn_registeraccount);
+    private void setButtons() {
+        ButtonFlat loginBtnForgetPassword = (ButtonFlat) findViewById(R.id.login_btn_forgetpassword);
+        ButtonFlat loginBtnRegisterAccount = (ButtonFlat) findViewById(R.id.login_btn_registeraccount);
 
         ButtonUtils.setBtnFlatTextColor(loginBtnForgetPassword, getResources().getColor(R.color.colorGrey));
         ButtonUtils.setBtnFlatTextColor(loginBtnRegisterAccount, getResources().getColor(R.color.colorPrimaryDark));
@@ -107,7 +108,7 @@ public class LoginActivity extends Activity{
         loginBtnForgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this , ForgetPasswordActivity.class);
+                Intent intent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
                 startActivity(intent);
             }
         });
@@ -115,7 +116,7 @@ public class LoginActivity extends Activity{
         loginBtnRegisterAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this , RegisterActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
@@ -124,7 +125,7 @@ public class LoginActivity extends Activity{
     /**
      * 设置login界面的EditText报错机制
      */
-    private void setEditTexts(){
+    private void setEditTexts() {
         loginEtPhone.setError(null);
         loginEtPassword.setError(null);
     }
@@ -132,7 +133,7 @@ public class LoginActivity extends Activity{
     /**
      * 尝试登陆函数，进行输入差错判断
      */
-    private void attempLogin(){
+    private void attempLogin() {
 
         String userPhone = loginEtPhone.getText().toString();
         String userPassword = loginEtPassword.getText().toString();
@@ -140,11 +141,11 @@ public class LoginActivity extends Activity{
         boolean cancel = false;
         View focusView = null;
 
-        if( !(EditTextUtils.isPhoneNumber(userPhone)) ){
+        if (!(EditTextUtils.isPhoneNumber(userPhone))) {
             loginEtPhone.setError(getString(R.string.error_invalid_phone));
             cancel = !(EditTextUtils.isPhoneNumber(userPhone));
             focusView = loginEtPhone;
-        } else if( !(EditTextUtils.isPassword(userPassword)) ){
+        } else if (!(EditTextUtils.isPassword(userPassword))) {
             loginEtPassword.setError(getString(R.string.error_invalid_password));
             cancel = !(EditTextUtils.isPassword(userPassword));
             focusView = loginEtPassword;
@@ -159,18 +160,31 @@ public class LoginActivity extends Activity{
             loginSvScrollForm.setAlpha(0.5f);
             loginLlProgressbar.setVisibility(View.VISIBLE);
             //AVUer设置
-            AVUser.logInInBackground(userPhone , userPassword , new LogInCallback<AVUser>() {
+            AVUser.logInInBackground(userPhone, userPassword, new LogInCallback<AVUser>() {
                 public void done(AVUser user, AVException e) {
-                    if(e == null){
-                        if(user != null){
-                          Snackbar.make(loginEtPassword,"成功",Snackbar.LENGTH_LONG).show();
+                    if (e == null) {
+                        if (user != null) {
+//                            Snackbar.make(loginEtPassword, "成功", Snackbar.LENGTH_LONG).show();
+                            User.getInstance().setName((String)user.get("name"));
+                            User.getInstance().setUserName((String)user.get("username"));
+                            User.getInstance().setStuNum((String)user.get("stu_num"));
+                            User.getInstance().setSchool((String)user.get("school"));
+                            User.getInstance().setGender((String)user.get("gender"));
+                            User.getInstance().setHeadProtrait(user.getAVFile("head_portrait").getUrl());
+                            User.getInstance().setCreditValue((String)user.get("credit_value"));
+                            User.getInstance().setSendStar((String)user.get("send_star"));
+                            User.getInstance().setAcceptStar((String)user.get("accept_star"));
+                            User.getInstance().setStatus((String)user.get("status"));
+
+                            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
+                            startActivity(intent);
                         }
-                    }else if(e.getCode() == 211){
-                        Snackbar.make(loginEtPassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
-                    }else if(e.getCode() == 210){
-                        Snackbar.make(loginEtPassword,R.string.error_invalid_password,Snackbar.LENGTH_LONG).show();
-                    }else {
-                        Snackbar.make(loginEtPassword,R.string.please_check_your_network,Snackbar.LENGTH_LONG).show();
+                    } else if (e.getCode() == 211) {
+                        Snackbar.make(loginEtPassword, R.string.error_phone_not_register, Snackbar.LENGTH_LONG).show();
+                    } else if (e.getCode() == 210) {
+                        Snackbar.make(loginEtPassword, R.string.error_invalid_password, Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(loginEtPassword, R.string.please_check_your_network, Snackbar.LENGTH_LONG).show();
                     }
                     loginLlProgressbar.setVisibility(View.GONE);
                     loginSvScrollForm.setAlpha(1.0f);
@@ -186,8 +200,8 @@ public class LoginActivity extends Activity{
     /**
      * 初始化toolbar
      */
-    private void initToolbar(){
-        Toolbar loginToolbar = (Toolbar)findViewById(R.id.toolbar);
+    private void initToolbar() {
+        Toolbar loginToolbar = (Toolbar) findViewById(R.id.toolbar);
         loginToolbar.setTitle("登陆账号");
     }
 }
