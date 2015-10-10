@@ -36,6 +36,8 @@
         <activity android:name=".activity.MainActivity">
 
         </activity>
+        <activity android:name=".activity.PostRequestActivity">
+        </activity>
     </application>
 
 </manifest>

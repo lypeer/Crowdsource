@@ -10,7 +10,7 @@
     tools:context=".LoginActivity"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-    <!--tools:context="com.tesmple.crowdsource.activity.LoginActivity"
+    <!--tools:context="com.tesmple.crowdsource.activity_postrequest.LoginActivity"
     -->
     <!--<android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
