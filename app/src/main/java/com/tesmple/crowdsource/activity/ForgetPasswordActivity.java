@@ -14,6 +14,7 @@ import android.widget.ScrollView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.RequestMobileCodeCallback;
+import com.avos.avoscloud.UpdatePasswordCallback;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.utils.EditTextUtils;
@@ -89,8 +90,11 @@ public class ForgetPasswordActivity extends Activity{
         forgetpasswordEtphone = (AutoCompleteTextView)findViewById(R.id.forgetpassword_et_phone);
         forgetpasswordEtNewpassword = (AutoCompleteTextView)findViewById(R.id.forgetpassword_et_newpassword);
         forgetpasswordEtConfirmpassword = (AutoCompleteTextView)findViewById(R.id.forgetpassword_et_confirmpassword);
+        forgetpasswordEtProvecode = (AutoCompleteTextView)findViewById(R.id.forgetpassword_et_provecode);
+
         forgetpasswordBtnGetProveCode = (ButtonRectangle)findViewById(R.id.forgetpassword_btn_getprovecode);
         forgetpasswordBtnSavePassword = (ButtonRectangle)findViewById(R.id.forgetpassword_btn_savepassword);
+
         forgetpasswordSvScrollform = (ScrollView)findViewById(R.id.forgetpassword_sv_scrollform);
         forgetpasswordLlProgressbar = (LinearLayout)findViewById(R.id.forgetpassword_ll_progressbar);
     }
@@ -102,6 +106,7 @@ public class ForgetPasswordActivity extends Activity{
         forgetpasswordEtphone.setError(null);
         forgetpasswordEtNewpassword.setError(null);
         forgetpasswordEtConfirmpassword.setError(null);
+        forgetpasswordEtProvecode.setError(null);
     }
 
     /**
@@ -118,7 +123,7 @@ public class ForgetPasswordActivity extends Activity{
         forgetpasswordBtnSavePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                attempSavePassword();
             }
         });
     }
@@ -152,6 +157,7 @@ public class ForgetPasswordActivity extends Activity{
             focusView.requestFocus();
         }else {
             forgetpasswordSvScrollform.setAlpha(0.5f);
+            forgetpasswordEtProvecode.requestFocus();
             forgetpasswordLlProgressbar.setVisibility(View.VISIBLE);
             AVUser.requestPasswordResetBySmsCodeInBackground(userPhone, new RequestMobileCodeCallback() {
                 @Override
@@ -162,15 +168,61 @@ public class ForgetPasswordActivity extends Activity{
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.error_phone_not_register, Snackbar.LENGTH_LONG).show();
                     } else if(e.getCode() == AVException.USER_WITH_MOBILEPHONE_NOT_FOUND){
                         Snackbar.make(forgetpasswordBtnSavePassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
+                    } else if(e.getCode() == 1){
+                        Snackbar.make(forgetpasswordBtnSavePassword, R.string.so_frequently, Snackbar.LENGTH_LONG).show();
                     } else  {
                         Snackbar.make(forgetpasswordBtnSavePassword,R.string.please_check_your_network,Snackbar.LENGTH_LONG).show();
                     }
 
-                    Log.i("error",e.toString());
+                    Log.i("error", String.valueOf(e.getCode()));
                     forgetpasswordSvScrollform.setAlpha(1.0f);
                     forgetpasswordLlProgressbar.setVisibility(View.GONE);
                 }
             });
+        }
+    }
+
+    /**
+     * 尝试保存新密码
+     */
+    private void attempSavePassword(){
+        String userPhone = forgetpasswordEtphone.getText().toString();
+        String userNewPassword = forgetpasswordEtNewpassword.getText().toString();
+        String userConfirmPassword = forgetpasswordEtConfirmpassword.getText().toString();
+        String proveCode = forgetpasswordEtProvecode.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        if( !EditTextUtils.isPhoneNumber(userPhone) ){
+            forgetpasswordEtphone.setError(getString(R.string.error_invalid_phone));
+            cancel = true;
+            focusView = forgetpasswordEtphone;
+        }else if( !EditTextUtils.isPassword(userNewPassword)){
+            forgetpasswordEtNewpassword.setError(getString(R.string.error_invalid_password));
+            cancel = true;
+            focusView = forgetpasswordEtNewpassword;
+        }else if( !userNewPassword.equals(userConfirmPassword) ){
+            forgetpasswordEtNewpassword.setError(getString(R.string.error_newpassword_notsame));
+            cancel = true;
+            focusView = forgetpasswordEtNewpassword;
+        }else if( !EditTextUtils.isProveCode(proveCode) ){
+            forgetpasswordEtProvecode.setError(getString(R.string.error_provecode));
+            cancel = true;
+            focusView = forgetpasswordEtProvecode;
+        }
+
+        if(cancel){
+            focusView.requestFocus();
+        }else {
+         AVUser.resetPasswordBySmsCodeInBackground(proveCode, userNewPassword , new UpdatePasswordCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null){
+                    //密码更改成功了！
+                }
+            }
+        });
         }
     }
 }
