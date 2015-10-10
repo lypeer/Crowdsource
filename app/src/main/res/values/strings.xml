@@ -48,5 +48,6 @@
     <string name="error_newpassword_notsame">两次输入的密码不相同</string>
     <string name="error_provecode">请输入正确的验证码</string>
     <string name="error_phonenotprove">当前手机号码未验证</string>
+    <string name="real_app_name">校园众包</string>
 
 </resources>
