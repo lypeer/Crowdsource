@@ -17,6 +17,7 @@ import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ButtonUtils;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 
