@@ -100,9 +100,7 @@ public class LoginActivity extends Activity{
         loginBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, PostRequestActivity.class);
-                startActivity(intent);
-                //attempLogin();
+                attempLogin();
             }
         });
 
@@ -163,9 +161,22 @@ public class LoginActivity extends Activity{
             //AVUer设置
             AVUser.logInInBackground(userPhone , userPassword , new LogInCallback<AVUser>() {
                 public void done(AVUser user, AVException e) {
-                    if(e == null){
-                        if(user != null){
-                            Snackbar.make(loginEtPassword,"成功",Snackbar.LENGTH_LONG).show();
+                    if (e == null) {
+                        if (user != null) {
+//                            Snackbar.make(loginEtPassword, "成功", Snackbar.LENGTH_LONG).show();
+                            User.getInstance().setName((String)user.get("name"));
+                            User.getInstance().setUserName((String)user.get("username"));
+                            User.getInstance().setStuNum((String)user.get("stu_num"));
+                            User.getInstance().setSchool((String)user.get("school"));
+                            User.getInstance().setGender((String)user.get("gender"));
+                            User.getInstance().setHeadProtrait(user.getAVFile("head_portrait").getUrl());
+                            User.getInstance().setCreditValue((String)user.get("credit_value"));
+                            User.getInstance().setSendStar((String)user.get("send_star"));
+                            User.getInstance().setAcceptStar((String)user.get("accept_star"));
+                            User.getInstance().setStatus((String)user.get("status"));
+
+                            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
+                            startActivity(intent);
                         }
                     }else if(e.getCode() == 211){
                         Snackbar.make(loginEtPassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
