@@ -30,10 +30,6 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
-repositories {
-    maven { url "https://jitpack.io" }
-}
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'

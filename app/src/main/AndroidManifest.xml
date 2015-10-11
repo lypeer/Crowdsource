@@ -13,7 +13,6 @@
         android:label="@string/app_name"
         android:name=".activity.App"
         android:supportsRtl="true"
-        android:name=".activity.App"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".activity.LoginActivity"
