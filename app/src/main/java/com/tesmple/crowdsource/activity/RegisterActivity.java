@@ -247,6 +247,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void isPhoneNumberExist(final String phoneNum) {
         App.showDialog(RegisterActivity.this);
+
         AVQuery<AVUser> query = AVUser.getQuery();
         query.whereEqualTo("username", phoneNum);
         query.findInBackground(new FindCallback<AVUser>() {

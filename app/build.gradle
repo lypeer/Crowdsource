@@ -51,4 +51,5 @@ dependencies {
     compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
 
     compile 'com.github.d-max:spots-dialog:0.4@aar'
+
 }
