@@ -70,6 +70,7 @@ public class App extends Application {
         llProgressbar.bringToFront();
         llProgressbar.setVisibility(View.VISIBLE);
 
+
     }
 
     /**

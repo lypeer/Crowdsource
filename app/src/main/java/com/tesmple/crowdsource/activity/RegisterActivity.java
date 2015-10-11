@@ -153,6 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (isInputCorrectly()) {
                     isPhoneNumberExist(etPhone.getText().toString().trim());
+
                 }
             }
         });
