@@ -132,10 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnGetProveCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String phoneNum = etPhone.getText().toString().trim();
-                if (isPhoneNumber(phoneNum)) {
-                    sendMessage(phoneNum);
-                }
+               
             }
         });
     }
