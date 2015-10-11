@@ -170,13 +170,13 @@ public class LoginActivity extends Activity{
                             User.getInstance().setStuNum((String)user.get("stu_num"));
                             User.getInstance().setSchool((String)user.get("school"));
                             User.getInstance().setGender((String)user.get("gender"));
-                            User.getInstance().setHeadProtrait(user.getAVFile("head_portrait").getUrl());
+                            //User.getInstance().setHeadProtrait(user.getAVFile("head_portrait").getUrl());
                             User.getInstance().setCreditValue((String)user.get("credit_value"));
                             User.getInstance().setSendStar((String)user.get("send_star"));
                             User.getInstance().setAcceptStar((String)user.get("accept_star"));
                             User.getInstance().setStatus((String)user.get("status"));
 
-                            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
                             startActivity(intent);
                         }
                     }else if(e.getCode() == 211){
