@@ -30,10 +30,6 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
-repositories {
-    maven { url "https://jitpack.io" }
-}
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -51,4 +47,5 @@ dependencies {
     compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
 
     compile 'com.github.d-max:spots-dialog:0.4@aar'
+
 }

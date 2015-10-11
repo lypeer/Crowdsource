@@ -38,6 +38,9 @@
         </activity>
         <activity android:name=".activity.PostRequestActivity">
         </activity>
+        <activity android:name=".activity.PerfectInformationActivity">
+
+        </activity>
     </application>
 
 </manifest>
