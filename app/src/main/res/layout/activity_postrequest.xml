@@ -26,14 +26,18 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="16dp">
                 <com.gc.materialdesign.views.ButtonFlat
+                    android:id="@+id/postrequest_btflat_datepicker"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="日期"/>
+                    android:background="@color/colorPrimary"
+                    android:text="2015年10月11日"/>
                 <com.gc.materialdesign.views.ButtonFlat
+                    android:id="@+id/postrequest_btflat_timepicker"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@color/colorPrimary"
                     android:text="时间"/>
             </LinearLayout>
             <TextView
@@ -46,17 +50,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_marginTop="16dp">
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                android:layout_marginTop="16dp"
+                android:padding="7dp"
+                android:background="@drawable/li_postbill_description">
                     <EditText
+                        android:id="@+id/postrequest_et_billdescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:textSize="20sp"
                         />
-                </ScrollView>
             </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
@@ -77,6 +80,7 @@
                     android:layout_weight="1"
                     android:orientation="horizontal">
                     <CheckBox
+                        android:id="@+id/postrequest_cb_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
@@ -92,6 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
                     <CheckBox
+                        android:id="@+id/postrequest_cb_message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"/>
@@ -106,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
                     <CheckBox
+                        android:id="@+id/postrequest_cb_replyinapp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"/>
@@ -129,21 +135,24 @@
                 android:textSize="16sp"
                 android:layout_marginTop="16dp"/>
             <RadioGroup
+                android:id="@+id/postrequest_rg_billmode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="16dp">
                 <RadioButton
+                    android:id="@+id/postrequest_rb_grabbillmode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="抢单模式"
+                    android:text="@string/grabbill_mode"
                     android:textColor="@color/colorPrimary" />
                 <RadioButton
+                    android:id="@+id/postrequest_rb_receivebillmode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="接单模式"
+                    android:text="@string/receivebill_mode"
                     android:textColor="@color/colorPrimary"/>
             </RadioGroup>
             <LinearLayout
@@ -152,10 +161,11 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
                 <com.tesmple.crowdsource.layout.ButtonRectangle
+                    android:id="@+id/postrequest_btrec_postbill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimary"
-                    android:text="发布">
+                    android:text="@string/postbill">
                 </com.tesmple.crowdsource.layout.ButtonRectangle>
             </LinearLayout>
         </LinearLayout>

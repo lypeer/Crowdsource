@@ -55,5 +55,8 @@
     <string name="rb_phonenumer">电话</string>
     <string name="rb_message">短信</string>
     <string name="rb_replyinapp">站内回复</string>
+    <string name="grabbill_mode">抢单模式</string>
+    <string name="receivebill_mode">接单模式</string>
+    <string name="postbill">发布</string>
 
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -24,7 +25,7 @@ import com.tesmple.crowdsource.utils.EditTextUtils;
 /**
  * Created by ESIR on 2015/10/7.
  */
-public class LoginActivity extends Activity{
+public class LoginActivity extends AppCompatActivity{
     /**
      *login界面的账户输入EditText
      */
@@ -166,11 +167,11 @@ public class LoginActivity extends Activity{
                         if (user != null) {
 //                            Snackbar.make(loginEtPassword, "成功", Snackbar.LENGTH_LONG).show();
                             User.getInstance().setName((String)user.get("name"));
-                            User.getInstance().setUserName((String)user.get("username"));
-                            User.getInstance().setStuNum((String)user.get("stu_num"));
-                            User.getInstance().setSchool((String)user.get("school"));
-                            User.getInstance().setGender((String)user.get("gender"));
-                            //User.getInstance().setHeadProtrait(user.getAVFile("head_portrait").getUrl());
+                            User.getInstance().setUserName((String) user.get("username"));
+                            User.getInstance().setStuNum((String) user.get("stu_num"));
+                            User.getInstance().setSchool((String) user.get("school"));
+                            User.getInstance().setGender((String) user.get("gender"));
+                            User.getInstance().setHeadProtrait(user.getAVFile("head_portrait").getUrl());
                             User.getInstance().setCreditValue((String)user.get("credit_value"));
                             User.getInstance().setSendStar((String)user.get("send_star"));
                             User.getInstance().setAcceptStar((String)user.get("accept_star"));
@@ -203,5 +204,6 @@ public class LoginActivity extends Activity{
     private void initToolbar(){
         Toolbar loginToolbar = (Toolbar)findViewById(R.id.toolbar);
         loginToolbar.setTitle("登陆账号");
+        setSupportActionBar(loginToolbar);
     }
 }
