@@ -15,7 +15,6 @@ import com.tesmple.crowdsource.R;
 import dmax.dialog.SpotsDialog;
 
 /**
- *
  * Created by lypeer on 10/7/2015.
  */
 public class App extends Application {
@@ -43,7 +42,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mAppContext = getApplicationContext();
-        AVOSCloud.initialize(this , "ToU9po43RDw6nyqcjzPL57si" , "GiI6qViVwvAsCpz46SjLarm2");
+        AVOSCloud.initialize(this, "ToU9po43RDw6nyqcjzPL57si", "GiI6qViVwvAsCpz46SjLarm2");
     }
 
     /**
@@ -57,25 +56,27 @@ public class App extends Application {
 
     /**
      * 显示正在加载的dialog
+     *
      * @param activity 发起带dialog的activity的activity
      */
-    public static void showDialog(Activity activity ){
-        proBarProgress = (ProgressBarCircularIndeterminate)activity.findViewById(R.id.proBar_progress);
-        llProgressbar = (LinearLayout)activity.findViewById(R.id.ll_progressbar);
-        llBackground = (LinearLayout)activity.findViewById(R.id.ll_background);
+    public static void showDialog(Activity activity) {
+        proBarProgress = (ProgressBarCircularIndeterminate) activity.findViewById(R.id.proBar_progress);
+        llProgressbar = (LinearLayout) activity.findViewById(R.id.ll_progressbar);
+        llBackground = (LinearLayout) activity.findViewById(R.id.ll_background);
 
         activity.findViewById(R.id.rl_dialog).bringToFront();
         llBackground.bringToFront();
         llBackground.setAlpha(0.5f);
         llProgressbar.bringToFront();
         llProgressbar.setVisibility(View.VISIBLE);
+
+
     }
 
     /**
      * 隐藏正在加载的dialog
      */
-    public static void dismissDialog(){
-        proBarProgress.setVisibility(View.GONE);
+    public static void dismissDialog() {
         llBackground.setVisibility(View.GONE);
         llProgressbar.setVisibility(View.GONE);
     }
