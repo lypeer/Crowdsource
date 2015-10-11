@@ -75,7 +75,6 @@ public class App extends Application {
      * 隐藏正在加载的dialog
      */
     public static void dismissDialog(){
-        proBarProgress.setVisibility(View.GONE);
         llBackground.setVisibility(View.GONE);
         llProgressbar.setVisibility(View.GONE);
     }

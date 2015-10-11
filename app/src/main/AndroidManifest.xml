@@ -36,6 +36,9 @@
         <activity android:name=".activity.MainActivity">
 
         </activity>
+        <activity android:name=".activity.PerfectInformationActivity">
+
+        </activity>
     </application>
 
 </manifest>

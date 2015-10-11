@@ -50,6 +50,11 @@ public class EditTextUtils {
         }
     }
 
+    /**
+     * 判断验证码是否符合规格的方法
+     * @param proveCode 需要验证的验证码
+     * @return 如果是正确的就返回true，不然的话就返回false
+     */
     public static boolean isProveCode(String proveCode){
         if(proveCode.length() == 6){
             Pattern pattern = Pattern.compile("^[0-9]+$");

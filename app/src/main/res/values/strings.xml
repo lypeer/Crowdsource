@@ -17,13 +17,15 @@
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_phone">请输入正确的手机号</string>
     <string name="error_invalid_password">请输入正确的密码</string>
+    <string name="error_password_should_be">密码应为6~16位的数字与字母</string>
+    <string name="error_prove_code_should_be">验证码应该为6位</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="login_acount">账户：</string>
-    <string name="login_password">密码：</string>
+    <string name="login_acount">账户</string>
+    <string name="login_password">密码</string>
     <string name="action_login_forgetpassword">忘记密码？</string>
     <string name="action_login_register">注册账号</string>
     <string name="phone_num">手机号</string>
@@ -49,5 +51,17 @@
     <string name="error_provecode">请输入正确的验证码</string>
     <string name="error_phonenotprove">当前手机号码未验证</string>
     <string name="real_app_name">校园众包</string>
+    <string name="error_invalid_provr_code">验证码不匹配或过期</string>
+    <string name="register_successfully">注册成功！</string>
+    <string name="error_please_check_agreement">请仔细阅读《校园众包用户条约》并进行勾选</string>
+    <string name="prompt_place">所在地</string>
+    <string name="perfect_information">完善资料</string>
+    <string name="prompt_please_choose_place">请选择地区</string>
+    <string name="prompt_school">院校</string>
+    <string name="prompt_please_choose_school">请选择院校</string>
+    <string name="prompt_stu_num">学号</string>
+    <string name="prompt_please_input_stu_num">输入学号</string>
+    <string name="prompt_please_input_password">请输入学号的密码</string>
+    <string name="prompt_sure">确认</string>
 
 </resources>
