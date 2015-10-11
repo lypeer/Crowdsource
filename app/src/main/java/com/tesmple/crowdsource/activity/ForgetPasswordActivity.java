@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +31,7 @@ import java.util.TimerTask;
 /**
  * Created by ESIR on 2015/10/9.
  */
-public class ForgetPasswordActivity extends Activity{
+public class ForgetPasswordActivity extends AppCompatActivity{
     /**
      * 忘记密码界面的账号EditText
      */
@@ -120,6 +121,7 @@ public class ForgetPasswordActivity extends Activity{
     private void initToolbar(){
         Toolbar forgetPasswordToolbar = (Toolbar)findViewById(R.id.toolbar);
         forgetPasswordToolbar.setTitle("修改密码");
+        setSupportActionBar(forgetPasswordToolbar);
         forgetPasswordToolbar.setLogo(R.drawable.ic_back);
     }
 
