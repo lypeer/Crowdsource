@@ -1,19 +1,24 @@
 package com.tesmple.crowdsource.activity;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TimePicker;
 
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.layout.ButtonRectangle;
+import com.tesmple.crowdsource.utils.TimeUtils;
 
 /**
  * Created by ESIR on 2015/10/10.
@@ -77,7 +82,61 @@ public class PostRequestActivity extends AppCompatActivity {
         initViewBind();
         initToolbar();
         initRadioGroup();
+        initDateAndTimeButton();
+        setDatePicker();
+        setTimePicker();
     }
+
+    /**
+     * 设置date选择监听
+     */
+    private void setDatePicker(){
+        postrequestBtflatDatepicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(PostRequestActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        String stYear,stMonth,stDay;
+                        stYear = String.valueOf(year);
+                        stMonth = String.valueOf((monthOfYear<10)?"0" + (monthOfYear-1):monthOfYear-1);
+                        stDay = String.valueOf((dayOfMonth<10)?"0" + dayOfMonth:dayOfMonth);
+                        postrequestBtflatDatepicker.setText(stYear + "-" + stMonth + "-" + stDay);
+                    }
+                }, TimeUtils.getNowYear(), TimeUtils.getNowMonth()-1, TimeUtils.getNowDay()).show();
+            }
+        });
+    }
+
+    private void setTimePicker(){
+        postrequestBtflatTimepicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimePickerDialog(PostRequestActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        String stHour;
+                        String stMinute;
+                        if(hourOfDay < 10){
+                            stHour = "0" + hourOfDay;
+                        }else {
+                            stHour = String.valueOf(hourOfDay);
+                        }
+
+                        if(minute < 10){
+                            stMinute = "0" + minute;
+                        }else {
+                            stMinute = String.valueOf(minute);
+                        }
+                        postrequestBtflatTimepicker.setText(stHour + ":" + stMinute);
+                    }
+                }, TimeUtils.getNowHour(), TimeUtils.getNowMinute(), true).show();
+            }
+        });
+    }
+
+
 
     /**
      * 初始化视图依赖
@@ -138,5 +197,14 @@ public class PostRequestActivity extends AppCompatActivity {
      */
     private void initRadioGroup(){
         postrequestRgBillmode.check(postrequestRbGrabbillmode.getId());
+    }
+
+    private void initDateAndTimeButton(){
+        postrequestBtflatDatepicker.setText(
+                TimeUtils.getNowYear() + "-" + TimeUtils.getNowMonth() + "-" + TimeUtils.getNowDay()
+        );
+        postrequestBtflatTimepicker.setText(
+                TimeUtils.getNowHour() + ":" + TimeUtils.getNowMinute()
+        );
     }
 }
