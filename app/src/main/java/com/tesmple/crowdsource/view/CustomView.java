@@ -1,4 +1,4 @@
-package com.tesmple.crowdsource.layout;
+package com.tesmple.crowdsource.view;
 
 /**
  * Created by lypeer on 10/10/2015.

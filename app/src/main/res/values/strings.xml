@@ -71,5 +71,7 @@
     <string name="prompt_please_input_stu_num">输入学号</string>
     <string name="prompt_please_input_password">请输入学号的密码</string>
     <string name="prompt_sure">确认</string>
+    <string name="prompt_cancel">取消</string>
+    <string name="beijin">北京市</string>
 
 </resources>

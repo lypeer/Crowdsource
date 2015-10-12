@@ -257,7 +257,7 @@
                     android:layout_marginLeft="136dp"
                     android:background="@color/colorGrey"/>
 
-                <com.tesmple.crowdsource.layout.ButtonRectangle
+                <com.tesmple.crowdsource.view.ButtonRectangle
                     android:id="@+id/perfectinfo_btn_sure"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -265,7 +265,7 @@
                     android:background="@color/colorPrimary"
                     android:text="@string/prompt_sure">
 
-                </com.tesmple.crowdsource.layout.ButtonRectangle>
+                </com.tesmple.crowdsource.view.ButtonRectangle>
 
             </LinearLayout>
         </com.gc.materialdesign.views.ScrollView>
