@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <Province ID="0" ProvinceName="请选择">请选择  </Province>
     <Province ID="1" ProvinceName="北京市" >北京市      </Province>
     <Province ID="2" ProvinceName="天津市" >天津市    </Province>    
     <Province ID="3" ProvinceName="河北省" >河北省    </Province>

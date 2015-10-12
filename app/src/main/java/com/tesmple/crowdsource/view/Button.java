@@ -1,4 +1,4 @@
-package com.tesmple.crowdsource.layout;
+package com.tesmple.crowdsource.view;
 
 /**
  * Created by lypeer on 10/10/2015.
@@ -14,13 +14,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 import com.gc.materialdesign.R.id;
 import com.gc.materialdesign.utils.Utils;
-import com.gc.materialdesign.views.CustomView;
 
-public abstract class Button extends com.tesmple.crowdsource.layout.CustomView {
+public abstract class Button extends com.tesmple.crowdsource.view.CustomView {
     static final String ANDROIDXML = "http://schemas.android.com/apk/res/android";
     int minWidth;
     int minHeight;

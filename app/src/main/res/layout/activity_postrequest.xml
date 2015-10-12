@@ -160,13 +160,13 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
-                <com.tesmple.crowdsource.layout.ButtonRectangle
+                <com.tesmple.crowdsource.view.ButtonRectangle
                     android:id="@+id/postrequest_btrec_postbill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimary"
                     android:text="@string/postbill">
-                </com.tesmple.crowdsource.layout.ButtonRectangle>
+                </com.tesmple.crowdsource.view.ButtonRectangle>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
