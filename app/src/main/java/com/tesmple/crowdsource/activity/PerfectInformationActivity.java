@@ -117,7 +117,8 @@ public class PerfectInformationActivity extends AppCompatActivity {
         btnChoosePlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPlacePicker();
+                //暂时将这个方法注释掉，这个版本只要默认电子科技大学
+//                showPlacePicker();
             }
         });
     }

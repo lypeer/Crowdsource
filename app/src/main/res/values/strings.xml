@@ -73,5 +73,7 @@
     <string name="prompt_sure">确认</string>
     <string name="prompt_cancel">取消</string>
     <string name="beijin">北京市</string>
+    <string name="place">四川省成都市</string>
+    <string name="uestc">电子科技大学</string>
 
 </resources>
