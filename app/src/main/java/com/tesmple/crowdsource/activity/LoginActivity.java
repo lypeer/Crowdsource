@@ -157,15 +157,16 @@ public class LoginActivity extends AppCompatActivity{
             // form field with an error.
             focusView.requestFocus();
         } else {
+            Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
+            startActivity(intent);
             //loginSvScrollForm.setVisibility(View.GONE);
-            loginSvScrollForm.setAlpha(0.5f);
-            loginLlProgressbar.setVisibility(View.VISIBLE);
+            /*loginSvScrollForm.setAlpha(0.5f);
+            loginLlProgressbar.setVisibility(View.VISIBLE);*/
             //AVUer设置
-            AVUser.logInInBackground(userPhone , userPassword , new LogInCallback<AVUser>() {
+            /*AVUser.logInInBackground(userPhone , userPassword , new LogInCallback<AVUser>() {
                 public void done(AVUser user, AVException e) {
                     if (e == null) {
                         if (user != null) {
-//                            Snackbar.make(loginEtPassword, "成功", Snackbar.LENGTH_LONG).show();
                             User.getInstance().setName((String)user.get("name"));
                             User.getInstance().setUserName((String) user.get("username"));
                             User.getInstance().setStuNum((String) user.get("stu_num"));
@@ -194,7 +195,7 @@ public class LoginActivity extends AppCompatActivity{
                     //0 网络错误
                     //其他问题 网络错误
                 }
-            });
+            });*/
         }
     }
 

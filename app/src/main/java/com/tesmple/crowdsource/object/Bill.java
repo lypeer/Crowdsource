@@ -6,6 +6,26 @@ package com.tesmple.crowdsource.object;
  */
 public class Bill {
 
+    /*private static Bill sBill;
+
+    *//**
+     * 私有化构造方法
+     *//*
+    private Bill(){
+
+    }
+
+    *//**
+     * 获得Bill实例
+     * 返回一个Bill对象
+     *//*
+    public static Bill getInstance(){
+        if(sBill == null){
+            sBill = new Bill();
+        }
+        return sBill;
+    }*/
+
     /**
      * 发布者的手机号
      */

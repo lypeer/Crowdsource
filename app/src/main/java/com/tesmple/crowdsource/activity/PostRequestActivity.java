@@ -1,13 +1,15 @@
 package com.tesmple.crowdsource.activity;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -18,6 +20,9 @@ import android.widget.TimePicker;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.layout.ButtonRectangle;
+import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.User;
+import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 
 /**
@@ -56,6 +61,11 @@ public class PostRequestActivity extends AppCompatActivity {
     private CheckBox postrequestCbReplyinapp;
 
     /**
+     * 支付报酬的EditText
+     */
+    private AutoCompleteTextView postrequestEtAward;
+
+    /**
      * postrequest界面的模式多选框
      */
     private RadioGroup postrequestRgBillmode;
@@ -73,7 +83,7 @@ public class PostRequestActivity extends AppCompatActivity {
     /**
      * postrequest界面的发送请求按钮
      */
-    private ButtonRectangle postrequest_btrec_postbill;
+    private ButtonRectangle postrequestBtrecPostbill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -85,6 +95,7 @@ public class PostRequestActivity extends AppCompatActivity {
         initDateAndTimeButton();
         setDatePicker();
         setTimePicker();
+        setButtons();
     }
 
     /**
@@ -98,13 +109,13 @@ public class PostRequestActivity extends AppCompatActivity {
 
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        String stYear,stMonth,stDay;
+                        String stYear, stMonth, stDay;
                         stYear = String.valueOf(year);
-                        stMonth = String.valueOf((monthOfYear<10)?"0" + (monthOfYear-1):monthOfYear-1);
-                        stDay = String.valueOf((dayOfMonth<10)?"0" + dayOfMonth:dayOfMonth);
+                        stMonth = String.valueOf((monthOfYear < 10) ? "0" + (monthOfYear + 1) : monthOfYear + 1);
+                        stDay = String.valueOf((dayOfMonth < 10) ? "0" + dayOfMonth : dayOfMonth);
                         postrequestBtflatDatepicker.setText(stYear + "-" + stMonth + "-" + stDay);
                     }
-                }, TimeUtils.getNowYear(), TimeUtils.getNowMonth()-1, TimeUtils.getNowDay()).show();
+                }, TimeUtils.getNowYear(), TimeUtils.getNowMonth() - 1, TimeUtils.getNowDay()).show();
             }
         });
     }
@@ -150,6 +161,8 @@ public class PostRequestActivity extends AppCompatActivity {
         postrequestCbMessage = (CheckBox)findViewById(R.id.postrequest_cb_message);
         postrequestCbReplyinapp = (CheckBox)findViewById(R.id.postrequest_cb_replyinapp);
 
+        postrequestEtAward = (AutoCompleteTextView)findViewById(R.id.postrequest_et_award);
+
         postrequestRgBillmode = (RadioGroup)findViewById(R.id.postrequest_rg_billmode);
         postrequestRbGrabbillmode = (RadioButton)findViewById(R.id.postrequest_rb_grabbillmode);
         postrequestRbReceivebillmode = (RadioButton)findViewById(R.id.postrequest_rb_receivebillmode);
@@ -158,7 +171,7 @@ public class PostRequestActivity extends AppCompatActivity {
         postrequestCbMessage = (CheckBox)findViewById(R.id.postrequest_cb_message);
         postrequestCbReplyinapp = (CheckBox)findViewById(R.id.postrequest_cb_replyinapp);
 
-        postrequest_btrec_postbill = (ButtonRectangle)findViewById(R.id.postrequest_btrec_postbill);
+        postrequestBtrecPostbill = (ButtonRectangle)findViewById(R.id.postrequest_btrec_postbill);
 
         stopParentScroll(postrequestEtBilldescription);
     }
@@ -199,6 +212,9 @@ public class PostRequestActivity extends AppCompatActivity {
         postrequestRgBillmode.check(postrequestRbGrabbillmode.getId());
     }
 
+    /**
+     * 初始化日期时间按钮
+     */
     private void initDateAndTimeButton(){
         postrequestBtflatDatepicker.setText(
                 TimeUtils.getNowYear() + "-" + TimeUtils.getNowMonth() + "-" + TimeUtils.getNowDay()
@@ -206,5 +222,50 @@ public class PostRequestActivity extends AppCompatActivity {
         postrequestBtflatTimepicker.setText(
                 TimeUtils.getNowHour() + ":" + TimeUtils.getNowMinute()
         );
+    }
+
+    /**
+     * 设置按钮监听及相关
+     */
+    private void setButtons(){
+        postrequestBtrecPostbill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attempPostBill();
+            }
+        });
+    }
+
+    /**
+     * 尝试发布订单
+     */
+    private void attempPostBill(){
+        String publisherPhone = User.getInstance().getUserName();
+        String award = postrequestEtAward.getText().toString();
+        String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText();
+        String detail = postrequestEtBilldescription.getText().toString();
+        String address;
+        String status = getString(R.string.bill_status_waitingforapplicant);
+        String robType = getRobtype();
+        Log.i("robtypeid", String.valueOf(postrequestRgBillmode.getCheckedRadioButtonId()));
+        Log.i("bill",publisherPhone + " " + award + " " + deadline + " " + detail + " " + status + " " + robType);
+        Intent intent = new Intent(PostRequestActivity.this,PostBillSuccessful.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 获得订单模式
+     * 返回"抢单模式"或"接单模式"
+     */
+    private String getRobtype(){
+        switch (postrequestRgBillmode.getCheckedRadioButtonId()){
+            case R.id.postrequest_rb_grabbillmode:
+                return getString(R.string.bill_robtype_grabbillmode);
+            case R.id.postrequest_rb_receivebillmode:
+                return getString(R.string.bill_robtype_receivebillmode);
+            default:
+                break;
+        }
+        return "Error";
     }
 }
