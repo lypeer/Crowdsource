@@ -17,7 +17,7 @@ import android.widget.TimePicker;
 
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
-import com.tesmple.crowdsource.layout.ButtonRectangle;
+import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.EditTextUtils;
