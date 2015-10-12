@@ -69,7 +69,7 @@
                                 android:id="@+id/perfectinfo_tv_place"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/prompt_please_choose_place"
+                                android:text="@string/place"
                                 android:textColor="@color/black"
                                 android:textSize="18sp"/>
 
@@ -135,7 +135,7 @@
                                 android:id="@+id/perfectinfo_tv_school"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/prompt_please_choose_school"
+                                android:text="@string/uestc"
                                 android:textColor="@color/black"
                                 android:textSize="18sp"/>
 
