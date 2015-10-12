@@ -48,6 +48,7 @@
                 android:text="@string/tv_description"
                 android:textSize="16sp" />
             <LinearLayout
+                android:id="@+id/postrequest_li_billdescription"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginTop="16dp"

@@ -157,13 +157,13 @@ public class LoginActivity extends AppCompatActivity{
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
-            startActivity(intent);
+            /*Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
+            startActivity(intent);*/
             //loginSvScrollForm.setVisibility(View.GONE);
-            /*loginSvScrollForm.setAlpha(0.5f);
-            loginLlProgressbar.setVisibility(View.VISIBLE);*/
+            loginSvScrollForm.setAlpha(0.5f);
+            loginLlProgressbar.setVisibility(View.VISIBLE);
             //AVUer设置
-            /*AVUser.logInInBackground(userPhone , userPassword , new LogInCallback<AVUser>() {
+            AVUser.logInInBackground(userPhone , userPassword , new LogInCallback<AVUser>() {
                 public void done(AVUser user, AVException e) {
                     if (e == null) {
                         if (user != null) {
@@ -180,6 +180,7 @@ public class LoginActivity extends AppCompatActivity{
 
                             Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     }else if(e.getCode() == 211){
                         Snackbar.make(loginEtPassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
@@ -195,7 +196,7 @@ public class LoginActivity extends AppCompatActivity{
                     //0 网络错误
                     //其他问题 网络错误
                 }
-            });*/
+            });
         }
     }
 
