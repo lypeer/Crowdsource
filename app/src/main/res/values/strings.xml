@@ -76,4 +76,19 @@
     <string name="place">四川省成都市</string>
     <string name="uestc">电子科技大学</string>
 
+    <string name="bill_status_waitingforapplicant">待报名</string>
+    <string name="bill_status_underway">进行中</string>
+    <string name="bill_status_completed">已完成</string>
+    <string name="bill_status_deleted">已删除</string>
+
+    <string name="bill_robtype_grabbillmode">抢单模式</string>
+    <string name="bill_robtype_receivebillmode">接单模式</string>
+    <string name="tv_putaward">支付报酬：</string>
+    <string name="tv_robtype">模式：</string>
+    <string name="postbillsuccessful_textone">恭喜您发布成功，</string>
+    <string name="postbillsuccessful_texttwo">稍等片刻，马上会有同学接单。</string>
+    <string name="tv_lasttime">剩余时间</string>
+    <string name="hour">小时</string>
+    <string name="minute">分钟</string>
+    <string name="second">秒</string>
 </resources>

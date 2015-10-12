@@ -1,5 +1,6 @@
 package com.tesmple.crowdsource.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -17,6 +18,9 @@ import android.widget.TimePicker;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.view.ButtonRectangle;
+import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.User;
+import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 
 /**
