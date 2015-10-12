@@ -1,11 +1,8 @@
-package com.tesmple.crowdsource.layout;
+package com.tesmple.crowdsource.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.LinearLayout;
-
-import java.util.jar.Attributes;
 
 /**
  * Created by ESIR on 2015/10/7.

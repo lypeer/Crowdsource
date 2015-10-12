@@ -71,6 +71,10 @@
     <string name="prompt_please_input_stu_num">输入学号</string>
     <string name="prompt_please_input_password">请输入学号的密码</string>
     <string name="prompt_sure">确认</string>
+    <string name="prompt_cancel">取消</string>
+    <string name="beijin">北京市</string>
+    <string name="place">四川省成都市</string>
+    <string name="uestc">电子科技大学</string>
 
     <string name="bill_status_waitingforapplicant">待报名</string>
     <string name="bill_status_underway">进行中</string>

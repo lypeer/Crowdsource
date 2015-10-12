@@ -1,4 +1,4 @@
-package com.tesmple.crowdsource.layout;
+package com.tesmple.crowdsource.view;
 
 /**
  * Created by lypeer on 10/10/2015.
@@ -11,12 +11,11 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import android.widget.RelativeLayout.LayoutParams;
+
 import com.gc.materialdesign.R.drawable;
 import com.gc.materialdesign.utils.Utils;
-import com.gc.materialdesign.views.Button;
 
-public class ButtonRectangle extends com.tesmple.crowdsource.layout.Button {
+public class ButtonRectangle extends com.tesmple.crowdsource.view.Button {
     TextView textButton;
     int paddingTop;
     int paddingBottom;

@@ -1,9 +1,6 @@
 package com.tesmple.crowdsource.activity;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,15 +22,13 @@ import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.gc.materialdesign.views.CheckBox;
 import com.tesmple.crowdsource.R;
-import com.tesmple.crowdsource.layout.ButtonRectangle;
+import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by lypeer on 10/7/2015.

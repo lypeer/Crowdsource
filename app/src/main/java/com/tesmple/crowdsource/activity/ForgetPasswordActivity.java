@@ -1,7 +1,6 @@
 package com.tesmple.crowdsource.activity;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
@@ -55,7 +53,7 @@ public class ForgetPasswordActivity extends AppCompatActivity{
     /**
      * 忘记密码界面的获取验证码按钮
      */
-    private com.tesmple.crowdsource.layout.ButtonRectangle forgetpasswordBtnGetProveCode;
+    private com.tesmple.crowdsource.view.ButtonRectangle forgetpasswordBtnGetProveCode;
 
     /**
      * 忘记密码界面的保存按钮
@@ -134,7 +132,7 @@ public class ForgetPasswordActivity extends AppCompatActivity{
         forgetpasswordEtConfirmpassword = (AutoCompleteTextView)findViewById(R.id.forgetpassword_et_confirmpassword);
         forgetpasswordEtProvecode = (AutoCompleteTextView)findViewById(R.id.forgetpassword_et_provecode);
 
-        forgetpasswordBtnGetProveCode = (com.tesmple.crowdsource.layout.ButtonRectangle)findViewById(R.id.forgetpassword_btn_getprovecode);
+        forgetpasswordBtnGetProveCode = (com.tesmple.crowdsource.view.ButtonRectangle)findViewById(R.id.forgetpassword_btn_getprovecode);
         forgetpasswordBtnSavePassword = (ButtonRectangle)findViewById(R.id.forgetpassword_btn_savepassword);
 
         forgetpasswordSvScrollform = (ScrollView)findViewById(R.id.forgetpassword_sv_scrollform);
