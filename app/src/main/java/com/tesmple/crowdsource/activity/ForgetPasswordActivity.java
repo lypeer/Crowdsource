@@ -20,6 +20,7 @@ import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.avos.avoscloud.UpdatePasswordCallback;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 
@@ -107,6 +108,7 @@ public class ForgetPasswordActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgetpassword);
+        ActivityCollector.addActivity(this);
         initViewBind();
         initToolbar();
         setAutoCompleteTextViews();
@@ -290,5 +292,11 @@ public class ForgetPasswordActivity extends AppCompatActivity{
                 mHandler.sendMessage(message);
             }
         }, 1000, 1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

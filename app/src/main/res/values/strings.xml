@@ -75,6 +75,8 @@
     <string name="beijin">北京市</string>
     <string name="place">四川省成都市</string>
     <string name="uestc">电子科技大学</string>
+    <string name="error_please_input_stu_num">请输入学号</string>
+    <string name="error_please_input_password">请输入密码</string>
 
     <string name="bill_status_waitingforapplicant">待报名</string>
     <string name="bill_status_underway">进行中</string>
@@ -91,4 +93,6 @@
     <string name="hour">小时</string>
     <string name="minute">分钟</string>
     <string name="second">秒</string>
+    <string name="error_invalid_stu_num">学号或密码错误</string>
+    <string name="error_prove_code_should_be">验证码应为六位数字</string>
 </resources>

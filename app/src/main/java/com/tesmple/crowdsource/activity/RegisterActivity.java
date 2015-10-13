@@ -22,6 +22,8 @@ import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.gc.materialdesign.views.CheckBox;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.object.User;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
@@ -109,6 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        ActivityCollector.addActivity(this);
         initToolBar();
         init();
     }
@@ -156,19 +159,19 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (isInputCorrectly()) {
-//                    String proveCode = etProveCode.getText().toString().trim();
-//                    if (!EditTextUtils.isProveCode(proveCode)) {
-//                        etProveCode.setError(getString(R.string.error_prove_code_should_be));
-//                    } else if (!cbAgreeAgreement.isCheck()) {
-//                        Snackbar.make(btnRegister, R.string.error_please_check_agreement, Snackbar.LENGTH_SHORT)
-//                                .setAction("Action", null).show();
-//                    } else {
-//                        verifyProveCode(proveCode);
-//                    }
-//                }
-                Intent intent = new Intent(RegisterActivity.this , PerfectInformationActivity.class);
-                startActivity(intent);
+                if (isInputCorrectly()) {
+                    String proveCode = etProveCode.getText().toString().trim();
+                    if (!EditTextUtils.isProveCode(proveCode)) {
+                        etProveCode.setError(getString(R.string.error_prove_code_should_be));
+                    } else if (!cbAgreeAgreement.isCheck()) {
+                        Snackbar.make(btnRegister, R.string.error_please_check_agreement, Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
+                    } else {
+                        verifyProveCode(proveCode);
+                    }
+                }
+//                Intent intent = new Intent(RegisterActivity.this, PerfectInformationActivity.class);
+//                startActivity(intent);
             }
         });
     }
@@ -209,9 +212,8 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void done(AVException e) {
                             if (e == null) {
-                                Snackbar.make(btnRegister, R.string.register_successfully, Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
-                                Intent intent = new Intent(RegisterActivity.this , PerfectInformationActivity.class);
+                                User.getInstance().setUserName(etPhone.getText().toString().trim());
+                                Intent intent = new Intent(RegisterActivity.this, PerfectInformationActivity.class);
                                 startActivity(intent);
                             } else {
                                 Log.e("RegisterVerifyError", e.getMessage() + "===" + e.getCode());
@@ -325,4 +327,10 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }, 1000, 1000);
     }
-  }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
+    }
+}

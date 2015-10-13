@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 
 import java.sql.Time;
 import java.util.Timer;
@@ -21,6 +22,7 @@ public class PostBillSuccessful extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postbillsuccessful);
+        ActivityCollector.addActivity(this);
         initToolbar();
         goBack();
     }
@@ -42,6 +44,12 @@ public class PostBillSuccessful extends AppCompatActivity {
                 finish();
             }
         };
-        timer.schedule(timerTask,1500);
+        timer.schedule(timerTask, 1500);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }
