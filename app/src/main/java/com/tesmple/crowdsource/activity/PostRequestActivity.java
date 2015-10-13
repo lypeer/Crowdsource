@@ -25,6 +25,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
@@ -102,6 +103,7 @@ public class PostRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postrequest);
+        ActivityCollector.addActivity(this);
         initViewBind();
         initToolbar();
         initRadioGroup();
@@ -331,5 +333,11 @@ public class PostRequestActivity extends AppCompatActivity {
             checkReplyInApp = 1;
         }
         return String.valueOf(checkPhone) + String.valueOf(checkMessage) + String.valueOf(checkReplyInApp);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

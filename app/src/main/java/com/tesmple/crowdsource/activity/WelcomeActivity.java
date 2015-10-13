@@ -45,6 +45,7 @@ public class WelcomeActivity extends AppCompatActivity {
      * 初始化user的属性
      */
     public void initUser() {
+        AVUser.logOut();
         if (AVUser.getCurrentUser() != null) {
             AVUser avuser = AVUser.getCurrentUser();
             avuser.refreshInBackground(new RefreshCallback<AVObject>() {

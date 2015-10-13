@@ -50,4 +50,19 @@ public class StringUtils {
      * 表示使计时器减少1
      */
     public static final int COUNT_DOWN = 22;
+
+    /**
+     * 电子科技大学的string值
+     */
+    public static final String UESTC = "电子科技大学";
+
+    /**
+     * 表示学号密码验证失败
+     */
+    public static final int VERIFY_STUNUM_FAILED = 23;
+
+    /**
+     * 表示学号密码验证成功
+     */
+    public static final int VERIFY_STUNUM_SUCCESSFULLY = 24;
 }

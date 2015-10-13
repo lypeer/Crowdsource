@@ -2,19 +2,30 @@ package com.tesmple.crowdsource.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SaveCallback;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.ParseXMLUtils;
+import com.tesmple.crowdsource.utils.StringUtils;
+import com.tesmple.crowdsource.utils.VerifyStuNumUtils;
 import com.tesmple.crowdsource.view.Button;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.view.LoopListener;
@@ -84,10 +95,27 @@ public class PerfectInformationActivity extends AppCompatActivity {
      */
     private String cityName;
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case StringUtils.VERIFY_STUNUM_FAILED:
+                    Snackbar.make(btnChoosePlace, R.string.error_invalid_stu_num, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+                    break;
+                case StringUtils.VERIFY_STUNUM_SUCCESSFULLY:
+                    saveInfo();
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfect_information);
+        ActivityCollector.addActivity(this);
         initToolBar();
         init();
     }
@@ -114,6 +142,9 @@ public class PerfectInformationActivity extends AppCompatActivity {
         etPassword = (EditText) findViewById(R.id.perfectinfo_et_password);
         btnSure = (ButtonRectangle) findViewById(R.id.perfectinfo_btn_sure);
 
+        etStuNum.setError(null);
+        etPassword.setError(null);
+
         btnChoosePlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +152,24 @@ public class PerfectInformationActivity extends AppCompatActivity {
 //                showPlacePicker();
             }
         });
+
+        btnSure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (etStuNum.getText().toString().trim().equals("")) {
+                    etStuNum.setError(getString(R.string.error_please_input_stu_num));
+                } else if (etPassword.getText().toString().trim().equals("")) {
+                    etPassword.setError(getString(R.string.error_please_input_password));
+                } else {
+                    VerifyStuNumUtils.verifyStuNum(mHandler, tvSchool.getText().toString().trim(),
+                            etStuNum.getText().toString().trim(), etPassword.getText().toString().trim());
+                }
+//                Intent intent = new Intent(PerfectInformationActivity.this, MainActivity.class);
+//                startActivity(intent);
+            }
+        });
     }
+
 
     /**
      * 显示placepicker的方法
@@ -204,6 +252,38 @@ public class PerfectInformationActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    /**
+     * 保存用户的信息的方法
+     */
+    private void saveInfo(){
+        AVUser avUser = AVUser.getCurrentUser();
+        avUser.put("school" , tvSchool.getText().toString().trim());
+        avUser.put("stu_num" , etStuNum.getText().toString().trim());
+        avUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null){
+                    Intent intent = new Intent(PerfectInformationActivity.this , MainActivity.class);
+                    startActivity(intent);
+                    //清除前面栈内的所有的activity
+                    finish();
+                    getParent().finish();
+                    getParent().getParent().finish();
+                }else {
+                    Log.e("perfectInfoSaveError" , e.getMessage() + "===" + e.getCode());
+                    Snackbar.make(btnChoosePlace, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 
 }
