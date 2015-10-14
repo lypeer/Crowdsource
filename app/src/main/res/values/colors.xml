@@ -6,4 +6,6 @@
     <color name="colorGrey">#878787</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="half_black">#757575</color>
+    <color name="half_half_black">#bdbdbd</color>
 </resources>

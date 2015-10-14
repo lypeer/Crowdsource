@@ -65,4 +65,24 @@ public class StringUtils {
      * 表示学号密码验证成功
      */
     public static final int VERIFY_STUNUM_SUCCESSFULLY = 24;
+
+    /**
+     * 该String值代表AcceptableFragment
+     */
+    public static final String FRAGMENT_ACCEPTABLE_BILL = "fragment_acceptable_bill";
+
+    /**
+     * 该String值代表AcceptedFragment
+     */
+    public static final String FRAGMENT_ACCEPTED_BILL = "fragment_accepted_bill";
+
+    /**
+     * 该String值代表MyPublishFragment
+     */
+    public static final String FRAGMENT_MY_PUBLISH = "fragment_my_publish";
+
+    /**
+     * 该String值代表HistoryBillFragment
+     */
+    public static final String FRAGMENT_HISTORY_BILL = "fragment_history_bill";
 }
