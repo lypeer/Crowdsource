@@ -240,21 +240,26 @@ public class PostRequestActivity extends AppCompatActivity {
                     int lastPos = 0;
                     for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
                         if ((lastPos = postrequestEtBillDescription.getText().toString().indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
-                            if (selectionStart != 0 && selectionStart > lastPos && selectionStart <= (lastPos + labelUtilses.get(i).getLabelName().length())) {
+                            if ((selectionStart != 0) && (selectionStart == lastPos + 1 || selectionStart == (lastPos + labelUtilses.get(i).getLabelName().length()))) {
+                                //Log.i("selectionstart lastpos1", selectionStart + " " + lastPos);
                                 String sss = postrequestEtBillDescription.getText().toString();
                                 postrequestEtBillDescription.setText(sss.substring(0, lastPos) + sss.substring(lastPos + labelUtilses.get(i).getLabelName().length())); //字符串替换，删掉符合条件的字符串
                                 labelUtilses.remove(i); //删除对应实体
                                 postrequestEtBillDescription.setSelection(lastPos); //设置光标位置
                                 return true;
+                            } else if ((selectionStart != 0) && (selectionStart > (lastPos + 1) && selectionStart < (lastPos + labelUtilses.get(i).getLabelName().length()))) {
+                                //Log.i("selectionstart lastpos2", selectionStart + " " + lastPos);
+                                String temp = labelUtilses.get(i).getLabelName();
+                                temp = temp.substring(0, selectionStart - lastPos - 1) + temp.substring(selectionStart-lastPos);/*, temp.length()-selectionStart);*/
+                                labelUtilses.get(i).setLabelName(temp);
+                                String sss = postrequestEtBillDescription.getText().toString();
+                                postrequestEtBillDescription.setText(sss.substring(0, lastPos) + temp + sss.substring(lastPos + labelUtilses.get(i).getLabelName().length() + 1)); //字符串替换，删掉符合条件的字符串
+                                postrequestEtBillDescription.setSelection(selectionStart-1);
+                                return true;
                             }
-                        } /*else {
-                            if ((lastPos + ("#" + labelUtilses.get(i).getLabelName() + "#").length()) > postrequestEtBillDescription.length()){
-                                lastPos = 0;
-                            }else {
-                                lastPos += ("#" + labelUtilses.get(i).getLabelName() + "#").length();
-                            }
-                            }*/
                         }
+                    }
+                    return false;
                 }
                 return false;
             }
@@ -267,66 +272,98 @@ public class PostRequestActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count == 1 && s.charAt(start) == '#') {
-                    String test = "#test"+nextId+"#";
-                    int length = postrequestEtBillDescription.length();
-                    postrequestEtBillDescription.setText(
-                            postrequestEtBillDescription.getText().toString().substring(0, start)
-                                    + test
-                                    + postrequestEtBillDescription.getText().toString().substring(start + 1, length));
-                    labelUtilses.add(new LabelUtils(test, nextId));
-                    nextId++;
-                    postrequestEtBillDescription.setSelection(start+test.length());
-                    Log.i("selectionposition", String.valueOf(postrequestEtBillDescription.getSelectionStart()));
-                    Log.i("selectionposition", String.valueOf(postrequestEtBillDescription.getSelectionEnd()));
-                    Log.i("input", String.valueOf(s.charAt(start)));
-                }
+                int isAdd = 1;
+                int isUserInput = 1;
                 if(count == 1){
-                    int selectionStart = postrequestEtBillDescription.getSelectionStart();
-                    int lastPos = 0;
-                    for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
-                        if ((lastPos = postrequestEtBillDescription.getText().toString().indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
-                            if (selectionStart >= lastPos && selectionStart < (lastPos + labelUtilses.get(i).getLabelName().length())) {
-                                String sss = postrequestEtBillDescription.getText().toString();
-                                labelUtilses.get(i).setLabelName(sss.substring(lastPos,lastPos + 1 + labelUtilses.get(i).getLabelName().length()).toString());
-                                //postrequestEtBillDescription.setText(sss.substring(0, lastPos) + sss.substring(lastPos + labelUtilses.get(i).getLabelName().length())); //字符串替换，删掉符合条件的字符串*/
-                                //labelUtilses.remove(i); //删除对应实体
-                                //postrequestEtBillDescription.setSelection(lastPos); //设置光标位置
+                    if (s.charAt(start) == '#') {
+                        if (start != 0) {
+                            int selectionStart = postrequestEtBillDescription.getSelectionStart();
+                            int lastPos = 0;
+                            String temp = postrequestEtBillDescription.getText().toString();
+                            temp = temp.substring(0, start) + temp.substring(start + 1);
+                            Log.i("temp", temp);
+                            for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
+                                Log.i("isadd1", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
+                                Log.i("lastpos", String.valueOf(temp.indexOf(labelUtilses.get(i).getLabelName(), 0)));
+                                if ((lastPos = temp.indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
+                                    Log.i("isadd2", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
+                                    if (selectionStart > lastPos + 1 && selectionStart <= (lastPos + labelUtilses.get(i).getLabelName().length())) {
+                                        Log.i("isadd3", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
+                                        isAdd = 0;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (isAdd == 1) {
+                            String test = "#test" + nextId + "#";
+                            int selectionStart = postrequestEtBillDescription.getSelectionStart();
+                            int length = postrequestEtBillDescription.length();
+                            Log.i("star", selectionStart + " " + length);
+                            if (start != postrequestEtBillDescription.getText().toString().length() + 1) {//star = length+1
+                                postrequestEtBillDescription.setText(
+                                        postrequestEtBillDescription.getText().toString().substring(0, start)
+                                                + test
+                                                + postrequestEtBillDescription.getText().toString().substring(start + 1));
+                                isUserInput = 0;
+                            } else {
+                                postrequestEtBillDescription.setText(
+                                        postrequestEtBillDescription.getText().toString().substring(0, start - 1)
+                                                + test);
+                                isUserInput = 0;
+                            }
+                            labelUtilses.add(new LabelUtils(test, nextId));
+                            nextId++;
+                            postrequestEtBillDescription.setSelection(start + test.length());
+                            Log.i("input", String.valueOf(s.charAt(start)));
+                        } else {
+                            String temp = postrequestEtBillDescription.getText().toString();
+                            temp = temp.substring(0, start) + temp.substring(start + 1);
+                            postrequestEtBillDescription.setText(temp);
+                            isUserInput = 0;
+                            postrequestEtBillDescription.setSelection(start);
+                        }
+                    } else {
+                        int selectionStart = postrequestEtBillDescription.getSelectionStart();
+                        int lastPos = 0;
+                        for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
+                            String temp = postrequestEtBillDescription.getText().toString();
+                            temp = temp.substring(0, start) + temp.substring(start + 1);
+                            if ((lastPos = temp.indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
+                                if (selectionStart >= lastPos && selectionStart < (lastPos + labelUtilses.get(i).getLabelName().length())) {
+                                    String sss = postrequestEtBillDescription.getText().toString();
+                                    labelUtilses.get(i).setLabelName(sss.substring(lastPos, lastPos + 1 + labelUtilses.get(i).getLabelName().length()).toString());
+                                }
                             }
                         }
                     }
-                }
+                }/*else if(count > 1 && isUserInput == 1){
+                    String test = "";
+                    for(int i = 0;i < count;i++){
+                        test = test + s.charAt(i);
+                    }
+                    int selectionStart = postrequestEtBillDescription.getSelectionStart();
+                    int length = postrequestEtBillDescription.length();
+                    Log.i("star", selectionStart + " " + length);
+                    if (start != postrequestEtBillDescription.getText().toString().length() + 1) {//star = length+1
+                        postrequestEtBillDescription.setText(
+                                postrequestEtBillDescription.getText().toString().substring(0, start)
+                                        + test
+                                        + postrequestEtBillDescription.getText().toString().substring(start + 1));
+                    } else {
+                        postrequestEtBillDescription.setText(
+                                postrequestEtBillDescription.getText().toString().substring(0, start - 1)
+                                        + test);
+                    }
+                    isUserInput = 0;
+                    labelUtilses.add(new LabelUtils(test, nextId));
+                    nextId++;
+                    postrequestEtBillDescription.setSelection(start + test.length());
+                }*/
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                /*int TEXT_CHANGE_LISTENER_FLAG = 0;
-                int findPos = 0;
-                int copyPos = 0;
-                String sText = s.toString();
-                List<Integer> spanIndexes = new ArrayList<Integer>();
-                s.clear();
-                for (int i = 0; i < labelUtilses.size(); i++) {
-                    String tempBookName = "#" + labelUtilses.get(i).getLabelName() + "#";
-                    if ((findPos = sText.indexOf(tempBookName, findPos)) != -1) {
-                        spanIndexes.add(findPos);//labelname 的开始索引，键值为偶数，从0开始
-                        spanIndexes.add(findPos + tempBookName.length()); //labelname 的结束索引，键值为奇数，从1开始
-                    }
-                }
-                if (spanIndexes != null && spanIndexes.size() != 0) {
-                    for (int i = 0; i < spanIndexes.size(); i++) {
-                        if (i % 2 == 0) {
-                            s.append(sText.substring(copyPos, spanIndexes.get(i)));
-                        } else {
-                            Spanned htmlText = Html.fromHtml("<font color='blue'>" + sText.substring(copyPos, spanIndexes.get(i)) + "</font>");
-                            s.append(htmlText);
-                        }
-                        copyPos = spanIndexes.get(i);
-                    }
-                    s.append(sText.substring(copyPos));
-                } else {
-                    s.append(sText);
-                }*/
             }
         });
     }
