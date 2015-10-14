@@ -95,4 +95,7 @@
     <string name="second">秒</string>
     <string name="error_invalid_stu_num">学号或密码错误</string>
     <string name="error_prove_code_should_be">验证码应为六位数字</string>
+    <string name="acceptable_bill">可接订单</string>
+    <string name="my_publish">我的发布</string>
+    <string name="accepted_bill">已抢订单</string>
 </resources>
