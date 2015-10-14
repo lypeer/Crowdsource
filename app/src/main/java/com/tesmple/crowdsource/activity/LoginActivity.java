@@ -180,7 +180,7 @@ public class LoginActivity extends AppCompatActivity{
                             User.getInstance().setAcceptStar((String)user.get("accept_star"));
                             User.getInstance().setStatus((String)user.get("status"));
 
-                            Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
+                            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
                             startActivity(intent);
                             finish();
                         }
