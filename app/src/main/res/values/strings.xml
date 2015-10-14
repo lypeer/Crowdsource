@@ -98,4 +98,17 @@
     <string name="acceptable_bill">可接订单</string>
     <string name="my_publish">我的发布</string>
     <string name="accepted_bill">已抢订单</string>
+    <string name="test_name">马云</string>
+    <string name="test_actioning">进行中</string>
+    <string name="test_bill_detail">帮忙#占座#，#大物讲座#，#A308#帮忙#占座#，#大物讲座#，#A308#帮忙#占座#，#大物讲座#，#A308#</string>
+    <string name="rmb">¥</string>
+    <string name="test_award">1</string>
+    <string name="prompt_look_detail">\t查看详情\t</string>
+    <string name="prompt_left_time">剩余时间</string>
+    <string name="test_hour">01</string>
+    <string name="prompt_hour">小时</string>
+    <string name="test_minutes">14</string>
+    <string name="prompt_minutes">分钟</string>
+    <string name="test_second">45</string>
+    <string name="prompt_second">秒</string>
 </resources>
