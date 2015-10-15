@@ -52,11 +52,6 @@ public class StringUtils {
     public static final int COUNT_DOWN = 22;
 
     /**
-     * 电子科技大学的string值
-     */
-    public static final String UESTC = "电子科技大学";
-
-    /**
      * 表示学号密码验证失败
      */
     public static final int VERIFY_STUNUM_FAILED = 23;
@@ -65,6 +60,16 @@ public class StringUtils {
      * 表示学号密码验证成功
      */
     public static final int VERIFY_STUNUM_SUCCESSFULLY = 24;
+
+    /**
+     * 表示发布订单成功
+     */
+    public static final int POST_REQUEST_SUCCESSFULLY = 25;
+
+    /**
+     * 表示发布订单失败
+     */
+    public static final int POST_REQUEST_FAILED = 26;
 
     /**
      * 该String值代表AcceptableFragment
@@ -85,4 +90,9 @@ public class StringUtils {
      * 该String值代表HistoryBillFragment
      */
     public static final String FRAGMENT_HISTORY_BILL = "fragment_history_bill";
+
+    /**
+     * 电子科技大学的string值
+     */
+    public static final String UESTC = "电子科技大学";
 }
