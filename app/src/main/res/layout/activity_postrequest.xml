@@ -40,13 +40,55 @@
                     android:background="@color/colorPrimary"
                     android:text="00:00"/>
             </LinearLayout>
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:gravity="left"
-                android:text="@string/tv_description"
-                android:textSize="16sp" />
+                >
+                <TextView
+                    android:id="@+id/postrequest_tv_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:text="@string/tv_description"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"/>
+                <!--<TextView
+                    android:id="@+id/postrequest_tv_temp1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="输入"
+                    android:textSize="13sp"
+                    android:layout_marginLeft="7dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@+id/postrequest_tv_description" />
+                <TextView
+                    android:id="@+id/postrequest_tv_temp2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
+                    android:text="#"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorAccent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@+id/postrequest_tv_temp1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="可以添加标签哦"
+                    android:textSize="13sp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@+id/postrequest_tv_temp2"
+                    />-->
+                <com.gc.materialdesign.views.ButtonFlat
+                    android:id="@+id/postrequest_btflat_addlabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="+标签"/>
+            </RelativeLayout>
             <LinearLayout
                 android:id="@+id/postrequest_li_billdescription"
                 android:layout_width="match_parent"
@@ -134,11 +176,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/tv_putaward"
                     android:textSize="16sp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="人民币"
-                    android:gravity="center"/>
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -148,8 +185,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:inputType="phone"
+                        android:inputType="numberDecimal"
+                        android:numeric="decimal"
                         android:textSize="16sp"
+                        android:hint="￥"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:maxLines="1"

@@ -66,7 +66,7 @@ public class EditTextUtils {
     }
 
     public static boolean isNumber(String testString){
-        Pattern pattern = Pattern.compile("^[0-9]+$");
+        Pattern pattern = Pattern.compile("^[0-9]$");
         Matcher matcher = pattern.matcher(testString);
         return matcher.matches();
     }

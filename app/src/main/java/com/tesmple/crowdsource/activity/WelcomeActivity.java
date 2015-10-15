@@ -37,7 +37,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void run() {
                 initUser();
             }
-        }, 1500);
+        }, 1000);
     }
 
 
