@@ -19,6 +19,7 @@ import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.User;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.ButtonUtils;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 
@@ -70,6 +71,7 @@ public class LoginActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ActivityCollector.addActivity(LoginActivity.this);
         initViewBind();
         initToolbar();
         setButtons();
@@ -177,7 +179,7 @@ public class LoginActivity extends AppCompatActivity{
                             User.getInstance().setAcceptStar((String)user.get("accept_star"));
                             User.getInstance().setStatus((String)user.get("status"));
 
-                            Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
+                            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
                             startActivity(intent);
                             finish();
                         }
@@ -206,5 +208,11 @@ public class LoginActivity extends AppCompatActivity{
         Toolbar loginToolbar = (Toolbar)findViewById(R.id.toolbar);
         loginToolbar.setTitle("登陆账号");
         setSupportActionBar(loginToolbar);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(LoginActivity.this);
     }
 }

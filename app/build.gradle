@@ -46,6 +46,6 @@ dependencies {
     compile 'cn.leancloud.android:avoscloud-statistics:v3.+@aar'
     compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
 
-    compile 'com.github.d-max:spots-dialog:0.4@aar'
-
+    compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile 'com.facebook.fresco:fresco:0.7.0+'
 }

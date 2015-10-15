@@ -62,7 +62,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         User.getInstance().setAcceptStar((String) avObject.get("accept_star"));
                         User.getInstance().setStatus((String) avObject.get("status"));
 
-                        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     } else {

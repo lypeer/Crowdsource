@@ -56,6 +56,45 @@ public class Bill {
      */
     private String robType;
 
+    /**
+     * 需要的人数
+     */
+    private String needNum;
+
+    /**
+     * 被接的时限
+     */
+    private String acceptDeadline;
+
+    /**
+     * 完成地点
+     */
+    private String location;
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getAcceptDeadline() {
+        return acceptDeadline;
+    }
+
+    public void setAcceptDeadline(String acceptDeadline) {
+        this.acceptDeadline = acceptDeadline;
+    }
+
+    public String getNeedNum() {
+        return needNum;
+    }
+
+    public void setNeedNum(String needNum) {
+        this.needNum = needNum;
+    }
+
     public String getAddress() {
         return address;
     }

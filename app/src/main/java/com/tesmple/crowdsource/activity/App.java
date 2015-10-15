@@ -12,8 +12,6 @@ import com.avos.avoscloud.AVOSCloud;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
 
-import dmax.dialog.SpotsDialog;
-
 /**
  * Created by lypeer on 10/7/2015.
  */

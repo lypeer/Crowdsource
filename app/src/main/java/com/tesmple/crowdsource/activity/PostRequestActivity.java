@@ -3,19 +3,11 @@ package com.tesmple.crowdsource.activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,9 +18,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -36,6 +26,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.utils.LabelUtils;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
@@ -43,8 +34,6 @@ import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ESIR on 2015/10/10.
@@ -111,26 +100,6 @@ public class PostRequestActivity extends AppCompatActivity {
      */
     private ButtonRectangle postrequestBtrecPostbill;
 
-    /**
-     * postrequest界面的加标签按钮
-     */
-    private ButtonFlat postrequestBtflatAddLabel;
-
-    /**
-     * 存放标签的list
-     */
-    private ArrayList<LabelUtils> labelUtilses = new ArrayList<LabelUtils>();
-
-    /**
-     * 标签是否成对，成对为1，不成对为0
-     */
-    private int isLabelPair = 0;
-
-    /**
-     * 标签存储位置
-     */
-    private int nextId = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -139,8 +108,6 @@ public class PostRequestActivity extends AppCompatActivity {
         initToolbar();
         initRadioGroup();
         initDateAndTimeButton();
-        setAwardEditText();
-        setDescriptionEditText();
         setDatePicker();
         setTimePicker();
         setButtons();
@@ -168,9 +135,6 @@ public class PostRequestActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * 设置time选择监听
-     */
     private void setTimePicker(){
         postrequestBtflatTimepicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,185 +149,6 @@ public class PostRequestActivity extends AppCompatActivity {
                         postrequestBtflatTimepicker.setText(stHour + ":" + stMinute);
                     }
                 }, TimeUtils.getNowHour(), TimeUtils.getNowMinute(), true).show();
-            }
-        });
-    }
-
-    /**
-     * 限制支付奖励的数值为两位小数
-     */
-    private void setAwardEditText(){
-        postrequestEtAward.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String temp = s.toString();
-                int posDot = temp.indexOf(".");
-                if (posDot <= 0) return;
-                if (temp.length() - posDot - 1 > 2) {
-                    s.delete(posDot + 3, posDot + 4);
-                }
-            }
-        });
-    }
-
-    /**
-     * 设置描述界面的添加标签能力
-     */
-    private void setDescriptionEditText(){
-        postrequestBtflatAddLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String str = "#测试测试" + nextId + "# ";
-                SpannableString ss = new SpannableString(str);
-                ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                postrequestEtBillDescription.setText(postrequestEtBillDescription.getText());
-                postrequestEtBillDescription.append(str);
-                postrequestEtBillDescription.setSelection(postrequestBtflatAddLabel.getText().toString().length());
-                labelUtilses.add(new LabelUtils(str, nextId));
-                nextId++;
-            }
-        });
-        postrequestEtBillDescription.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN) { //当为删除键并且是按下动作时执行
-                    int selectionStart = postrequestEtBillDescription.getSelectionStart();
-                    int lastPos = 0;
-                    for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
-                        if ((lastPos = postrequestEtBillDescription.getText().toString().indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
-                            if ((selectionStart != 0) && (selectionStart == lastPos + 1 || selectionStart == (lastPos + labelUtilses.get(i).getLabelName().length()))) {
-                                //Log.i("selectionstart lastpos1", selectionStart + " " + lastPos);
-                                String sss = postrequestEtBillDescription.getText().toString();
-                                postrequestEtBillDescription.setText(sss.substring(0, lastPos) + sss.substring(lastPos + labelUtilses.get(i).getLabelName().length())); //字符串替换，删掉符合条件的字符串
-                                labelUtilses.remove(i); //删除对应实体
-                                postrequestEtBillDescription.setSelection(lastPos); //设置光标位置
-                                return true;
-                            } else if ((selectionStart != 0) && (selectionStart > (lastPos + 1) && selectionStart < (lastPos + labelUtilses.get(i).getLabelName().length()))) {
-                                //Log.i("selectionstart lastpos2", selectionStart + " " + lastPos);
-                                String temp = labelUtilses.get(i).getLabelName();
-                                temp = temp.substring(0, selectionStart - lastPos - 1) + temp.substring(selectionStart-lastPos);/*, temp.length()-selectionStart);*/
-                                labelUtilses.get(i).setLabelName(temp);
-                                String sss = postrequestEtBillDescription.getText().toString();
-                                postrequestEtBillDescription.setText(sss.substring(0, lastPos) + temp + sss.substring(lastPos + labelUtilses.get(i).getLabelName().length() + 1)); //字符串替换，删掉符合条件的字符串
-                                postrequestEtBillDescription.setSelection(selectionStart-1);
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
-                return false;
-            }
-        });
-        postrequestEtBillDescription.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int isAdd = 1;
-                int isUserInput = 1;
-                if(count == 1){
-                    if (s.charAt(start) == '#') {
-                        if (start != 0) {
-                            int selectionStart = postrequestEtBillDescription.getSelectionStart();
-                            int lastPos = 0;
-                            String temp = postrequestEtBillDescription.getText().toString();
-                            temp = temp.substring(0, start) + temp.substring(start + 1);
-                            Log.i("temp", temp);
-                            for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
-                                Log.i("isadd1", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
-                                Log.i("lastpos", String.valueOf(temp.indexOf(labelUtilses.get(i).getLabelName(), 0)));
-                                if ((lastPos = temp.indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
-                                    Log.i("isadd2", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
-                                    if (selectionStart > lastPos + 1 && selectionStart <= (lastPos + labelUtilses.get(i).getLabelName().length())) {
-                                        Log.i("isadd3", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
-                                        isAdd = 0;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if (isAdd == 1) {
-                            String test = "#test" + nextId + "#";
-                            int selectionStart = postrequestEtBillDescription.getSelectionStart();
-                            int length = postrequestEtBillDescription.length();
-                            Log.i("star", selectionStart + " " + length);
-                            if (start != postrequestEtBillDescription.getText().toString().length() + 1) {//star = length+1
-                                postrequestEtBillDescription.setText(
-                                        postrequestEtBillDescription.getText().toString().substring(0, start)
-                                                + test
-                                                + postrequestEtBillDescription.getText().toString().substring(start + 1));
-                                isUserInput = 0;
-                            } else {
-                                postrequestEtBillDescription.setText(
-                                        postrequestEtBillDescription.getText().toString().substring(0, start - 1)
-                                                + test);
-                                isUserInput = 0;
-                            }
-                            labelUtilses.add(new LabelUtils(test, nextId));
-                            nextId++;
-                            postrequestEtBillDescription.setSelection(start + test.length());
-                            Log.i("input", String.valueOf(s.charAt(start)));
-                        } else {
-                            String temp = postrequestEtBillDescription.getText().toString();
-                            temp = temp.substring(0, start) + temp.substring(start + 1);
-                            postrequestEtBillDescription.setText(temp);
-                            isUserInput = 0;
-                            postrequestEtBillDescription.setSelection(start);
-                        }
-                    } else {
-                        int selectionStart = postrequestEtBillDescription.getSelectionStart();
-                        int lastPos = 0;
-                        for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
-                            String temp = postrequestEtBillDescription.getText().toString();
-                            temp = temp.substring(0, start) + temp.substring(start + 1);
-                            if ((lastPos = temp.indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
-                                if (selectionStart >= lastPos && selectionStart < (lastPos + labelUtilses.get(i).getLabelName().length())) {
-                                    String sss = postrequestEtBillDescription.getText().toString();
-                                    labelUtilses.get(i).setLabelName(sss.substring(lastPos, lastPos + 1 + labelUtilses.get(i).getLabelName().length()).toString());
-                                }
-                            }
-                        }
-                    }
-                }/*else if(count > 1 && isUserInput == 1){
-                    String test = "";
-                    for(int i = 0;i < count;i++){
-                        test = test + s.charAt(i);
-                    }
-                    int selectionStart = postrequestEtBillDescription.getSelectionStart();
-                    int length = postrequestEtBillDescription.length();
-                    Log.i("star", selectionStart + " " + length);
-                    if (start != postrequestEtBillDescription.getText().toString().length() + 1) {//star = length+1
-                        postrequestEtBillDescription.setText(
-                                postrequestEtBillDescription.getText().toString().substring(0, start)
-                                        + test
-                                        + postrequestEtBillDescription.getText().toString().substring(start + 1));
-                    } else {
-                        postrequestEtBillDescription.setText(
-                                postrequestEtBillDescription.getText().toString().substring(0, start - 1)
-                                        + test);
-                    }
-                    isUserInput = 0;
-                    labelUtilses.add(new LabelUtils(test, nextId));
-                    nextId++;
-                    postrequestEtBillDescription.setSelection(start + test.length());
-                }*/
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
             }
         });
     }
@@ -393,8 +178,6 @@ public class PostRequestActivity extends AppCompatActivity {
         postrequestCbReplyinapp = (CheckBox) findViewById(R.id.postrequest_cb_replyinapp);
 
         postrequestBtrecPostbill = (ButtonRectangle) findViewById(R.id.postrequest_btrec_postbill);
-
-        postrequestBtflatAddLabel = (ButtonFlat)findViewById(R.id.postrequest_btflat_addlabel);
 
         stopParentScroll(postrequestEtBillDescription);
     }
@@ -488,7 +271,7 @@ public class PostRequestActivity extends AppCompatActivity {
         }
         Log.i("robtypeid", String.valueOf(postrequestRgBillmode.getCheckedRadioButtonId()));
         Log.i("bill", publisherPhone + " " + award + " " + deadline + " " + detail + " " + status + " " + robType);
-        /*AVObject bill = new AVObject("Bill");
+        AVObject bill = new AVObject("Bill");
         bill.put("publisher_phone",User.getInstance().getUserName());
         bill.put("award",award);
         bill.put("detail",detail);
@@ -500,24 +283,23 @@ public class PostRequestActivity extends AppCompatActivity {
         bill.put("confirmer","");
         bill.put("address","null");
         bill.put("need_num","null");
-        bill.put("location", "null");
+        bill.put("location","null");
         bill.put("accept_deadline", "null");
-        bill.saveInBackground(new SaveCallback() {
+        /*bill.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
                 if (e == null) {
-                    Bundle bundle = new Bundle();
                     Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
                     startActivity(intent);
                     finish();
                 } else {
-                    Log.i("error", e.getMessage());
+                    Log.i("error",e.getMessage());
                 }
             }
         });*/
-        //Toast.makeText(PostRequestActivity.this,"post",Toast.LENGTH_LONG);
         Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
         startActivity(intent);
+        finish();
     }
 
     /**
@@ -537,8 +319,7 @@ public class PostRequestActivity extends AppCompatActivity {
     }
 
     /**
-     * 获得联系方式选择框的结果
-     * 返回一个3位二进制数字字符串，从高到低依次为电话、短信、站内信方式的布尔值
+     *
      */
     private String getContactWay(){
         int checkPhone = 0,checkMessage = 0,checkReplyInApp = 0;
