@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,17 +35,23 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;
 import com.gc.materialdesign.views.ButtonFlat;
+import com.gc.materialdesign.widgets.SnackBar;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.LabelUtils;
+import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 /**
  * Created by ESIR on 2015/10/10.
@@ -112,11 +119,6 @@ public class PostRequestActivity extends AppCompatActivity {
     private ButtonRectangle postrequestBtrecPostbill;
 
     /**
-     * postrequest界面的加标签按钮
-     */
-    private ButtonFlat postrequestBtflatAddLabel;
-
-    /**
      * 存放标签的list
      */
     private ArrayList<LabelUtils> labelUtilses = new ArrayList<LabelUtils>();
@@ -135,6 +137,20 @@ public class PostRequestActivity extends AppCompatActivity {
      * 是否是用户的长输入
      */
     private int isUserInput = 1;
+
+    public final android.os.Handler handler = new android.os.Handler(){
+      public void handleMessage(Message msg){
+          switch (msg.what){
+              case StringUtils.POST_REQUEST_SUCCESSFULLY:
+                  Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
+                  startActivity(intent);
+                  break;
+              case StringUtils.POST_REQUEST_FAILED:
+                  Snackbar.make(postrequestBtrecPostbill,"发送失败",Snackbar.LENGTH_LONG).show();
+                  break;
+          }
+      }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -224,7 +240,7 @@ public class PostRequestActivity extends AppCompatActivity {
      * 设置描述界面的添加标签能力
      */
     private void setDescriptionEditText(){
-        postrequestBtflatAddLabel.setOnClickListener(new View.OnClickListener() {
+        /*postrequestBtflatAddLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String str = "#测试测试" + nextId + "# ";
@@ -236,7 +252,7 @@ public class PostRequestActivity extends AppCompatActivity {
                 labelUtilses.add(new LabelUtils(str, nextId));
                 nextId++;
             }
-        });
+        });*/
         postrequestEtBillDescription.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -300,7 +316,7 @@ public class PostRequestActivity extends AppCompatActivity {
                             }
                         }
                         if (isAdd == 1) {
-                            String test = "#test" + nextId + "#";
+                            String test = "#label" + nextId + "#";
                             int selectionStart = postrequestEtBillDescription.getSelectionStart();
                             int length = postrequestEtBillDescription.length();
                             //Log.i("star", selectionStart + " " + length);
@@ -399,8 +415,6 @@ public class PostRequestActivity extends AppCompatActivity {
 
         postrequestBtrecPostbill = (ButtonRectangle) findViewById(R.id.postrequest_btrec_postbill);
 
-        postrequestBtflatAddLabel = (ButtonFlat)findViewById(R.id.postrequest_btflat_addlabel);
-
         stopParentScroll(postrequestEtBillDescription);
     }
 
@@ -482,7 +496,7 @@ public class PostRequestActivity extends AppCompatActivity {
     private void attempPostBill(){
         String publisherPhone = User.getInstance().getUserName();
         String award = postrequestEtAward.getText().toString();
-        String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText();
+        String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText()+":00";
         String detail = postrequestEtBillDescription.getText().toString();
         String contactWay = getContactWay();
         String status = getString(R.string.bill_status_waitingforapplicant);
@@ -521,8 +535,23 @@ public class PostRequestActivity extends AppCompatActivity {
             }
         });*/
         //Toast.makeText(PostRequestActivity.this,"post",Toast.LENGTH_LONG);
-        Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
-        startActivity(intent);
+
+        Bill newBill = new Bill();
+        newBill.setPublisherName(User.getInstance().getUserName());
+        newBill.setAward(award);
+        newBill.setDetail(detail);
+        newBill.setContactWay(contactWay);
+        newBill.setStatus(status);
+        newBill.setRobType(robType);
+        java.util.Date tempDate = TimeUtils.strToDateLong(deadline);
+        newBill.setDeadline(TimeUtils.dateToLong(tempDate));
+        newBill.setApplicant("");
+        newBill.setConfirmer("");
+        newBill.setAddress("");
+        newBill.setNeedNum("");
+        newBill.setLocation("");
+        newBill.setAcceptDeadline("");
+        BillUtils.publishBill(handler, newBill);
     }
 
     /**

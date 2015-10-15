@@ -82,12 +82,6 @@
                     android:layout_alignParentBottom="true"
                     android:layout_toRightOf="@+id/postrequest_tv_temp2"
                     />-->
-                <com.gc.materialdesign.views.ButtonFlat
-                    android:id="@+id/postrequest_btflat_addlabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="+标签"/>
             </RelativeLayout>
             <LinearLayout
                 android:id="@+id/postrequest_li_billdescription"
