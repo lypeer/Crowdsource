@@ -1,5 +1,7 @@
 package com.tesmple.crowdsource.utils;
 
+import android.util.Log;
+
 import java.sql.Date;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -98,5 +100,14 @@ public class TimeUtils {
         ParsePosition pos = new ParsePosition(0);
         Date strtodate = (Date) formatter.parse(strDate, pos);
         return strtodate;
+    }
+
+    /**
+     * 将date类型转换成long类型的毫秒数
+     * 传入java.util.Date类型的date
+     * 返回Long类型的毫秒数
+     */
+    public static Long dateToLong(java.util.Date date){
+        return date.getTime();
     }
 }

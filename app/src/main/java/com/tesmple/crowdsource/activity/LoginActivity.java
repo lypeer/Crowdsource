@@ -159,9 +159,9 @@ public class LoginActivity extends AppCompatActivity{
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
-            startActivity(intent);
-            /*loginSvScrollForm.setVisibility(View.GONE);
+            /*Intent intent = new Intent(LoginActivity.this , PostRequestActivity.class);
+            startActivity(intent);*/
+            //loginSvScrollForm.setVisibility(View.GONE);
             loginSvScrollForm.setAlpha(0.5f);
             loginLlProgressbar.setVisibility(View.VISIBLE);
             AVUser.logInInBackground(userPhone , userPassword , new LogInCallback<AVUser>() {
@@ -197,7 +197,7 @@ public class LoginActivity extends AppCompatActivity{
                     //0 网络错误
                     //其他问题 网络错误
                 }
-            });*/
+            });
         }
     }
 
