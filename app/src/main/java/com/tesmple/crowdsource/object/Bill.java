@@ -71,6 +71,58 @@ public class Bill {
      */
     private String location;
 
+    /**
+     * 联系方式
+     */
+    private String contactWay;
+
+    /**
+     * 发布者的名字
+     */
+    private String publisherName;
+
+    /**
+     * 发布者的名字
+     */
+    private String publisherSchool;
+
+    /**
+     * 发布者头像的url
+     */
+    private String publisherHeadPortrait;
+
+    public String getPublisherHeadPortrait() {
+        return publisherHeadPortrait;
+    }
+
+    public void setPublisherHeadPortrait(String publisherHeadPortrait) {
+        this.publisherHeadPortrait = publisherHeadPortrait;
+    }
+
+    public String getPublisherSchool() {
+        return publisherSchool;
+    }
+
+    public void setPublisherSchool(String publisherSchool) {
+        this.publisherSchool = publisherSchool;
+    }
+
+    public String getPublisherName() {
+        return publisherName;
+    }
+
+    public void setPublisherName(String publisherName) {
+        this.publisherName = publisherName;
+    }
+
+    public String getContactWay() {
+        return contactWay;
+    }
+
+    public void setContactWay(String contactWay) {
+        this.contactWay = contactWay;
+    }
+
     public String getLocation() {
         return location;
     }

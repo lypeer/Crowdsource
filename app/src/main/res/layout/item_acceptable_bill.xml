@@ -118,7 +118,7 @@
                     </LinearLayout>
 
                     <com.tesmple.crowdsource.view.ButtonRectangle
-                        android:id="@+id/btn_for_detail"
+                        android:id="@+id/acceptable_bill_btn_for_detail"
                         android:layout_width="wrap_content"
                         android:layout_height="46dp"
                         android:background="@color/colorPrimary"
@@ -154,7 +154,7 @@
                         android:text="@string/prompt_hour"/>
 
                     <TextView
-                        android:id="@+id/acceptable_bill_left_time_minutes"
+                        android:id="@+id/acceptable_bill_tv_left_time_minutes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/test_minutes"

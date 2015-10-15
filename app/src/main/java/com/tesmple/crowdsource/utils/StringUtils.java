@@ -22,9 +22,14 @@ public class StringUtils {
     public static final String BILL_STATUS_THREE = "period_3";
 
     /**
-     * 代表订单处于状态四，已删除状态的字符串字段
+     * 代表订单处于状态四，未完成状态的字符串字段
      */
     public static final String BILL_STATUS_FOUR = "period_4";
+
+    /**
+     * 代表订单处于状态五，已删除状态的字符串字段
+     */
+    public static final String BILL_STATUS_FIVE = "period_5";
 
     /**
      * 代表被评论者是发单者
@@ -62,14 +67,44 @@ public class StringUtils {
     public static final int VERIFY_STUNUM_SUCCESSFULLY = 24;
 
     /**
+     * 表示更改报名者成功
+     */
+    public static final int CHANGE_APPLICANT_SUCCESSFULLY = 25;
+
+    /**
+     * 表示更改报名者失败
+     */
+    public static final int CHANGE_APPLICANT_FAILED = 26;
+
+    /**
      * 表示发布订单成功
      */
-    public static final int POST_REQUEST_SUCCESSFULLY = 25;
+    public static final int POST_REQUEST_SUCCESSFULLY = 27;
 
     /**
      * 表示发布订单失败
      */
-    public static final int POST_REQUEST_FAILED = 26;
+    public static final int POST_REQUEST_FAILED = 28;
+
+    /**
+     * 表示更改订单状态成功
+     */
+    public static final int CHANGE_BILL_STATUS_SUCCESSFULLY = 29;
+
+    /**
+     * 表示更改订单状态失败
+     */
+    public static final int CHANGE_BILL_STATUS_FAILED = 30;
+
+    /**
+     * 表示开启获得订单的事务成功
+     */
+    public static final int START_GET_BILL_TRANSACTION_SUCCESSFULLY = 31;
+
+    /**
+     * 表示开启获得订单的事务失败
+     */
+    public static final int START_GET_BILL_TRANSACTION_FAILED = 32;
 
     /**
      * 该String值代表AcceptableFragment
