@@ -9,27 +9,27 @@ public class StringUtils {
     /**
      * 代表订单处于状态一，待报名状态的字符串字段
      */
-    public static final String BILL_STATUS_ONE = "period_1";
+    public static final String BILL_STATUS_ONE = "待报名";
 
     /**
      * 代表订单处于状态二，进行中状态的字符串字段
      */
-    public static final String BILL_STATUS_TWO = "period_2";
+    public static final String BILL_STATUS_TWO = "进行中";
 
     /**
      * 代表订单处于状态三，已完成状态的字符串字段
      */
-    public static final String BILL_STATUS_THREE = "period_3";
+    public static final String BILL_STATUS_THREE = "已完成";
 
     /**
      * 代表订单处于状态四，未完成状态的字符串字段
      */
-    public static final String BILL_STATUS_FOUR = "period_4";
+    public static final String BILL_STATUS_FOUR = "未完成";
 
     /**
      * 代表订单处于状态五，已删除状态的字符串字段
      */
-    public static final String BILL_STATUS_FIVE = "period_5";
+    public static final String BILL_STATUS_FIVE = "已删除";
 
     /**
      * 代表被评论者是发单者
