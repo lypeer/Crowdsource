@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 
 
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 
@@ -39,7 +40,7 @@ public class PostBillSuccessful extends AppCompatActivity {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(PostBillSuccessful.this,LoginActivity.class);
+                Intent intent = new Intent(PostBillSuccessful.this,MyPublishFragment.class);
                 startActivity(intent);
                 finish();
             }

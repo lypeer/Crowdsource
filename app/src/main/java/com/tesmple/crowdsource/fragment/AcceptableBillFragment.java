@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import android.widget.ListView;
 
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
+import com.tesmple.crowdsource.adapter.AcceptableAdapter;
 import com.tesmple.crowdsource.adapter.AcceptableBillAdapter;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.utils.BillUtils;
@@ -37,15 +41,25 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
      */
     private SwipeRefreshLayout srlBill;
 
-    /**
-     * 显示单的listview
-     */
-    private ListView lvBill;
+//    /**
+//     * 显示单的listview
+//     */
+//    private ListView lvBill;
+//
+//    /**
+//     * listview的adapter
+//     */
+//    private AcceptableBillAdapter adapter;
 
     /**
-     * listview的adapter
+     * 显示单的recycleview的对象
      */
-    private AcceptableBillAdapter adapter;
+    private RecyclerView rvBill;
+
+    /**
+     * recycleview的adapter
+     */
+    private AcceptableAdapter adapter;
 
     /**
      * 装单的billlist
@@ -59,11 +73,13 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
             switch (msg.what){
                 case StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY:
                     billList = BillUtils.getBillsList(StringUtils.FRAGMENT_ACCEPTABLE_BILL);
+//                    adapter.refresh(billList);
                     adapter.refresh(billList);
                     srlBill.setRefreshing(false);
                     break;
                 case StringUtils.START_GET_BILL_TRANSACTION_FAILED:
-                    Snackbar.make(lvBill, R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
+//                    Snackbar.make(lvBill, R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(rvBill, R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
                     srlBill.setRefreshing(false);
                     break;
             }
@@ -85,12 +101,18 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
      */
     private void initView(){
         srlBill = (SwipeRefreshLayout)rootView.findViewById(R.id.acceptable_bill_srl_bill);
-        lvBill = (ListView)rootView.findViewById(R.id.acceptable_bill_lv_main);
-        adapter = new AcceptableBillAdapter(getActivity() , billList);
+//        lvBill = (ListView)rootView.findViewById(R.id.acceptable_bill_lv_main);
+//        adapter = new AcceptableBillAdapter(getActivity() , billList);
+//
+//        lvBill.setAdapter(adapter);
+//        lvBill.setDivider(new ColorDrawable(App.getContext().getResources().getColor(R.color.empty)));
+//        lvBill.setDividerHeight(16);
+        rvBill = (RecyclerView)rootView.findViewById(R.id.acceptable_bill_rv_bill);
+        adapter = new AcceptableAdapter(getActivity() , billList);
 
-        lvBill.setAdapter(adapter);
-        lvBill.setDivider(new ColorDrawable(App.getContext().getResources().getColor(R.color.empty)));
-        lvBill.setDividerHeight(16);
+        rvBill.setAdapter(adapter);
+        rvBill.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvBill.setItemAnimator(new DefaultItemAnimator());
 
         srlBill.setOnRefreshListener(this);
 
