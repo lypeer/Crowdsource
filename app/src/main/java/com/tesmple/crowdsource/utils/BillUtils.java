@@ -75,7 +75,7 @@ public class BillUtils {
                 break;
             case StringUtils.FRAGMENT_MY_PUBLISH:
                 avQuery.whereEqualTo("publisher_phone", User.getInstance().getUserName());
-                avQuery.whereNotEqualTo("status" , StringUtils.BILL_STATUS_FIVE);
+                avQuery.whereNotEqualTo("status", StringUtils.BILL_STATUS_FIVE);
                 break;
             case StringUtils.FRAGMENT_ACCEPTED_BILL:
                 //表示我报名了还没有选定的筛选条件
@@ -94,7 +94,7 @@ public class BillUtils {
                 avQuery = AVQuery.or(queries);
                 break;
             case StringUtils.FRAGMENT_HISTORY_BILL:
-                String[] status = {StringUtils.BILL_STATUS_THREE , StringUtils.BILL_STATUS_FOUR};
+                String[] status = {StringUtils.BILL_STATUS_THREE, StringUtils.BILL_STATUS_FOUR};
                 //表示我接的单完成或者是未完成的筛选条件
                 AVQuery<AVObject> myAccept = AVQuery.getQuery("Bill");
                 myAccept.whereEqualTo("confirmer", User.getInstance().getUserName());
@@ -107,7 +107,7 @@ public class BillUtils {
                 queries2.add(myPublish);
 
                 avQuery = AVQuery.or(queries2);
-                avQuery.whereContainedIn("status" , Arrays.asList(status));
+                avQuery.whereContainedIn("status", Arrays.asList(status));
                 break;
         }
         // 根据 createdAt 字段升序显示数据
@@ -115,14 +115,14 @@ public class BillUtils {
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                if(e == null){
-                    for(AVObject avObject : list){
+                if (e == null) {
+                    for (AVObject avObject : list) {
                         Bill bill = new Bill();
-                        bill.setObjectId( avObject.getObjectId());
+                        bill.setObjectId(avObject.getObjectId());
                         bill.setPublisherPhone((String) avObject.get("publisher_phone"));
                         bill.setAward((String) avObject.get("award"));
                         bill.setDetail((String) avObject.get("detail"));
-                        bill.setDeadline(avObject.getLong("detail"));
+                        bill.setDeadline(avObject.getLong("deadline"));
                         bill.setAddress((String) avObject.get("address"));
                         bill.setStatus((String) avObject.get("status"));
                         bill.setApplicant((String) avObject.get("applicant"));
@@ -147,7 +147,10 @@ public class BillUtils {
                                 break;
                         }
                     }
-                }else {
+                    Message message = new Message();
+                    message.what = StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY;
+                    handler.sendMessage(message);
+                } else {
                     Log.e("PostRequestError", e.getMessage() + "===" + e.getCode());
                     Message message = new Message();
                     message.what = StringUtils.START_GET_BILL_TRANSACTION_FAILED;
@@ -198,7 +201,7 @@ public class BillUtils {
         avObject.put("rob_type", bill.getRobType());
         avObject.put("location", bill.getLocation());
         avObject.put("accept_deadline", bill.getAcceptDeadline());
-        avObject.put("contact_way" , bill.getContactWay());
+        avObject.put("contact_way", bill.getContactWay());
         avObject.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
@@ -316,5 +319,22 @@ public class BillUtils {
                 }
             }
         });
+    }
+
+    /**
+     * 清除装bill的list的方法
+     *
+     * @param targetFragment 指定清除list的fragment
+     */
+    public static void clearList(String targetFragment) {
+        if (targetFragment.equals(StringUtils.FRAGMENT_ACCEPTABLE_BILL)) {
+            acceptableBillList.clear();
+        } else if (targetFragment.equals(StringUtils.FRAGMENT_MY_PUBLISH)) {
+            myPublishList.clear();
+        } else if (targetFragment.equals(StringUtils.FRAGMENT_ACCEPTED_BILL)) {
+            acceptedBillList.clear();
+        } else if (targetFragment.equals(StringUtils.FRAGMENT_HISTORY_BILL)) {
+            historyBillList.clear();
+        }
     }
 }

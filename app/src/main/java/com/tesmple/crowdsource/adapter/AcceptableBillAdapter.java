@@ -40,6 +40,12 @@ public class AcceptableBillAdapter extends BaseAdapter {
      */
     private List<Bill> billsList;
 
+    public AcceptableBillAdapter(Context context , List<Bill> billsList){
+        this.context = context;
+        this.billsList = billsList;
+    }
+
+
     @Override
     public int getCount() {
         return billsList.size();
@@ -71,7 +77,7 @@ public class AcceptableBillAdapter extends BaseAdapter {
             viewHolder.tvLeftTimeHour = (TextView)convertView.findViewById(R.id.acceptable_bill_tv_left_time_hour);
             viewHolder.tvLeftTimeMinutes = (TextView)convertView.findViewById(R.id.acceptable_bill_tv_left_time_minutes);
             viewHolder.tvLeftTimeSecond = (TextView)convertView.findViewById(R.id.acceptable_bill_tv_left_time_second);
-            viewHolder.btnForDetail = (ButtonRectangle)convertView.findViewById(R.id.acceptable_bill_btn_for_detail);
+//            viewHolder.btnForDetail = (ButtonRectangle)convertView.findViewById(R.id.acceptable_bill_btn_for_detail);
             convertView.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder)convertView.getTag();
@@ -81,13 +87,11 @@ public class AcceptableBillAdapter extends BaseAdapter {
         viewHolder.tvDetail.setText(bill.getDetail());
         viewHolder.tvAward.setText(bill.getAward());
         //剩余时间
-        String timeLeft = new SimpleDateFormat("HH:mm", Locale.CHINESE).
+        String timeLeft = new SimpleDateFormat("HH:mm:ss", Locale.CHINESE).
                 format(bill.getDeadline() - System.currentTimeMillis());
         viewHolder.tvLeftTimeHour.setText(timeLeft.split(":")[0]);
         viewHolder.tvLeftTimeMinutes.setText(timeLeft.split(":")[1]);
         viewHolder.tvLeftTimeSecond.setText(timeLeft.split(":")[2]);
-
-        //按钮的事件还没有xie
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.findInBackground(new FindCallback<AVObject>() {
@@ -102,7 +106,7 @@ public class AcceptableBillAdapter extends BaseAdapter {
                     viewHolder.tvSchool.setText(bill.getPublisherSchool());
                 }else {
                     Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
-                    Snackbar.make(viewHolder.btnForDetail, R.string.error_please_check_agreement, Snackbar.LENGTH_SHORT)
+                    Snackbar.make(viewHolder.tvAward, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                 }
             }
@@ -141,11 +145,11 @@ public class AcceptableBillAdapter extends BaseAdapter {
          * 用户名字的textview
          */
         private TextView tvAward;
-
-        /**
-         * 点击查看详情的button
-         */
-        private ButtonRectangle btnForDetail;
+//
+//        /**
+//         * 点击查看详情的button
+//         */
+//        private ButtonRectangle btnForDetail;
 
         /**
          * 剩下的时间的小时数
@@ -161,5 +165,14 @@ public class AcceptableBillAdapter extends BaseAdapter {
          * 剩下的时间的秒数
          */
         private TextView tvLeftTimeSecond;
+    }
+
+    /**
+     * 提示数据有了变动，刷新数据的方法
+     * @param billsList 变动之后的list
+     */
+    public void refresh(List<Bill> billsList){
+        this.billsList = billsList;
+        notifyDataSetChanged();
     }
 }
