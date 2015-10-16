@@ -138,10 +138,16 @@ public class PostRequestActivity extends AppCompatActivity {
      */
     private int isUserInput = 1;
 
+    /**
+     * 用户想要发布的单
+     */
+    private Bill newBill;
+
     public final android.os.Handler handler = new android.os.Handler(){
       public void handleMessage(Message msg){
           switch (msg.what){
               case StringUtils.POST_REQUEST_SUCCESSFULLY:
+                  BillUtils.getBillsList(StringUtils.FRAGMENT_MY_PUBLISH).add(newBill);
                   Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
                   startActivity(intent);
                   break;
@@ -494,19 +500,12 @@ public class PostRequestActivity extends AppCompatActivity {
      * 尝试发布订单
      */
     private void attempPostBill(){
-        String publisherPhone = User.getInstance().getUserName();
         String award = postrequestEtAward.getText().toString();
         String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText()+":00";
-        String detail = postrequestEtBillDescription.getText().toString();
-        String contactWay = getContactWay();
-        String status = getString(R.string.bill_status_waitingforapplicant);
-        String robType = getRobtype();
         if(EditTextUtils.isNumber(award)){
             Snackbar.make(postrequestBtrecPostbill,"请输入正确的支付报酬(仅限数字)",Snackbar.LENGTH_LONG).show();
             return;
         }
-        Log.i("robtypeid", String.valueOf(postrequestRgBillmode.getCheckedRadioButtonId()));
-        Log.i("bill", publisherPhone + " " + award + " " + deadline + " " + detail + " " + status + " " + robType);
         /*AVObject bill = new AVObject("Bill");
         bill.put("publisher_phone",User.getInstance().getUserName());
         bill.put("award",award);
@@ -536,21 +535,21 @@ public class PostRequestActivity extends AppCompatActivity {
         });*/
         //Toast.makeText(PostRequestActivity.this,"post",Toast.LENGTH_LONG);
 
-        Bill newBill = new Bill();
-        newBill.setPublisherName(User.getInstance().getUserName());
+        newBill = new Bill();
+        newBill.setPublisherPhone(User.getInstance().getUserName());
         newBill.setAward(award);
-        newBill.setDetail(detail);
-        newBill.setContactWay(contactWay);
-        newBill.setStatus(status);
-        newBill.setRobType(robType);
+        newBill.setDetail(postrequestEtBillDescription.getText().toString());
         java.util.Date tempDate = TimeUtils.strToDateLong(deadline);
         newBill.setDeadline(TimeUtils.dateToLong(tempDate));
+        newBill.setAddress("");
+        newBill.setStatus(StringUtils.BILL_STATUS_ONE);
         newBill.setApplicant("");
         newBill.setConfirmer("");
-        newBill.setAddress("");
         newBill.setNeedNum("");
+        newBill.setRobType(getRobtype());
         newBill.setLocation("");
         newBill.setAcceptDeadline("");
+        newBill.setContactWay(getContactWay());
         BillUtils.publishBill(handler, newBill);
     }
 

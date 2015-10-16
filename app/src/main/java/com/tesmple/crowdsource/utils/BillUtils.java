@@ -79,6 +79,7 @@ public class BillUtils {
                 break;
             case StringUtils.FRAGMENT_ACCEPTED_BILL:
                 //表示我报名了还没有选定的筛选条件
+                //此处存疑
                 AVQuery<AVObject> myApplicant = AVQuery.getQuery("Bill");
                 myApplicant.whereContains("applicant", User.getInstance().getUserName());
                 myApplicant.whereEqualTo("status", StringUtils.BILL_STATUS_ONE);
