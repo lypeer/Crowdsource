@@ -246,19 +246,6 @@ public class PostRequestActivity extends AppCompatActivity {
      * 设置描述界面的添加标签能力
      */
     private void setDescriptionEditText(){
-        /*postrequestBtflatAddLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String str = "#测试测试" + nextId + "# ";
-                SpannableString ss = new SpannableString(str);
-                ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAccent)), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                postrequestEtBillDescription.setText(postrequestEtBillDescription.getText());
-                postrequestEtBillDescription.append(str);
-                postrequestEtBillDescription.setSelection(postrequestBtflatAddLabel.getText().toString().length());
-                labelUtilses.add(new LabelUtils(str, nextId));
-                nextId++;
-            }
-        });*/
         postrequestEtBillDescription.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -269,7 +256,6 @@ public class PostRequestActivity extends AppCompatActivity {
                         if ((lastPos = postrequestEtBillDescription.getText().toString().indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
                             if ((selectionStart != 0) && (selectionStart == lastPos + 1 || selectionStart == (lastPos + labelUtilses.get(i).getLabelName().length()))) {
                                 Log.i("label",labelUtilses.get(i).getLabelName().length()+" "+labelUtilses.get(i).getLabelName().toString());
-                                //Log.i("selectionstart lastpos1", selectionStart + " " + lastPos);
                                 String sss = postrequestEtBillDescription.getText().toString();
                                 postrequestEtBillDescription.setText(sss.substring(0, lastPos) + sss.substring(lastPos + labelUtilses.get(i).getLabelName().length())); //字符串替换，删掉符合条件的字符串
                                 labelUtilses.remove(i); //删除对应实体
@@ -309,12 +295,8 @@ public class PostRequestActivity extends AppCompatActivity {
                             temp = temp.substring(0, start) + temp.substring(start + 1);
                             //Log.i("temp", temp);
                             for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
-                                //Log.i("isadd1", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
-                                //Log.i("lastpos", String.valueOf(temp.indexOf(labelUtilses.get(i).getLabelName(), 0)));
                                 if ((lastPos = temp.indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
-                                    //Log.i("isadd2", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
                                     if (selectionStart > lastPos + 1 && selectionStart <= (lastPos + labelUtilses.get(i).getLabelName().length())) {
-                                        //Log.i("isadd3", selectionStart + " " + lastPos + " " + labelUtilses.get(i).getLabelName().length());
                                         isAdd = 0;
                                         break;
                                     }
@@ -325,7 +307,6 @@ public class PostRequestActivity extends AppCompatActivity {
                             String test = "#label" + nextId + "#";
                             int selectionStart = postrequestEtBillDescription.getSelectionStart();
                             int length = postrequestEtBillDescription.length();
-                            //Log.i("star", selectionStart + " " + length);
                             if (start != postrequestEtBillDescription.getText().toString().length() + 1) {//star = length+1
                                 isUserInput = 0;
                                 postrequestEtBillDescription.setText(
@@ -341,7 +322,6 @@ public class PostRequestActivity extends AppCompatActivity {
                             labelUtilses.add(new LabelUtils(test, nextId));
                             nextId++;
                             postrequestEtBillDescription.setSelection(start + test.length());
-                            //Log.i("input", String.valueOf(s.charAt(start)));
                         } else {
                             String temp = postrequestEtBillDescription.getText().toString();
                             temp = temp.substring(0, start) + temp.substring(start + 1);
@@ -370,18 +350,10 @@ public class PostRequestActivity extends AppCompatActivity {
                     String temp = postrequestEtBillDescription.getText().toString();
                     temp = temp.substring(0, start) + temp.substring(start + count);
                     for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
-                        //Log.i("star", String.valueOf(start));
-                        //Log.i("lastpos >1", String.valueOf(temp.indexOf(labelUtilses.get(i).getLabelName(), 0)));
-                        //Log.i("selectionlastposlabel>1",selectionStart+" "+lastPos+" "+labelUtilses.get(i).getLabelName().length());
                         if ((lastPos = temp.indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
-                            //Log.i("selectionlastposlabel",selectionStart+" "+lastPos+" "+labelUtilses.get(i).getLabelName().length());
                             if (selectionStart >= lastPos && selectionStart < (lastPos + count + labelUtilses.get(i).getLabelName().length())) {
-                                //Log.i("selectionlastposlabel",selectionStart+" "+lastPos+" "+labelUtilses.get(i).getLabelName().length());
                                 String sss = postrequestEtBillDescription.getText().toString();
-                                //Log.i("fuck","fucktest");
                                 labelUtilses.get(i).setLabelName(sss.substring(lastPos, lastPos + count + labelUtilses.get(i).getLabelName().length()).toString());
-                                Log.i("labeliii",lastPos+" " + count+ " " + labelUtilses.get(i).getLabelName());
-                                //Log.i("labeliiii",sss.substring(lastPos, lastPos + count + labelUtilses.get(i).getLabelName().length()).toString());
                             }
                         }
                     }
@@ -506,34 +478,6 @@ public class PostRequestActivity extends AppCompatActivity {
             Snackbar.make(postrequestBtrecPostbill,"请输入正确的支付报酬(仅限数字)",Snackbar.LENGTH_LONG).show();
             return;
         }
-        /*AVObject bill = new AVObject("Bill");
-        bill.put("publisher_phone",User.getInstance().getUserName());
-        bill.put("award",award);
-        bill.put("detail",detail);
-        bill.put("contact_way",contactWay);
-        bill.put("status",status);
-        bill.put("rob_type",robType);
-        bill.put("deadline",deadline);
-        bill.put("applicant","");
-        bill.put("confirmer","");
-        bill.put("address","null");
-        bill.put("need_num","null");
-        bill.put("location", "null");
-        bill.put("accept_deadline", "null");
-        bill.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                if (e == null) {
-                    Bundle bundle = new Bundle();
-                    Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Log.i("error", e.getMessage());
-                }
-            }
-        });*/
-        //Toast.makeText(PostRequestActivity.this,"post",Toast.LENGTH_LONG);
 
         newBill = new Bill();
         newBill.setPublisherPhone(User.getInstance().getUserName());
