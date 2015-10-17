@@ -18,6 +18,7 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.MyVi
         return null;
     }
 
+
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
