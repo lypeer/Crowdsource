@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
 import com.tesmple.crowdsource.fragment.AcceptableBillFragment;
+import com.tesmple.crowdsource.fragment.ApplicantFragment;
+import com.tesmple.crowdsource.fragment.CommentFragment;
 import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 
@@ -57,6 +59,7 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         tlCompliantAndComment = (TabLayout)findViewById(R.id.requestdetailofpublisher_tl_compliantandcomment);
         vpCompliantAndComment = (ViewPager)findViewById(R.id.requestdetailofpublisher_vp_compliantandcomment);
         initList();
+
         vpCompliantAndComment.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList));
         tlCompliantAndComment.setupWithViewPager(vpCompliantAndComment);
         tlCompliantAndComment.setTabMode(TabLayout.MODE_FIXED);
@@ -69,8 +72,8 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         titleList.add("报名者");
         titleList.add("评论");
 
-        fragmentList.add(new MyPublishFragment());
-        fragmentList.add(new AcceptableBillFragment());
+        fragmentList.add(new ApplicantFragment());
+        fragmentList.add(new CommentFragment());
     }
 
     /**

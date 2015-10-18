@@ -31,7 +31,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"/>
         <TextView
-            android:id="@+id/applicant_tv_school"
+            android:id="@+id/applicant_tv_schoolname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/uestc"
@@ -39,7 +39,8 @@
             android:textSize="14sp"/>
     </LinearLayout>
 
-    <RadioButton
+    <CheckBox
+        android:id="@+id/applicant_cb_ischecked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -53,7 +54,7 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/ic_done_checked_36dp"/>-->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageView
@@ -77,7 +78,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_star_full_24dp"/>
     </LinearLayout>
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -94,5 +95,5 @@
             android:text="分"
             android:textSize="18sp"
             android:textColor="@color/colorPrimary"/>
-    </LinearLayout>
+    </LinearLayout>-->
 </LinearLayout>
