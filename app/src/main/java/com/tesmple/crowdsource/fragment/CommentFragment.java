@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.CommentAdapter;
+import com.tesmple.crowdsource.object.BillComment;
 import com.tesmple.crowdsource.object.Comment;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class CommentFragment extends Fragment implements SwipeRefreshLayout.OnRe
      */
     private CommentAdapter commentAdapter;
 
-    private static List<Comment> commentList = new ArrayList<>();
+    private static List<BillComment> commentList = new ArrayList<>();
 
     @Nullable
     @Override

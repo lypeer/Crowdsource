@@ -53,7 +53,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:background="@drawable/ic_done_checked_36dp"/>-->
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -77,12 +77,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_star_full_24dp"/>
-    </LinearLayout>
-    <!--<LinearLayout
+    </LinearLayout>-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="right">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,5 +95,5 @@
             android:text="分"
             android:textSize="18sp"
             android:textColor="@color/colorPrimary"/>
-    </LinearLayout>-->
+    </LinearLayout>
 </LinearLayout>
