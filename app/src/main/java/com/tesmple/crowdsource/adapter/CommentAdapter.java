@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.BillComment;
 import com.tesmple.crowdsource.object.Comment;
 
 import java.net.CookieHandler;
@@ -31,14 +33,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     /**
      * 评论列表list
      */
-    private List<Comment> commentList;
+    private List<BillComment> commentList;
 
     /**
      * adpater的构造方法
      * @param context 调用的activity的context
      * @param commentList 装载评论数据的list
      */
-    public CommentAdapter(Context context,List<Comment> commentList){
+    public CommentAdapter(Context context,List<BillComment> commentList){
         this.context = context;
         this.commentList = commentList;
     }
@@ -50,10 +52,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final Comment comment = commentList.get(position);
-        holder.commentTvName.setText(comment.getCommentName());
-        holder.commentTvSchoolName.setText(comment.getCommentSchool());
-        holder.commentTvDetail.setText(comment.getCommentDetail());
+        final BillComment comment = commentList.get(position);
+        holder.commentTvName.setText(comment.getContent());
+        holder.commentTvSchoolName.setText(comment.getContent());
+        holder.commentTvDetail.setText(comment.getContent());
     }
 
     @Override
