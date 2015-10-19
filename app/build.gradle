@@ -36,17 +36,15 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
     compile 'com.github.vajro:MaterialDesignLibrary:1.6'
-
     compile 'com.android.support:cardview-v7:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.github.vajro:MaterialDesignLibrary:1.6'
-
     compile 'cn.leancloud.android:avoscloud-sdk:v3.+'
     compile 'cn.leancloud.android:avoscloud-push:v3.+@aar'
     compile 'cn.leancloud.android:Java-WebSocket:1.2.0-leancloud'
     compile 'cn.leancloud.android:avoscloud-statistics:v3.+@aar'
     compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
-
-    compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.facebook.fresco:fresco:0.7.0+'
+
+    compile 'org.jsoup:jsoup:1.8.3'
 }

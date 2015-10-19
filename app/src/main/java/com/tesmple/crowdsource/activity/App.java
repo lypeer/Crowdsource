@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.PushService;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
@@ -43,6 +44,8 @@ public class App extends Application {
         mAppContext = getApplicationContext();
         AVOSCloud.initialize(this, "ToU9po43RDw6nyqcjzPL57si", "GiI6qViVwvAsCpz46SjLarm2");
         Fresco.initialize(mAppContext);
+        PushService.setDefaultPushCallback(mAppContext, NotificationActivity.class);
+        PushService.subscribe(mAppContext, "public", NotificationActivity.class);
     }
 
     /**

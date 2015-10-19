@@ -27,20 +27,36 @@
 
         </activity>
         <activity android:name=".activity.WelcomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity">
         </activity>
         <activity android:name=".activity.PostRequestActivity">
         </activity>
         <activity android:name=".activity.PerfectInformationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".activity.PostBillSuccessful">
         </activity>
+        <activity android:name=".activity.NotificationActivity">
+
+        </activity>
+
+
+
+        <service android:name="com.avos.avoscloud.PushService"
+                 android:exported="true"/>
+        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
