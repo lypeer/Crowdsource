@@ -7,9 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.RefreshCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.User;
 
@@ -62,9 +64,30 @@ public class WelcomeActivity extends AppCompatActivity {
                         User.getInstance().setAcceptStar((String) avObject.get("accept_star"));
                         User.getInstance().setStatus((String) avObject.get("status"));
 
-                        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        if (!avObject.get("installationId").equals(AVInstallation.getCurrentInstallation().getInstallationId())) {
+                            avObject.put("installationId", AVInstallation.getCurrentInstallation().getInstallationId());
+                            avObject.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(AVException e) {
+                                    if (e == null) {
+                                        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }else {
+                                        Log.e("AppSaveError", e.getMessage() + "===" + e.getCode());
+                                        Snackbar.make(findViewById(R.id.iv_welcome), R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                                .setAction("Action", null).show();
+                                        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+                            });
+                        } else {
+                            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     } else {
                         Log.e("AppError", e.getMessage() + "===" + e.getCode());
                         Snackbar.make(findViewById(R.id.iv_welcome), R.string.please_check_your_network, Snackbar.LENGTH_SHORT)

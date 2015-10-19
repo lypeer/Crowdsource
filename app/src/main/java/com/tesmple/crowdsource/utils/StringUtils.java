@@ -107,6 +107,16 @@ public class StringUtils {
     public static final int START_GET_BILL_TRANSACTION_FAILED = 32;
 
     /**
+     * 表示开启推送的事务成功
+     */
+    public static final int START_PUSH_TRANSACTION_SUCCESSFULLY = 33;
+
+    /**
+     * 表示开启推送的事务失败
+     */
+    public static final int START_PUSH_TRANSACTION_FAILED = 34;
+
+    /**
      * 该String值代表AcceptableFragment
      */
     public static final String FRAGMENT_ACCEPTABLE_BILL = "fragment_acceptable_bill";

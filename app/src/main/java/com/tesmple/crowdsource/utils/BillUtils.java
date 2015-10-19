@@ -15,12 +15,13 @@ import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 
-import org.json.JSONArray;
-
-import java.lang.reflect.Array;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lypeer on 10/14/2015.
@@ -338,4 +339,6 @@ public class BillUtils {
             historyBillList.clear();
         }
     }
+
+
 }

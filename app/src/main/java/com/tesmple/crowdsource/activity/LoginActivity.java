@@ -6,14 +6,17 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
@@ -176,12 +179,29 @@ public class LoginActivity extends AppCompatActivity{
                             User.getInstance().setHeadProtrait(user.getAVFile("head_portrait").getUrl());
                             User.getInstance().setCreditValue((String)user.get("credit_value"));
                             User.getInstance().setSendStar((String)user.get("send_star"));
-                            User.getInstance().setAcceptStar((String)user.get("accept_star"));
-                            User.getInstance().setStatus((String)user.get("status"));
+                            User.getInstance().setAcceptStar((String) user.get("accept_star"));
+                            User.getInstance().setStatus((String) user.get("status"));
 
-                            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            if (!user.get("installationId").equals(AVInstallation.getCurrentInstallation().getInstallationId())) {
+                                user.put("installationId", AVInstallation.getCurrentInstallation().getInstallationId());
+                                user.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        if (e == null) {
+                                            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }else {
+                                            Log.e("AppSaveError", e.getMessage() + "===" + e.getCode());
+                                            Snackbar.make(loginEtPassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                            } else {
+                                Intent intent = new Intent(LoginActivity.this , MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                     }else if(e.getCode() == 211){
                         Snackbar.make(loginEtPassword, R.string.error_phone_not_register,Snackbar.LENGTH_LONG).show();
