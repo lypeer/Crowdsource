@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:background="@color/bg_wechat"
-              android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/acceptable_bill_srl_bill"
+        android:id="@+id/comment_srl_comment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/comment_rv_comment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/acceptable_bill_rv_bill"
             >
-
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

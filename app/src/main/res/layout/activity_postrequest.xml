@@ -54,34 +54,6 @@
                     android:textSize="16sp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"/>
-                <!--<TextView
-                    android:id="@+id/postrequest_tv_temp1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="输入"
-                    android:textSize="13sp"
-                    android:layout_marginLeft="7dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_toRightOf="@+id/postrequest_tv_description" />
-                <TextView
-                    android:id="@+id/postrequest_tv_temp2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="1dp"
-                    android:layout_marginRight="1dp"
-                    android:text="#"
-                    android:textSize="13sp"
-                    android:textColor="@color/colorAccent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_toRightOf="@+id/postrequest_tv_temp1"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="可以添加标签哦"
-                    android:textSize="13sp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_toRightOf="@+id/postrequest_tv_temp2"
-                    />-->
             </RelativeLayout>
             <LinearLayout
                 android:id="@+id/postrequest_li_billdescription"
