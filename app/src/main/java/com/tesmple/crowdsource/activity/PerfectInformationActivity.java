@@ -1,6 +1,5 @@
 package com.tesmple.crowdsource.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.utils.ActivityCollector;
+import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.ParseXMLUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.VerifyStuNumUtils;
@@ -161,8 +161,8 @@ public class PerfectInformationActivity extends AppCompatActivity {
                 } else if (etPassword.getText().toString().trim().equals("")) {
                     etPassword.setError(getString(R.string.error_please_input_password));
                 } else {
-                    VerifyStuNumUtils.verifyStuNum(mHandler, tvSchool.getText().toString().trim(),
-                            etStuNum.getText().toString().trim(), etPassword.getText().toString().trim());
+                   VerifyStuNumUtils.verifyStuNum(mHandler, tvSchool.getText().toString().trim(),
+                           etStuNum.getText().toString().trim(), etPassword.getText().toString().trim());
                 }
 //                Intent intent = new Intent(PerfectInformationActivity.this, MainActivity.class);
 //                startActivity(intent);

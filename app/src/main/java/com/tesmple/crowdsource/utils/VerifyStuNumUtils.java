@@ -1,29 +1,27 @@
 package com.tesmple.crowdsource.utils;
 
+import android.content.Intent;
 import android.os.Handler;
-import android.os.Message;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.tesmple.crowdsource.R;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.tesmple.crowdsource.activity.App;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.http.Header;
+import org.apache.http.params.HttpParamsNames;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  * Created by lypeer on 10/12/2015.
  */
 public class VerifyStuNumUtils {
 
-    private static RequestQueue sRequestQueue = Volley.newRequestQueue(App.getContext());
 
     /**
      * 验证学号的方法
@@ -36,55 +34,45 @@ public class VerifyStuNumUtils {
     public static void verifyStuNum(final Handler handler, String schoolName, final String stuNum, final String password) {
         switch (schoolName) {
             case StringUtils.UESTC:
-                StringRequest request = new StringRequest(Request.Method.POST,
-                        "https://uis.uestc.edu.cn/amserver/UI/Login", new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if(response.startsWith("<!--")){
-                            Message message = new Message();
-                            message.what = StringUtils.VERIFY_STUNUM_SUCCESSFULLY;
-                            handler.sendMessage(message);
-                        }else {
-                            Message message = new Message();
-                            message.what = StringUtils.VERIFY_STUNUM_FAILED;
-                            handler.sendMessage(message);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("erroeResponse", error.getClass().getName() + "===" + error.getMessage());
-                        if(error.networkResponse != null){
-                            Message message = new Message();
-                            message.what = StringUtils.VERIFY_STUNUM_FAILED;
-                            handler.sendMessage(message);
-                        }
+                String url = "https://uis.uestc.edu.cn/amserver/UI/Login";
 
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> map = new HashMap<>();
-                        map.put("IDToken1", stuNum);
-                        map.put("IDToken2", password);
-//                        map.put("IDButton" , "Submit");
-//                        map.put("IDToken0" , "");
-//                        map.put("encoded" , "true");
-//                        map.put("goto" , "aHR0cDovL3BvcnRhbC51ZXN0Yy5lZHUuY24vbG9naW4ucG9ydGFs");
-//                        map.put("gx_charset" , "UTF-8");
-                        return map;
-                    }
+                RequestParams params = new RequestParams();
+                params.put("IDToken0" , "");
+                params.put("IDToken1",stuNum);
+                params.put("IDToken2", password);
+                params.put("goto" , "aHR0cDovL3BvcnRhbC51ZXN0Yy5lZHUuY24vbG9naW4ucG9ydGFs");
+                params.put("encoded" , "true");
+                params.put("gx_charset" , "UTF-8");
+                params.put("IDButton" , "Submit");
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.setEnableRedirects(true);
+                client.post(url, params, new AsyncHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                Document doc = Jsoup.parse(new String(responseBody));
+                                String test = doc.title();
+                                Log.e("respinse2" , test);
+                                Log.e("respinse3" , doc.text());
+                                if(test.equals("电子科技大学信息门户")){
+                                    Toast.makeText(App.getContext(), "登陆成功！",
+                                            Toast.LENGTH_SHORT).show();
 
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> map = new HashMap<String, String>();
-//                        map.put("Content-Type", "application/x-www-form-urlencoded");
-                        map.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-                        map.put("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.155 Safari/537.36");
-                        return map;
-                    }
-                };
-                sRequestQueue.add(request);
+                                }
+                                else{
+                                    Toast.makeText(App.getContext(), "登陆失败,请检查密码输入",
+                                            Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                                Log.e("errpr" ,  error.getMessage() + "===" + error.getCause());
+                                Log.e("test","15615614555656565");
+                            }
+
+                        }
+                );
                 break;
 
         }

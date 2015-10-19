@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVQuery;
@@ -208,6 +209,7 @@ public class RegisterActivity extends AppCompatActivity {
                     AVUser avUser = new AVUser();
                     avUser.put("username", etPhone.getText().toString().trim());
                     avUser.put("password", etPassword.getText().toString().trim());
+                    avUser.put("installationId" , AVInstallation.getCurrentInstallation().getInstallationId());
                     avUser.signUpInBackground(new SignUpCallback() {
                         @Override
                         public void done(AVException e) {

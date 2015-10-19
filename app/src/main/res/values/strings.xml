@@ -114,4 +114,5 @@
     <string name="add">+</string>
     <string name="prompt_people">人</string>
     <string name="prompt_applicant">报名</string>
+    <string name="prompt_notification">通知</string>
 </resources>
