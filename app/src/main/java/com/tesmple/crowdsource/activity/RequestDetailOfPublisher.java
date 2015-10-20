@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.AutoCompleteTextView;
 
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
@@ -54,7 +55,9 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         initTabAndViewPager();
     }
 
-
+    /**
+     * 初始化tab和viewpager
+     */
     private void initTabAndViewPager(){
         tlCompliantAndComment = (TabLayout)findViewById(R.id.requestdetailofpublisher_tl_compliantandcomment);
         vpCompliantAndComment = (ViewPager)findViewById(R.id.requestdetailofpublisher_vp_compliantandcomment);
@@ -65,6 +68,9 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         tlCompliantAndComment.setTabMode(TabLayout.MODE_FIXED);
     }
 
+    /**
+     * 初始化tablayout列表和fragment列表
+     */
     private void initList(){
         titleList = new ArrayList<>();
         fragmentList = new ArrayList<>();

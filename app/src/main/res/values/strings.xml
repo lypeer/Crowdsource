@@ -115,4 +115,6 @@
     <string name="prompt_people">人</string>
     <string name="prompt_applicant">报名</string>
     <string name="prompt_notification">通知</string>
+    <string name="comment_et_addcomment">添加评论</string>
+    <string name="comment_bt_commit">发表</string>
 </resources>

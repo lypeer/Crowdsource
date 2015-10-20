@@ -7,14 +7,27 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 
+import com.alibaba.fastjson.JSONObject;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.CommentAdapter;
 import com.tesmple.crowdsource.object.BillComment;
 import com.tesmple.crowdsource.object.Comment;
+import com.tesmple.crowdsource.view.ButtonRectangle;
+
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +57,18 @@ public class CommentFragment extends Fragment implements SwipeRefreshLayout.OnRe
      */
     private CommentAdapter commentAdapter;
 
+    /**
+     * comment fragment的评论输入框
+     */
+    private AutoCompleteTextView commentAutoTvComment;
+
+    /**
+     * 发表评论的button
+     */
+    private ButtonRectangle commentBtrCommiteComment;
+
+    private AVObject bill;
+
     private static List<BillComment> commentList = new ArrayList<>();
 
     @Nullable
@@ -52,6 +77,7 @@ public class CommentFragment extends Fragment implements SwipeRefreshLayout.OnRe
         if(rootView == null){
             rootView = inflater.inflate(R.layout.fragment_comment , container , false);
             initView();
+            setButtons();
         }
         return rootView;
     }
@@ -71,6 +97,68 @@ public class CommentFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         srlComment.setOnRefreshListener(this);
         srlComment.setRefreshing(true);
+
+        commentAutoTvComment = (AutoCompleteTextView)rootView.findViewById(R.id.comment_autotv_comment);
+        commentBtrCommiteComment = (ButtonRectangle)rootView.findViewById(R.id.comment_btr_commitecomment);
+    }
+
+    /**
+     * 设置button监听事件
+     */
+    private void setButtons(){
+        commentBtrCommiteComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    attempCommitComment();
+                } catch (AVException e) {
+                    Log.i("comment===e",e.getMessage()+"+"+e.getCode());
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 尝试发表
+     */
+    private void attempCommitComment() throws AVException {
+        String comment = commentAutoTvComment.getText().toString();
+        if(!comment.equals("")){
+            String tableName = "Bill";
+            bill = new AVObject(tableName);
+            AVQuery<AVObject> query = new AVQuery<AVObject>(tableName);
+            //bill = query.get("56206d5460b2fe711120dff7");
+            query.getInBackground("56206d5460b2fe711120dff7", new GetCallback<AVObject>() {
+                @Override
+                public void done(AVObject avObject, AVException e) {
+                    bill = avObject;
+                    JSONObject myObject = new JSONObject();
+                    /*JSONArray jsonArray = bill.getJSONArray("comment");*/
+                    JSONArray jsonArray = new JSONArray();
+                    //Log.i("jsonArray", String.valueOf(jsonArray.length()));
+                    myObject.put("publisher", "余烜");
+                    myObject.put("comment", "good");
+                    //jsonArray.put("余烜");
+                    jsonArray.put(myObject);
+                    jsonArray.optJSONObject(0);
+                    jsonArray.put(myObject);
+                    bill.put("comment", jsonArray);
+                    bill.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if (e == null) {
+                                Log.i("LeanCloud", "Save successfully.");
+                            } else {
+                                Log.i("1comment===e", e.getMessage() + "+" + e.getCode());
+                                Log.e("LeanCloud", "Save failed.");
+                            }
+                        }
+                    });
+                }
+            });
+            //bill = AVObject.createWithoutData("Bill", "56206d5460b2fe711120dff7");
+        }
     }
 
     @Override
