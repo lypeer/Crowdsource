@@ -48,7 +48,7 @@ public class VerifyStuNumUtils {
                 client.setEnableRedirects(true);
                 client.post(url, params, new AsyncHttpResponseHandler() {
                             @Override
-                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
                                 Document doc = Jsoup.parse(new String(responseBody));
                                 String test = doc.title();
                                 Log.e("respinse2" , test);
@@ -66,10 +66,11 @@ public class VerifyStuNumUtils {
                             }
 
                             @Override
-                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
                                 Log.e("errpr" ,  error.getMessage() + "===" + error.getCause());
                                 Log.e("test","15615614555656565");
                             }
+
 
                         }
                 );*/
