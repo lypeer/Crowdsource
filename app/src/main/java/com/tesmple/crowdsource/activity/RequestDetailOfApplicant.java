@@ -9,8 +9,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
-import com.tesmple.crowdsource.fragment.ApplicantFragment;
-import com.tesmple.crowdsource.fragment.CommentFragment;
+import com.tesmple.crowdsource.fragment.BillCommentFragment;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 
 import java.util.ArrayList;
@@ -70,7 +69,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
 
         titleList.add("评论");
 
-        fragmentList.add(new CommentFragment());
+        fragmentList.add(new BillCommentFragment());
     }
 
     /**

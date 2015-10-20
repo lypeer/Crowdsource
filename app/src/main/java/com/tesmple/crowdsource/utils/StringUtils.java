@@ -117,6 +117,15 @@ public class StringUtils {
     public static final int START_PUSH_TRANSACTION_FAILED = 34;
 
     /**
+     * 表示获取billcomment成功
+     */
+    public static final int START_GET_BILL_COMMENT_SUCCESSFULLY = 35;
+
+    /**
+     * 表示获取billcomment失败
+     */
+    public static final int START_GET_BILL_COMMENT_FAILED = 36;
+    /**
      * 该String值代表AcceptableFragment
      */
     public static final String FRAGMENT_ACCEPTABLE_BILL = "fragment_acceptable_bill";
@@ -135,6 +144,11 @@ public class StringUtils {
      * 该String值代表HistoryBillFragment
      */
     public static final String FRAGMENT_HISTORY_BILL = "fragment_history_bill";
+
+    /**
+     * 该String值代表CommentFragment
+     */
+    public static final String FRAGMENT_BILL_COMMENT = "fragment_bill_comment";
 
     /**
      * 电子科技大学的string值
