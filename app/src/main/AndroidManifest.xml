@@ -37,16 +37,16 @@
         <activity android:name=".activity.PostBillSuccessful">
         </activity>
         <activity android:name=".activity.RequestDetailOfPublisher">
-
-        </activity>
-        <activity
-            android:name=".activity.RequestDetailOfApplicant"
-            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.RequestDetailOfApplicant"
+            android:windowSoftInputMode="adjustPan">
+
         </activity>
     </application>
 

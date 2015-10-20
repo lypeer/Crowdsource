@@ -1,7 +1,10 @@
 package com.tesmple.crowdsource.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,13 +20,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.CommentAdapter;
 import com.tesmple.crowdsource.object.BillComment;
-import com.tesmple.crowdsource.object.Comment;
+import com.tesmple.crowdsource.utils.BillCommentUtils;
+import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 
 
@@ -35,7 +38,7 @@ import java.util.List;
 /**
  * Created by ESIR on 2015/10/18.
  */
-public class CommentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     /**
      * fragment的根布局
@@ -71,6 +74,25 @@ public class CommentFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private static List<BillComment> commentList = new ArrayList<>();
 
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case StringUtils.START_GET_BILL_COMMENT_SUCCESSFULLY:
+                    Log.i("fuck", "fragment有没有反应");
+                    commentList = BillCommentUtils.getBillCommentList(StringUtils.FRAGMENT_BILL_COMMENT);
+                    commentAdapter.refresh(commentList);
+                    srlComment.setRefreshing(false);
+                    break;
+                case StringUtils.START_GET_BILL_COMMENT_FAILED:
+                    Snackbar.make(rvComment, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
+                    srlComment.setRefreshing(false);
+                    break;
+            }
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -100,6 +122,11 @@ public class CommentFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         commentAutoTvComment = (AutoCompleteTextView)rootView.findViewById(R.id.comment_autotv_comment);
         commentBtrCommiteComment = (ButtonRectangle)rootView.findViewById(R.id.comment_btr_commitecomment);
+
+        srlComment.setOnRefreshListener(this);
+        srlComment.setRefreshing(true);
+        BillCommentUtils.clearList(StringUtils.FRAGMENT_BILL_COMMENT);
+        BillCommentUtils.startGetBillCommentTransaction(StringUtils.FRAGMENT_BILL_COMMENT, handler, "56206d5460b2fe711120dff7");
     }
 
     /**
@@ -164,5 +191,7 @@ public class CommentFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onRefresh() {
         srlComment.setRefreshing(true);
+        BillCommentUtils.clearList(StringUtils.FRAGMENT_BILL_COMMENT);
+        BillCommentUtils.startGetBillCommentTransaction(StringUtils.FRAGMENT_BILL_COMMENT, handler, "56206d5460b2fe711120dff7");
     }
 }

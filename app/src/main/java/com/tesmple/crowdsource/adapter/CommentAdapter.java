@@ -3,6 +3,7 @@ package com.tesmple.crowdsource.adapter;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return 0;
+        return commentList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -104,5 +105,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             commentCbFavorite = (CheckBox)itemView.findViewById(R.id.comment_cb_favorite);
             commentTvFavoritenum = (TextView)itemView.findViewById(R.id.comment_tv_favoritenum);
         }
+    }
+
+    /**
+     * 提示数据有了变动，刷新数据的方法
+     * @param billCommentList 变动之后的list
+     */
+    public void refresh(List<BillComment> billCommentList){
+        Log.i("fuck","adapter有没有反应");
+        this.commentList = billCommentList;
+        notifyDataSetChanged();
     }
 }
