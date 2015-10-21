@@ -8,6 +8,9 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;*/
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.tesmple.crowdsource.activity.App;
 
 import org.apache.http.Header;
@@ -35,7 +38,7 @@ public class VerifyStuNumUtils {
         switch (schoolName) {
             case StringUtils.UESTC:
                 String url = "https://uis.uestc.edu.cn/amserver/UI/Login";
-/*
+
                 RequestParams params = new RequestParams();
                 params.put("IDToken0" , "");
                 params.put("IDToken1",stuNum);
@@ -73,7 +76,7 @@ public class VerifyStuNumUtils {
 
 
                         }
-                );*/
+                );
                 break;
 
         }

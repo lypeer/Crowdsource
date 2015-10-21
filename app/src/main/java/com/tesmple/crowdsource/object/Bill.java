@@ -1,10 +1,12 @@
 package com.tesmple.crowdsource.object;
 
+import java.io.Serializable;
+
 /**
  *
  * Created by lypeer on 10/7/2015.
  */
-public class Bill {
+public class Bill implements Serializable {
 
     /**
      * 发布者的手机号

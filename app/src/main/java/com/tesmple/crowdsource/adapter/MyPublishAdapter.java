@@ -3,6 +3,7 @@ package com.tesmple.crowdsource.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,6 +92,25 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
                 }
             }
         });
+
+        if (onItemClickListener != null) {
+            holder.cvBill.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = holder.getLayoutPosition();
+                    onItemClickListener.onItemClick(holder.cvBill, pos);
+                }
+            });
+
+            holder.cvBill.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = holder.getLayoutPosition();
+                    onItemClickListener.onItemLongCick(holder.cvBill, pos);
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -99,6 +119,11 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        /**
+         * 包裹的cardview
+         */
+        private CardView cvBill;
 
         /**
          * 发单者头像的simpledraweeview
@@ -148,6 +173,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
         public MyViewHolder(View itemView) {
             super(itemView);
 
+            cvBill = (CardView)itemView.findViewById(R.id.my_publish_cv_bill);
             sdvHeadPortrait = (SimpleDraweeView) itemView.
                     findViewById(R.id.my_publish_sdv_head_portrait);
             tvName = (TextView) itemView.findViewById(R.id.my_publish_tv_name);

@@ -1,5 +1,6 @@
 package com.tesmple.crowdsource.fragment;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,9 +20,12 @@ import android.widget.ListView;
 
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
+import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
+import com.tesmple.crowdsource.activity.RequestDetailOfPublisher;
 import com.tesmple.crowdsource.adapter.AcceptableAdapter;
 import com.tesmple.crowdsource.adapter.AcceptableBillAdapter;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 
@@ -110,6 +114,21 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
 //        lvBill.setDividerHeight(16);
         rvBill = (RecyclerView)rootView.findViewById(R.id.acceptable_bill_rv_bill);
         adapter = new AcceptableAdapter(getActivity() , billList);
+        adapter.setOnItemClickListener(new AcceptableAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Intent intent = new Intent(getActivity() , RequestDetailOfApplicant.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("bill" , billList.get(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onItemLongCick(View v, int position) {
+
+            }
+        });
 
         rvBill.setAdapter(adapter);
         rvBill.setLayoutManager(new LinearLayoutManager(getActivity()));
