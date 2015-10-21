@@ -125,6 +125,17 @@ public class StringUtils {
      * 表示获取billcomment失败
      */
     public static final int START_GET_BILL_COMMENT_FAILED = 36;
+
+    /**
+     * 表示发送billcomment成功
+     */
+    public static final int START_POST_BILL_COMMENT_SUCCESSFULLY = 37;
+
+    /**
+     * 表示发送billcomment失败
+     */
+    public static final int START_POST_BILL_COMMENT_FAILED = 38;
+
     /**
      * 该String值代表AcceptableFragment
      */

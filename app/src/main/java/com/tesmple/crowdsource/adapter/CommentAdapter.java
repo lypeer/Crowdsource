@@ -54,8 +54,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final BillComment comment = commentList.get(position);
-        holder.commentTvName.setText(comment.getContent());
-        holder.commentTvSchoolName.setText(comment.getContent());
+        holder.commentTvName.setText(comment.getPublisher());
+        holder.commentTvSchoolName.setText("电子科技大学");
         holder.commentTvDetail.setText(comment.getContent());
     }
 
@@ -112,7 +112,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
      * @param billCommentList 变动之后的list
      */
     public void refresh(List<BillComment> billCommentList){
-        Log.i("fuck","adapter有没有反应");
         this.commentList = billCommentList;
         notifyDataSetChanged();
     }
