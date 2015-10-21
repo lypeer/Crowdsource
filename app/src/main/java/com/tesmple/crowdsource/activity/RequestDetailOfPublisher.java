@@ -6,14 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.AutoCompleteTextView;
 
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
-import com.tesmple.crowdsource.fragment.AcceptableBillFragment;
 import com.tesmple.crowdsource.fragment.ApplicantFragment;
-import com.tesmple.crowdsource.fragment.CommentFragment;
-import com.tesmple.crowdsource.fragment.MyPublishFragment;
+import com.tesmple.crowdsource.fragment.BillCommentFragment;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 
 import java.util.ArrayList;
@@ -79,7 +76,7 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         titleList.add("评论");
 
         fragmentList.add(new ApplicantFragment());
-        fragmentList.add(new CommentFragment());
+        fragmentList.add(new BillCommentFragment());
     }
 
     /**
