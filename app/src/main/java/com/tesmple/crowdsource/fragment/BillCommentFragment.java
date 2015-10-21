@@ -80,7 +80,6 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
             super.handleMessage(msg);
             switch (msg.what){
                 case StringUtils.START_GET_BILL_COMMENT_SUCCESSFULLY:
-                    Log.i("fuck", "fragment有没有反应");
                     commentList = BillCommentUtils.getBillCommentList(StringUtils.FRAGMENT_BILL_COMMENT);
                     commentAdapter.refresh(commentList);
                     srlComment.setRefreshing(false);
@@ -88,6 +87,13 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
                 case StringUtils.START_GET_BILL_COMMENT_FAILED:
                     Snackbar.make(rvComment, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
                     srlComment.setRefreshing(false);
+                    break;
+                case StringUtils.START_POST_BILL_COMMENT_SUCCESSFULLY:
+                    BillCommentUtils.clearList(StringUtils.FRAGMENT_BILL_COMMENT);
+                    BillCommentUtils.startGetBillCommentTransaction(StringUtils.FRAGMENT_BILL_COMMENT, handler, "56206d5460b2fe711120dff7");
+                    break;
+                case StringUtils.START_POST_BILL_COMMENT_FAILED:
+                    Snackbar.make(rvComment, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -151,8 +157,12 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
      */
     private void attempCommitComment() throws AVException {
         String comment = commentAutoTvComment.getText().toString();
+        BillComment billComment = new BillComment();
+        billComment.setContent(commentAutoTvComment.getText().toString());
+        billComment.setPublisher("余烜");
         if(!comment.equals("")){
-            String tableName = "Bill";
+            BillCommentUtils.startPostBillCommentTransaction(StringUtils.FRAGMENT_BILL_COMMENT,handler,billComment);
+            /*String tableName = "Bill";
             bill = new AVObject(tableName);
             AVQuery<AVObject> query = new AVQuery<AVObject>(tableName);
             //bill = query.get("56206d5460b2fe711120dff7");
@@ -161,7 +171,7 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
                 public void done(AVObject avObject, AVException e) {
                     bill = avObject;
                     JSONObject myObject = new JSONObject();
-                    /*JSONArray jsonArray = bill.getJSONArray("comment");*/
+                    *//*JSONArray jsonArray = bill.getJSONArray("comment");*//*
                     JSONArray jsonArray = new JSONArray();
                     //Log.i("jsonArray", String.valueOf(jsonArray.length()));
                     myObject.put("publisher", "余烜");
@@ -183,7 +193,7 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
                         }
                     });
                 }
-            });
+            });*/
             //bill = AVObject.createWithoutData("Bill", "56206d5460b2fe711120dff7");
         }
     }

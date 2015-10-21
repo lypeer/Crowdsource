@@ -40,7 +40,9 @@
         </activity>
         <activity android:name=".activity.PostBillSuccessful">
         </activity>
-        <activity android:name=".activity.RequestDetailOfPublisher">
+        <activity
+            android:name=".activity.RequestDetailOfPublisher"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
