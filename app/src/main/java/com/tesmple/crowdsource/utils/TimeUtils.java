@@ -53,6 +53,16 @@ public class TimeUtils {
         return calendar.get(Calendar.MINUTE);
     }
 
+    public static long getCurrentTimeMillis(){
+        return System.currentTimeMillis();
+        /*多种方法
+        timecurrentTimeMillis = System.currentTimeMillis();
+        timeGetTime = new Date().getTime();
+        timeSeconds = System.currentTimeMillis();
+        timeMillis = Calendar.getInstance().getTimeInMillis();
+        */
+    }
+
     /**
      * 将长时间格式字符串转换为时间 yyyy-MM-dd HH:mm:ss
      *
@@ -110,4 +120,5 @@ public class TimeUtils {
     public static Long dateToLong(java.util.Date date){
         return date.getTime();
     }
+
 }

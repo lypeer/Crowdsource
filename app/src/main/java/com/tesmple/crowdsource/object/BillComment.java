@@ -1,5 +1,7 @@
 package com.tesmple.crowdsource.object;
 
+import android.util.Log;
+
 import java.util.Date;
 
 /**
@@ -25,7 +27,7 @@ public class BillComment {
     /**
      * 评论生成的时候的date值
      */
-    private Date creatAt;
+    private Long creatAt;
 
     public String getContent() {
         return content;
@@ -35,11 +37,11 @@ public class BillComment {
         this.content = content;
     }
 
-    public Date getCreatAt() {
+    public Long getCreatAt() {
         return creatAt;
     }
 
-    public void setCreatAt(Date creatAt) {
+    public void setCreatAt(Long creatAt) {
         this.creatAt = creatAt;
     }
 
