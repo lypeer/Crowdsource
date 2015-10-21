@@ -46,5 +46,6 @@ dependencies {
     compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
     compile 'com.facebook.fresco:fresco:0.7.0+'
     compile 'org.jsoup:jsoup:1.8.3'
+
     compile 'com.loopj.android:android-async-http:1.4.9'
 }

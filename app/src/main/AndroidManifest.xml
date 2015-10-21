@@ -33,6 +33,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".activity.PostRequestActivity">
         </activity>
@@ -43,11 +48,6 @@
         <activity
             android:name=".activity.RequestDetailOfPublisher"
             android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.RequestDetailOfApplicant"
