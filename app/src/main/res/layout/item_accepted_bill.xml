@@ -7,6 +7,8 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_margin="4dp"
+        android:clickable="true"
+        android:id="@+id/accepted_bill_cv_bill"
         android:layout_height="wrap_content"
         >
 

@@ -7,6 +7,8 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:id="@+id/my_publish_cv_bill"
         android:layout_margin="4dp"
         >
 

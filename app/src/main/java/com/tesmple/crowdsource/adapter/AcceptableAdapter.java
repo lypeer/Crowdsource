@@ -3,6 +3,7 @@ package com.tesmple.crowdsource.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.gc.materialdesign.views.Card;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.Bill;
 
@@ -88,6 +90,25 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
                 }
             }
         });
+
+        if (onItemClickListener != null) {
+            holder.cvBill.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = holder.getLayoutPosition();
+                    onItemClickListener.onItemClick(holder.cvBill, pos);
+                }
+            });
+
+            holder.cvBill.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = holder.getLayoutPosition();
+                    onItemClickListener.onItemLongCick(holder.cvBill, pos);
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -96,6 +117,11 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        /**
+         * 包裹的cardview
+         */
+        private CardView cvBill;
 
         /**
          * 发单者头像的simpledraweeview
@@ -145,6 +171,7 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
         public MyViewHolder(View itemView) {
             super(itemView);
 
+            cvBill = (CardView)itemView.findViewById(R.id.acceptable_bill_cv_bill);
             sdvHeadPortrait = (SimpleDraweeView) itemView.
                     findViewById(R.id.acceptable_bill_sdv_head_portrait);
             tvName = (TextView) itemView.findViewById(R.id.acceptable_bill_tv_name);

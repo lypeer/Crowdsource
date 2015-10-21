@@ -1,5 +1,6 @@
 package com.tesmple.crowdsource.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
+import com.tesmple.crowdsource.activity.RequestDetailOfPublisher;
 import com.tesmple.crowdsource.adapter.AcceptableAdapter;
 import com.tesmple.crowdsource.adapter.AcceptedBillAdapter;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 
@@ -88,6 +92,26 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
         srlBill = (SwipeRefreshLayout)rootView.findViewById(R.id.accepted_bill_srl_bill);
         rvBill = (RecyclerView)rootView.findViewById(R.id.accepted_bill_rv_bill);
         adapter = new AcceptedBillAdapter(getActivity() , billList);
+        adapter.setOnItemClickListener(new AcceptedBillAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Intent intent;
+                if(billList.get(position).getPublisherPhone().equals(User.getInstance().getUserName())){
+                    intent = new Intent(getActivity() , RequestDetailOfPublisher.class);
+                }else {
+                    intent = new Intent(getActivity() , RequestDetailOfApplicant.class);
+                }
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("bill" , billList.get(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onItemLongCick(View v, int position) {
+
+            }
+        });
 
         rvBill.setAdapter(adapter);
         rvBill.setLayoutManager(new LinearLayoutManager(getActivity()));
