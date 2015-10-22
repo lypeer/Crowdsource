@@ -2,6 +2,9 @@ package com.tesmple.crowdsource.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,10 +20,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.ParseXMLUtils;
@@ -31,6 +39,7 @@ import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.view.LoopListener;
 import com.tesmple.crowdsource.view.LoopView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +48,11 @@ import java.util.Map;
  * Created by lypeer on 10/11/2015.
  */
 public class PerfectInformationActivity extends AppCompatActivity {
+
+    /**
+     * 输入用户的昵称的输入框
+     */
+    private EditText etNickname;
 
     /**
      * 选择用户所在地区的按钮
@@ -95,18 +109,36 @@ public class PerfectInformationActivity extends AppCompatActivity {
      */
     private String cityName;
 
+    /**
+     * 表征dialog是否正在显示的布尔值
+     */
+    private boolean isShowing = false;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case StringUtils.VERIFY_STUNUM_FAILED:
+                    App.dismissDialog();
+                    isShowing = false;
                     Snackbar.make(btnChoosePlace, R.string.error_invalid_stu_num, Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                     break;
                 case StringUtils.VERIFY_STUNUM_SUCCESSFULLY:
+                    Bundle bundle = msg.getData();
+                    String fuckhtml = bundle.getString("fuckhtml");
+                    String[] strings = fuckhtml.split(" ");
+                    initUser(strings);
                     saveInfo();
                     break;
+                case StringUtils.NETWORK_ERROE:
+                    App.dismissDialog();
+                    isShowing = false;
+                    Snackbar.make(btnChoosePlace, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+
+
             }
         }
     };
@@ -134,6 +166,7 @@ public class PerfectInformationActivity extends AppCompatActivity {
      * 初始化控件的方法
      */
     private void init() {
+        etNickname = (EditText) findViewById(R.id.perfectinfo_et_nickname);
         btnChoosePlace = (ButtonFlat) findViewById(R.id.perfectinfo_btn_choose_place);
         tvPlace = (TextView) findViewById(R.id.perfectinfo_tv_place);
         btnChooseSchool = (ButtonFlat) findViewById(R.id.perfectinfo_btn_choose_school);
@@ -142,6 +175,7 @@ public class PerfectInformationActivity extends AppCompatActivity {
         etPassword = (EditText) findViewById(R.id.perfectinfo_et_password);
         btnSure = (ButtonRectangle) findViewById(R.id.perfectinfo_btn_sure);
 
+        etNickname.setError(null);
         etStuNum.setError(null);
         etPassword.setError(null);
 
@@ -160,9 +194,10 @@ public class PerfectInformationActivity extends AppCompatActivity {
                     etStuNum.setError(getString(R.string.error_please_input_stu_num));
                 } else if (etPassword.getText().toString().trim().equals("")) {
                     etPassword.setError(getString(R.string.error_please_input_password));
+                } else if (etNickname.getText().toString().trim().equals("")) {
+                    etNickname.setError(getString(R.string.error_please_input_nickname));
                 } else {
-                   VerifyStuNumUtils.verifyStuNum(mHandler, tvSchool.getText().toString().trim(),
-                           etStuNum.getText().toString().trim(), etPassword.getText().toString().trim());
+                    stuNumIsExist(etStuNum.getText().toString().trim());
                 }
 //                Intent intent = new Intent(PerfectInformationActivity.this, MainActivity.class);
 //                startActivity(intent);
@@ -170,6 +205,55 @@ public class PerfectInformationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 初始化user的方法
+     *
+     * @param strings user的一些信息
+     */
+    private void initUser(String[] strings) {
+        User.getInstance().setNickName(etNickname.getText().toString().trim());
+        User.getInstance().setSchool(tvSchool.getText().toString().trim());
+        User.getInstance().setStuNum(etStuNum.getText().toString().trim());
+        User.getInstance().setName(strings[4]);
+        User.getInstance().setDepartment(strings[22]);
+        User.getInstance().setMajor(strings[24]);
+        User.getInstance().setGender(strings[10]);
+    }
+
+    /**
+     * 验证用户的学号是否已经注册的方法
+     *
+     * @param stuNum 需要验证的学号
+     */
+    private void stuNumIsExist(final String stuNum) {
+        App.showDialog(PerfectInformationActivity.this);
+        isShowing = true;
+        AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+        avQuery.whereEqualTo("stu_num", stuNum);
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (e == null) {
+                    Log.e("sdf", list.toString());
+                    if (list.size() == 0) {
+                        VerifyStuNumUtils.verifyStuNum(mHandler, tvSchool.getText().toString().trim(),
+                                stuNum, etPassword.getText().toString().trim());
+                    } else {
+                        App.dismissDialog();
+                        isShowing = false;
+                        Snackbar.make(btnChoosePlace, R.string.error_stu_num_exist, Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
+                    }
+                } else {
+                    Log.e("StuNumError", e.getMessage() + "===" + e.getCode());
+                    App.dismissDialog();
+                    isShowing = false;
+                    Snackbar.make(btnChoosePlace, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+                }
+            }
+        });
+    }
 
     /**
      * 显示placepicker的方法
@@ -257,22 +341,43 @@ public class PerfectInformationActivity extends AppCompatActivity {
     /**
      * 保存用户的信息的方法
      */
-    private void saveInfo(){
+    private void saveInfo() {
         AVUser avUser = AVUser.getCurrentUser();
-        avUser.put("school" , tvSchool.getText().toString().trim());
-        avUser.put("stu_num" , etStuNum.getText().toString().trim());
+        avUser.put("school", User.getInstance().getSchool());
+        avUser.put("stu_num", User.getInstance().getStuNum());
+        avUser.put("nickname", User.getInstance().getNickName());
+        avUser.put("department", User.getInstance().getDepartment());
+        avUser.put("name", User.getInstance().getName());
+        avUser.put("gender", User.getInstance().getGender());
+        avUser.put("major", User.getInstance().getMajor());
+        Drawable drawable;
+        String gender = User.getInstance().getGender();
+        if (gender.equals(getString(R.string.man))) {
+            drawable = App.getContext().getResources().getDrawable(R.drawable.default_head_portrait_boy);
+        } else {
+            drawable = App.getContext().getResources().getDrawable(R.drawable.default_head_portrait_girl);
+        }
+        Bitmap bitmap = (drawable) != null ? ((BitmapDrawable) drawable).getBitmap() : null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if (bitmap != null) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        }
+        AVFile file = new AVFile("icon.jpeg", stream.toByteArray());
+
+        avUser.put("head_portrait", file);
+
         avUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
-                if(e == null){
-                    Intent intent = new Intent(PerfectInformationActivity.this , MainActivity.class);
+                if (e == null) {
+                    App.dismissDialog();
+                    isShowing = false;
+                    Intent intent = new Intent(PerfectInformationActivity.this, MainActivity.class);
                     startActivity(intent);
-                    //清除前面栈内的所有的activity
-                    finish();
-                    getParent().finish();
-                    getParent().getParent().finish();
-                }else {
-                    Log.e("perfectInfoSaveError" , e.getMessage() + "===" + e.getCode());
+                } else {
+                    App.dismissDialog();
+                    isShowing = false;
+                    Log.e("perfectInfoSaveError", e.getMessage() + "===" + e.getCode());
                     Snackbar.make(btnChoosePlace, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                 }
@@ -286,4 +391,10 @@ public class PerfectInformationActivity extends AppCompatActivity {
         ActivityCollector.removeActivity(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!isShowing) {
+            super.onBackPressed();
+        }
+    }
 }

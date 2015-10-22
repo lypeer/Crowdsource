@@ -125,6 +125,12 @@ public class StringUtils {
      * 表示获取billcomment失败
      */
     public static final int START_GET_BILL_COMMENT_FAILED = 36;
+
+    /**
+     * 表示由于网络原因导致登录失败
+     */
+    public static final int NETWORK_ERROE = 37;
+
     /**
      * 该String值代表AcceptableFragment
      */

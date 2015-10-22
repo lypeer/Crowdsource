@@ -15,11 +15,61 @@
         <com.gc.materialdesign.views.ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_nickname"/>
+
+                        <TextView
+                            android:layout_width="84dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/prompt_nickname"
+                            android:layout_marginLeft="4dp"
+                            android:textSize="18sp"/>
+                    </LinearLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="40dp"
+                        android:gravity="center"
+                        >
+
+                        <EditText
+                            android:id="@+id/perfectinfo_et_nickname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:singleLine="true"
+                            android:gravity="right"
+                            android:hint="@string/prompt_please_input_nickname"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:layout_marginLeft="136dp"
+                    android:background="@color/colorGrey"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -42,6 +92,7 @@
                             android:layout_width="84dp"
                             android:layout_height="wrap_content"
                             android:text="@string/prompt_place"
+                            android:layout_marginLeft="4dp"
                             android:textSize="18sp"/>
                     </LinearLayout>
 
@@ -108,6 +159,7 @@
                             android:layout_width="84dp"
                             android:layout_height="wrap_content"
                             android:text="@string/prompt_school"
+                            android:layout_marginLeft="4dp"
                             android:textSize="18sp"/>
                     </LinearLayout>
 
@@ -176,6 +228,7 @@
                             android:layout_width="84dp"
                             android:layout_height="wrap_content"
                             android:text="@string/prompt_stu_num"
+                            android:layout_marginLeft="4dp"
                             android:textSize="18sp"/>
                     </LinearLayout>
 
@@ -228,6 +281,7 @@
                             android:layout_width="84dp"
                             android:layout_height="wrap_content"
                             android:text="@string/login_password"
+                            android:layout_marginLeft="4dp"
                             android:textSize="18sp"/>
                     </LinearLayout>
 
