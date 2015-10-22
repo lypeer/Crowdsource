@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -7,50 +7,46 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/comment_srl_comment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/comment_li_footinput">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/comment_rv_comment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/comment_li_footinput"
                 >
             </android.support.v7.widget.RecyclerView>
-            <LinearLayout
-                android:id="@+id/comment_li_footinput"
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <LinearLayout
+        android:id="@+id/comment_li_footinput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal">
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <AutoCompleteTextView
+                android:id="@+id/comment_autotv_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:orientation="horizontal">
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                android:layout_gravity="center_vertical"
+                android:hint="@string/comment_et_addcomment"
+                android:singleLine="true"
+                />
 
-                        <AutoCompleteTextView
-                            android:id="@+id/comment_autotv_comment"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:hint="@string/comment_et_addcomment"
-                            android:singleLine="true"
-                            />
+        </android.support.design.widget.TextInputLayout>
 
-                    </android.support.design.widget.TextInputLayout>
-
-                    <com.tesmple.crowdsource.view.ButtonRectangle
-                        android:id="@+id/comment_btr_commitecomment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:background="@color/colorPrimary"
-                        android:text="@string/comment_bt_commit">
-                    </com.tesmple.crowdsource.view.ButtonRectangle>
-            </LinearLayout>
-        </RelativeLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+        <com.tesmple.crowdsource.view.ButtonRectangle
+            android:id="@+id/comment_btr_commitecomment"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimary"
+            android:text="@string/comment_bt_commit">
+        </com.tesmple.crowdsource.view.ButtonRectangle>
+    </LinearLayout>
+</RelativeLayout>
