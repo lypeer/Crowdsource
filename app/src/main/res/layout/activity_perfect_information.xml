@@ -36,7 +36,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_nickname"/>
+                            android:src="@drawable/ic_star_full_24dp"/>
 
                         <TextView
                             android:layout_width="84dp"
