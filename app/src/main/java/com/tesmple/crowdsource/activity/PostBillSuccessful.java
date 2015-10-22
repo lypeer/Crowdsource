@@ -23,7 +23,6 @@ public class PostBillSuccessful extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postbillsuccessful);
-        ActivityCollector.addActivity(this);
         initToolbar();
         goBack();
     }
@@ -40,7 +39,7 @@ public class PostBillSuccessful extends AppCompatActivity {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(PostBillSuccessful.this,MyPublishFragment.class);
+                Intent intent = new Intent(PostBillSuccessful.this,MainActivity.class);
                 startActivity(intent);
                 finish();
             }

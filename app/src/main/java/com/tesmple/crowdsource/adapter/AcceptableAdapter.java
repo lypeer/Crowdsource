@@ -19,6 +19,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.Card;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.User;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -73,6 +74,7 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
         holder.tvLeftTimeSecond.setText(timeLeft.split(":")[2]);
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+        avQuery.whereEqualTo("username", bill.getPublisherPhone());
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
