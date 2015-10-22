@@ -84,6 +84,58 @@ public class User {
      */
     private String status;
 
+    /**
+     * 用户的昵称
+     */
+    private String nickName;
+
+    /**
+     * 用户的学院
+     */
+    private String department;
+
+    /**
+     * 用户的专业
+     */
+    private String major;
+
+    /**
+     * 用户的年级
+     */
+    private String grade;
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
     public String getAcceptStar() {
         return acceptStar;
     }

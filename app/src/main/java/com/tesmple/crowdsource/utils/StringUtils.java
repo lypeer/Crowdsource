@@ -127,14 +127,19 @@ public class StringUtils {
     public static final int START_GET_BILL_COMMENT_FAILED = 36;
 
     /**
+     * 表示由于网络原因导致登录失败
+     */
+    public static final int NETWORK_ERROE = 37;
+
+    /**
      * 表示发送billcomment成功
      */
-    public static final int START_POST_BILL_COMMENT_SUCCESSFULLY = 37;
+    public static final int START_POST_BILL_COMMENT_SUCCESSFULLY = 38;
 
     /**
      * 表示发送billcomment失败
      */
-    public static final int START_POST_BILL_COMMENT_FAILED = 38;
+    public static final int START_POST_BILL_COMMENT_FAILED = 39;
 
     /**
      * 该String值代表AcceptableFragment
