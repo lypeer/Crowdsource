@@ -234,7 +234,6 @@ public class PerfectInformationActivity extends AppCompatActivity {
             @Override
             public void done(List<AVObject> list, AVException e) {
                 if (e == null) {
-                    Log.e("sdf", list.toString());
                     if (list.size() == 0) {
                         VerifyStuNumUtils.verifyStuNum(mHandler, tvSchool.getText().toString().trim(),
                                 stuNum, etPassword.getText().toString().trim());

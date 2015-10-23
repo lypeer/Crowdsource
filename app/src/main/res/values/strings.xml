@@ -124,4 +124,14 @@
     <string name="man">男</string>
     <string name="error_stu_num_exist">您输入的学号已注册！</string>
     <string name="hint_billdetailinput">输入#可以添加标签哦</string>
+    <string name="push_become_applicant">我报名了你的任务，快来选择我吧</string>
+    <string name="push_become_confirmer">我已指派你来完成我的任务，注意时间哦！</string>
+    <string name="push_not_become_applicant">嘿嘿，我已经把任务指派给其他人，下次合作吧^-^</string>
+    <string name="push_have_robbed">我已成功抢单，合作愉快~</string>
+    <string name="push_publisher_remove_bill">不好意思T_T，临时有些事情，耽误你的时间了</string>
+    <string name="push_confirmer_remove_bill">不好意思T_T，临时有些事情，不能继续完成你发的任务了，你可以通过本页下面的“重新发布”按键重新发布任务</string>
+    <string name="push_finish_bill">十分感谢帮我完成任务！收到报酬了么^_^</string>
+    <string name="push_remind_publisher">快到达你所规定的截至时间啦，如果对方完成任务记得确认哦，如果对方未完成也一定要通知我们哦，请尽快做出选择</string>
+    <string name="push_system_finish">由于在截至时间后的24小时您一直未做出评价，系统已帮您确认，如有任何问题请联系我们</string>
+    <string name="test_time">一分钟前</string>
 </resources>

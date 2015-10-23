@@ -39,7 +39,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void run() {
                 initUser();
             }
-        }, 1000);
+        }, 1500);
     }
 
 
@@ -58,36 +58,47 @@ public class WelcomeActivity extends AppCompatActivity {
                         User.getInstance().setStuNum((String) avObject.get("stu_num"));
                         User.getInstance().setSchool((String) avObject.get("school"));
                         User.getInstance().setGender((String) avObject.get("gender"));
-                        User.getInstance().setHeadProtrait(avObject.getAVFile("head_portrait").getUrl());
                         User.getInstance().setCreditValue((String) avObject.get("credit_value"));
                         User.getInstance().setSendStar((String) avObject.get("send_star"));
                         User.getInstance().setAcceptStar((String) avObject.get("accept_star"));
                         User.getInstance().setStatus((String) avObject.get("status"));
+                        User.getInstance().setNickName((String) avObject.get("nickname"));
+                        User.getInstance().setDepartment((String) avObject.get("department"));
+                        User.getInstance().setMajor((String) avObject.get("major"));
 
-                        if (!avObject.get("installationId").equals(AVInstallation.getCurrentInstallation().getInstallationId())) {
-                            avObject.put("installationId", AVInstallation.getCurrentInstallation().getInstallationId());
-                            avObject.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(AVException e) {
-                                    if (e == null) {
-                                        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }else {
-                                        Log.e("AppSaveError", e.getMessage() + "===" + e.getCode());
-                                        Snackbar.make(findViewById(R.id.iv_welcome), R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                                                .setAction("Action", null).show();
-                                        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
-                                        startActivity(intent);
-                                        finish();
+                        if (avObject.get("nickname") != null) {
+                            User.getInstance().setHeadProtrait(avObject.getAVFile("head_portrait").getUrl());
+
+                            if (!avObject.get("installationId").equals(AVInstallation.getCurrentInstallation().getInstallationId())) {
+                                avObject.put("installationId", AVInstallation.getCurrentInstallation().getInstallationId());
+                                avObject.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        if (e == null) {
+                                            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Log.e("AppSaveError", e.getMessage() + "===" + e.getCode());
+                                            Snackbar.make(findViewById(R.id.iv_welcome), R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                                    .setAction("Action", null).show();
+                                            Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            } else {
+                                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
                         } else {
-                            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                            Intent intent = new Intent(WelcomeActivity.this, PerfectInformationActivity.class);
                             startActivity(intent);
                             finish();
                         }
+
                     } else {
                         Log.e("AppError", e.getMessage() + "===" + e.getCode());
                         Snackbar.make(findViewById(R.id.iv_welcome), R.string.please_check_your_network, Snackbar.LENGTH_SHORT)

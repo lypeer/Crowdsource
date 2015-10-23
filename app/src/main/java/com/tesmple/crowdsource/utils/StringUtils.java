@@ -142,6 +142,16 @@ public class StringUtils {
     public static final int START_POST_BILL_COMMENT_FAILED = 39;
 
     /**
+     * 表示推送失败
+     */
+    public static final int PUSH_FAILED = 40;
+
+    /**
+     * 表示推送成功
+     */
+    public static final int PUSH_SUCCESSFULLY = 41;
+
+    /**
      * 该String值代表AcceptableFragment
      */
     public static final String FRAGMENT_ACCEPTABLE_BILL = "fragment_acceptable_bill";
@@ -165,6 +175,53 @@ public class StringUtils {
      * 该String值代表CommentFragment
      */
     public static final String FRAGMENT_BILL_COMMENT = "fragment_bill_comment";
+
+    /**
+     * 表示用户成为申请者时的推送
+     */
+    public static final String PUSH_BECOME_APPLICANT = "push_become_applicant";
+
+    /**
+     * 表示用户成为确认者时的推送
+     */
+    public static final String PUSH_BECOME_COMFIRMER = "push_become_confirmer";
+
+    /**
+     * 表示用户被拒绝成为确认者时的推送
+     */
+    public static final String PUSH_NOT_BECOME_COMFIRMER = "push_not_become_confirmer";
+
+    /**
+     * 表示抢单模式中有人抢了用户的单时的推送
+     */
+    public static final String PUSH_HAVE_ROBBED = "push_have_robbed";
+
+    /**
+     * 表示发单者撤单时的推送
+     */
+    public static final String PUSH_PUBLISHER_REMOVE_BILL = "push_publisher_remove_bill";
+
+    /**
+     * 表示接单者撤单时的推送
+     */
+    public static final String PUSH_CONFIRMER_REMOVE_BILL = "push_confirmer_remove_bill";
+
+    /**
+     * 表示发单者确认完成订单时的
+     */
+    public static final String PUSH_FINISH_BILL = "push_finish_bill";
+
+    /**
+     * 表示提醒发单者记得确认的推送
+     */
+    public static final String PUSH_REMIND_PUBLISHER = "push_remind_publisher";
+
+    /**
+     * 表示系统自动确认的推送
+     */
+    public static final String PUSH_SYSTEM_FINISH = "push_system_finish";
+
+
 
     /**
      * 电子科技大学的string值
