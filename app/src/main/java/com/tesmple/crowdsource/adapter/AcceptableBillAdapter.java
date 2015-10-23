@@ -94,6 +94,7 @@ public class AcceptableBillAdapter extends BaseAdapter {
         viewHolder.tvLeftTimeSecond.setText(timeLeft.split(":")[2]);
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+        avQuery.whereEqualTo("username", bill.getPublisherPhone());
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {

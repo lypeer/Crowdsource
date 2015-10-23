@@ -192,6 +192,7 @@ public class BillUtils {
     public static void publishBill(final Handler handler, Bill bill) {
         AVObject avObject = new AVObject("Bill");
         avObject.put("publisher_phone", bill.getPublisherPhone());
+        avObject.put("publiser_school",bill.getPublisherSchool());
         avObject.put("award", bill.getAward());
         avObject.put("detail", bill.getDetail());
         avObject.put("deadline", bill.getDeadline());

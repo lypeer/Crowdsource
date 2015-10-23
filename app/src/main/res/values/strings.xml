@@ -123,6 +123,7 @@
     <string name="error_please_input_nickname">请输入昵称</string>
     <string name="man">男</string>
     <string name="error_stu_num_exist">您输入的学号已注册！</string>
+    <string name="hint_billdetailinput">输入#可以添加标签哦</string>
     <string name="push_become_applicant">我报名了你的任务，快来选择我吧</string>
     <string name="push_become_confirmer">我已指派你来完成我的任务，注意时间哦！</string>
     <string name="push_not_become_applicant">嘿嘿，我已经把任务指派给其他人，下次合作吧^-^</string>

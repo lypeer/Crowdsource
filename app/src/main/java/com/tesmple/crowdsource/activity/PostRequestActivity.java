@@ -30,10 +30,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
+/*
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.SaveCallback;
+import com.avos.avoscloud.SaveCallback;*/
 import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.tesmple.crowdsource.R;
@@ -480,7 +480,9 @@ public class PostRequestActivity extends AppCompatActivity {
         }
 
         newBill = new Bill();
+        newBill.setPublisherName(User.getInstance().getName());
         newBill.setPublisherPhone(User.getInstance().getUserName());
+        newBill.setPublisherSchool(User.getInstance().getSchool());
         newBill.setAward(award);
         newBill.setDetail(postrequestEtBillDescription.getText().toString());
         java.util.Date tempDate = TimeUtils.strToDateLong(deadline);

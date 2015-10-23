@@ -142,6 +142,6 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
         tvName.setText(bill.getPublisherName());
         tvSchool.setText(bill.getPublisherSchool());
-        tvSchool.setText(bill.getDetail());
+        tvDetail.setText(bill.getDetail());
     }
 }

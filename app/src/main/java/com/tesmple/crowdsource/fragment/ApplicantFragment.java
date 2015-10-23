@@ -94,6 +94,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
         applicant5.setApplicantIsChecked(false);
         applicant5.setApplicantCreditValue(5);
 
+        applicantList.clear();
         applicantList.add(applicant1);
         applicantList.add(applicant2);
         applicantList.add(applicant3);

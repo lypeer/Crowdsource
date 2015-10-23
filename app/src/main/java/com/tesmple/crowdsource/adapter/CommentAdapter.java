@@ -2,6 +2,8 @@ package com.tesmple.crowdsource.adapter;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.Bill;
@@ -52,11 +58,29 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+        AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         final BillComment comment = commentList.get(position);
-        holder.commentTvName.setText(comment.getPublisher());
-        holder.commentTvSchoolName.setText("电子科技大学");
-        holder.commentTvDetail.setText(comment.getContent());
+        avQuery.whereEqualTo("username", comment.getPublisher());
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (e == null) {
+                    Bill bill = new Bill();
+                    bill.setPublisherName((String) list.get(0).get("name"));
+                    bill.setPublisherSchool((String) list.get(0).get("school"));
+                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
+                    holder.commentSdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
+                    holder.commentTvName.setText(bill.getPublisherName());
+                    holder.commentTvSchoolName.setText(bill.getPublisherSchool());
+                    holder.commentTvDetail.setText(comment.getContent());
+                } else {
+                    Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
+                    Snackbar.make(holder.itemView, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+                }
+            }
+        });
     }
 
     @Override

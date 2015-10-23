@@ -60,7 +60,7 @@ public class AcceptedBillAdapter extends RecyclerView.Adapter<AcceptedBillAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final Bill bill = billsList.get(position);
+        final Bill  bill = billsList.get(position);
         holder.tvStatus.setText(bill.getStatus());
         holder.tvDetail.setText(bill.getDetail());
         holder.tvAward.setText(bill.getAward());
@@ -72,6 +72,7 @@ public class AcceptedBillAdapter extends RecyclerView.Adapter<AcceptedBillAdapte
         holder.tvLeftTimeSecond.setText(timeLeft.split(":")[2]);
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+        avQuery.whereEqualTo("username", bill.getPublisherPhone());
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
