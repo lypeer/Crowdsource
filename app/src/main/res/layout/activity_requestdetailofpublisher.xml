@@ -125,7 +125,7 @@
                                 android:textSize="24sp"/>
 
                             <TextView
-                                android:id="@+id/acceptable_bill_tv_award"
+                                android:id="@+id/requestdetailofpublisher_tv_award"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/test_award"
@@ -162,7 +162,7 @@
                             android:text="@string/prompt_hour"/>
 
                         <TextView
-                            android:id="@+id/requestdetailofpublisher_left_time_minutes"
+                            android:id="@+id/requestdetailofpublisher_tv_left_time_minutes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/test_minutes"
