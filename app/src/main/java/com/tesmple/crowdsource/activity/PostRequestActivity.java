@@ -536,7 +536,7 @@ public class PostRequestActivity extends AppCompatActivity {
         newBill.setLocation("");
         newBill.setAcceptDeadline("");
         newBill.setContactWay(getContactWay());
-        BillUtils.publishBill(handler , newBill);
+        BillUtils. publishBill(handler , newBill);
     }
 
     /**
