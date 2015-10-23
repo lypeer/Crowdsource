@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * 主界面的viewpager
      */
-    private ViewPager vpMain;
+    private static ViewPager  vpMain;
 
     /**
      * 装viewpager的每一个界面的list
@@ -154,6 +154,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * 外部修改viewpager的页面
+     * @param i
+     */
+    public static void changeViewpagerItem(int i){
+        vpMain.setCurrentItem(i);
     }
 
     @Override
