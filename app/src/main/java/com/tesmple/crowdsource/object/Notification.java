@@ -25,6 +25,19 @@ public class Notification {
      */
     private String content;
 
+    /**
+     * 用户是否已读这条通知，如果已读就为true，如果未读就为false
+     */
+    private boolean isRead;
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
+    }
+
     public String getType() {
         return type;
     }

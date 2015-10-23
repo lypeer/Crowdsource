@@ -134,4 +134,6 @@
     <string name="push_remind_publisher">快到达你所规定的截至时间啦，如果对方完成任务记得确认哦，如果对方未完成也一定要通知我们哦，请尽快做出选择</string>
     <string name="push_system_finish">由于在截至时间后的24小时您一直未做出评价，系统已帮您确认，如有任何问题请联系我们</string>
     <string name="test_time">一分钟前</string>
+    <string name="prompt_new_notification">通知\t\t(有新通知)</string>
+    <string name="prompt_point">.</string>
 </resources>
