@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ActivityCollector.addActivity(LoginActivity.this);
+        ActivityCollector.finishAllExceptNow(LoginActivity.this);
         initViewBind();
         initToolbar();
         setButtons();
@@ -177,10 +178,13 @@ public class LoginActivity extends AppCompatActivity{
                             User.getInstance().setSchool((String) user.get("school"));
                             User.getInstance().setGender((String) user.get("gender"));
                             User.getInstance().setHeadProtrait(user.getAVFile("head_portrait").getUrl());
-                            User.getInstance().setCreditValue((String)user.get("credit_value"));
-                            User.getInstance().setSendStar((String)user.get("send_star"));
+                            User.getInstance().setCreditValue((String) user.get("credit_value"));
+                            User.getInstance().setSendStar((String) user.get("send_star"));
                             User.getInstance().setAcceptStar((String) user.get("accept_star"));
                             User.getInstance().setStatus((String) user.get("status"));
+                            User.getInstance().setNickName((String) user.get("nickname"));
+                            User.getInstance().setDepartment((String) user.get("department"));
+                            User.getInstance().setMajor((String) user.get("major"));
 
                             if (!user.get("installationId").equals(AVInstallation.getCurrentInstallation().getInstallationId())) {
                                 user.put("installationId", AVInstallation.getCurrentInstallation().getInstallationId());

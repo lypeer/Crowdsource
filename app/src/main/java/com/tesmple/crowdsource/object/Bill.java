@@ -39,7 +39,7 @@ public class Bill implements Serializable {
     private String status;
 
     /**
-     * 申请者的手机号，使用字符串拼接的方式，用“+”拼接
+     * 申请者的手机号，使用字符串拼接的方式，用“=”拼接
      */
     private String applicant;
 

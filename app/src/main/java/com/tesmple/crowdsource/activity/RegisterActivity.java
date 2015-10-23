@@ -16,10 +16,12 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.RequestMobileCodeCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.gc.materialdesign.views.CheckBox;
 import com.tesmple.crowdsource.R;
@@ -209,14 +211,30 @@ public class RegisterActivity extends AppCompatActivity {
                     AVUser avUser = new AVUser();
                     avUser.put("username", etPhone.getText().toString().trim());
                     avUser.put("password", etPassword.getText().toString().trim());
-                    avUser.put("installationId" , AVInstallation.getCurrentInstallation().getInstallationId());
+                    avUser.put("installationId", AVInstallation.getCurrentInstallation().getInstallationId());
                     avUser.signUpInBackground(new SignUpCallback() {
                         @Override
                         public void done(AVException e) {
                             if (e == null) {
                                 User.getInstance().setUserName(etPhone.getText().toString().trim());
-                                Intent intent = new Intent(RegisterActivity.this, PerfectInformationActivity.class);
-                                startActivity(intent);
+                                AVObject avObject = new AVObject("UserHelper");
+                                avObject.put("username", User.getInstance().getUserName());
+                                avObject.put("notification", "");
+                                avObject.put("user_comment", "");
+                                avObject.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        if (e == null) {
+                                            Intent intent = new Intent(RegisterActivity.this, PerfectInformationActivity.class);
+                                            startActivity(intent);
+                                        }else {
+                                            Log.e("RegisterHelperSaveError", e.getMessage() + "===" + e.getCode());
+                                            Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                                    .setAction("Action", null).show();
+                                        }
+                                    }
+                                });
+
                             } else {
                                 Log.e("RegisterVerifyError", e.getMessage() + "===" + e.getCode());
                                 Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
@@ -255,21 +273,19 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void done(List<AVUser> list, AVException e) {
                 if (e == null) {
-                    if (list.get(0) != null) {
+                    if (list.size() != 0) {
                         App.dismissDialog();
                         Snackbar.make(btnRegister, R.string.phone_has_registered, Snackbar.LENGTH_SHORT)
                                 .setAction("Action", null).show();
+                    } else {
+                        sendMessage(phoneNum);
                     }
                 } else {
-                    //错误码为0表示找不到当前用户
-                    if (e.getCode() == 0) {
-                        sendMessage(phoneNum);
-                    } else {
-                        Log.e("Register_isExist", e.getMessage() + "===" + e.getCode());
-                        App.dismissDialog();
-                        Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
-                    }
+                    Log.e("Register_isExist", e.getMessage() + "===" + e.getCode());
+                    App.dismissDialog();
+                    Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+
                 }
 
             }
