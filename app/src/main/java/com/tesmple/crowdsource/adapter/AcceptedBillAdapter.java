@@ -18,8 +18,10 @@ import com.avos.avoscloud.FindCallback;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.utils.TimeUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,11 +67,11 @@ public class AcceptedBillAdapter extends RecyclerView.Adapter<AcceptedBillAdapte
         holder.tvDetail.setText(bill.getDetail());
         holder.tvAward.setText(bill.getAward());
         //剩余时间
-        String timeLeft = new SimpleDateFormat("HH:mm:ss", Locale.CHINESE).
-                format(bill.getDeadline() - System.currentTimeMillis());
-        holder.tvLeftTimeHour.setText(timeLeft.split(":")[0]);
-        holder.tvLeftTimeMinutes.setText(timeLeft.split(":")[1]);
-        holder.tvLeftTimeSecond.setText(timeLeft.split(":")[2]);
+        ArrayList<String> timeList = new ArrayList<String>();
+        timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
+        holder.tvLeftTimeHour.setText(timeList.get(0));
+        holder.tvLeftTimeMinutes.setText(timeList.get(1));
+        holder.tvLeftTimeSecond.setText(timeList.get(2));
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.whereEqualTo("username", bill.getPublisherPhone());
