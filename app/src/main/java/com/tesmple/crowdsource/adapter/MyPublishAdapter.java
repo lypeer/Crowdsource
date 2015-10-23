@@ -64,7 +64,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final  Bill bill = billsList.get(position);
+        final Bill bill = billsList.get(position);
         holder.tvStatus.setText(bill.getStatus());
         holder.tvDetail.setText(bill.getDetail());
         holder.tvApplicantNum.setText(Integer.toString(bill.getApplicant().
