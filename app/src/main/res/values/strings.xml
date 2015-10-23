@@ -137,4 +137,6 @@
     <string name="please_input_right_award">请输入正确的支付报酬(仅限数字)</string>
     <string name="bill_description_cannot_be_empty">订单详情不能为空哦</string>
     <string name="billDeadLine">billDeadLine</string>
+    <string name="prompt_new_notification">通知\t\t(有新通知)</string>
+    <string name="prompt_point">.</string>
 </resources>

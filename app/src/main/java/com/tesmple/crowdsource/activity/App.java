@@ -13,6 +13,7 @@ import com.avos.avoscloud.PushService;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.object.NotificationLab;
 
 /**
  * Created by lypeer on 10/7/2015.
@@ -46,6 +47,7 @@ public class App extends Application {
         Fresco.initialize(mAppContext);
         PushService.setDefaultPushCallback(mAppContext, NotificationActivity.class);
         PushService.subscribe(mAppContext, "public", NotificationActivity.class);
+
     }
 
     /**
