@@ -3,6 +3,8 @@ package com.tesmple.crowdsource.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -16,9 +18,16 @@ import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
 import com.tesmple.crowdsource.fragment.BillCommentFragment;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.utils.ActivityCollector;
+import com.tesmple.crowdsource.utils.TimeUtils;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.xml.validation.TypeInfoProvider;
 
 /**
  * Created by ESIR on 2015/10/19.
@@ -69,6 +78,44 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
      */
     private Bill bill;
 
+    /**
+     * bill的奖励textview
+     */
+    private TextView tvAward;
+
+    /**
+     * 小时倒计时
+     */
+    private TextView tvHour;
+
+    /**
+     * 分钟倒计时
+     */
+    private TextView tvMinute;
+
+    /**
+     * 秒钟倒计时
+     */
+    private TextView tvSecond;
+
+    /**
+     * 剩余时间list，0为小时数，1为分钟数，2为秒数
+     */
+    private ArrayList<String> timeList = new ArrayList<String>();
+
+    public final Handler handler = new android.os.Handler(){
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case 1:
+                    timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
+                    tvHour.setText(timeList.get(0));
+                    tvMinute.setText(timeList.get(1));
+                    tvSecond.setText(timeList.get(2));
+                break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +125,23 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         initToolbar();
         initTabAndViewPager();
         setView();
+        startUpdateTime();
+    }
+
+    /**
+     * 开始倒计时
+     */
+    private void startUpdateTime() {
+        Timer timer = new Timer(true);
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+        };
+        timer.schedule(timerTask,0,1000);
     }
 
     private void initView(){
@@ -85,6 +149,10 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvName = (TextView)findViewById(R.id.requestdetailofapplicant_tv_name);
         tvSchool = (TextView)findViewById(R.id.requestdetailofapplicant_tv_school);
         tvDetail = (TextView)findViewById(R.id.requestdetailofapplicant_tv_detail);
+        tvAward = (TextView)findViewById(R.id.requestdetailofapplicant_tv_award);
+        tvHour = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_hour);
+        tvMinute = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_minutes);
+        tvSecond = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_second);
     }
 
     /**
@@ -139,5 +207,11 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvName.setText(bill.getPublisherName());
         tvSchool.setText(bill.getPublisherSchool());
         tvDetail.setText(bill.getDetail());
+        tvAward.setText(bill.getAward());
+        ArrayList<String> timeList = new ArrayList<String>();
+        timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
+        tvHour.setText(timeList.get(0));
+        tvMinute.setText(timeList.get(1));
+        tvSecond.setText(timeList.get(2));
     }
 }

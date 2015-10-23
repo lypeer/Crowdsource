@@ -50,6 +50,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Handler;
@@ -168,8 +169,7 @@ public class PostRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postrequest);
-        ArrayList<String> fuck  = TimeUtils.long2hourminutesecond(70000);
-        Log.i("deadline", fuck.get(0) + " " + fuck.get(1) + " " + fuck.get(2));
+        /*ArrayList<String> fuck  = TimeUtils.long2hourminutesecond(70000);*/
         initViewBind();
         initToolbar();
         initRadioGroup();
@@ -188,8 +188,12 @@ public class PostRequestActivity extends AppCompatActivity {
         postrequestBtflatDatepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(PostRequestActivity.this, new DatePickerDialog.OnDateSetListener() {
-
+                final Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+                cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+                cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+                cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+                DatePickerDialog dialog = new DatePickerDialog(PostRequestActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         String stYear, stMonth, stDay;
@@ -198,7 +202,10 @@ public class PostRequestActivity extends AppCompatActivity {
                         stDay = String.valueOf((dayOfMonth < 10) ? "0" + dayOfMonth : dayOfMonth);
                         postrequestBtflatDatepicker.setText(stYear + "-" + stMonth + "-" + stDay);
                     }
-                }, TimeUtils.getNowYear(), TimeUtils.getNowMonth() - 1, TimeUtils.getNowDay()).show();
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+                        .get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
+                dialog.show();
             }
         });
     }
@@ -482,15 +489,36 @@ public class PostRequestActivity extends AppCompatActivity {
     private void attempPostBill(){
         String award = postrequestEtAward.getText().toString();
         String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText()+":00";
-        if(EditTextUtils.isNumber(award)){
+        if (EditTextUtils.isNumber(award)){
             Snackbar.make(postrequestBtrecPostbill, R.string.please_input_right_award,Snackbar.LENGTH_LONG).show();
             return;
         }
-        if(EditTextUtils.isEmpty(postrequestEtBillDescription.getText().toString())){
+        if (EditTextUtils.isEmpty(postrequestEtBillDescription.getText().toString())){
             Snackbar.make(postrequestBtrecPostbill, R.string.bill_description_cannot_be_empty,Snackbar.LENGTH_LONG).show();
             return;
         }
-
+        java.util.Date tempDate = TimeUtils.strToDateLong(deadline);
+        Long longTempTime = TimeUtils.dateToLong(tempDate);
+        if (longTempTime - System.currentTimeMillis() <= 0){
+            Snackbar.make(postrequestBtrecPostbill,"截止时间不可以是过去时哦(＞﹏＜)",Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        if (longTempTime - System.currentTimeMillis() <= 5 * 60 * 1000){
+            Snackbar.make(postrequestBtrecPostbill,"截止时间小于5分钟哦，发布失败(＞﹏＜)",Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        if (longTempTime - System.currentTimeMillis() >= 72 * 60 * 60 *1000){
+            Snackbar.make(postrequestBtrecPostbill,"截止时间超过72小时啦，发布失败(＞﹏＜)",Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        if (EditTextUtils.isEmpty(postrequestEtBillDescription.getText().toString())){
+            Snackbar.make(postrequestBtrecPostbill,"具体描述不可以为空",Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        if (getContactWay().equals("000")){
+            Snackbar.make(postrequestBtrecPostbill,"请选择至少一种联系途径",Snackbar.LENGTH_LONG).show();
+            return;
+        }
 
         newBill = new Bill();
         newBill.setPublisherName(User.getInstance().getName());
@@ -498,14 +526,7 @@ public class PostRequestActivity extends AppCompatActivity {
         newBill.setPublisherSchool(User.getInstance().getSchool());
         newBill.setAward(award);
         newBill.setDetail(postrequestEtBillDescription.getText().toString());
-        java.util.Date tempDate = TimeUtils.strToDateLong(deadline);
-        Log.i("posttime1", tempDate.toString());
-
         newBill.setDeadline(TimeUtils.dateToLong(tempDate));
-        Log.i("posttime2", TimeUtils.dateToLong(tempDate).toString());
-        //Log.i("nowtime3", System.currentTimeMillis() + "");
-        Log.i("lefttime",TimeUtils.longToDate(1000l).toString());
-        //Log.i("nowtime3", new SimpleDateFormat("HH:mm:ss"/*, Locale.CHINESE*/).format(TimeUtils.dateToLong(tempDate) - System.currentTimeMillis()- 8 * 24 * 60 * 60 * 1000));
         newBill.setAddress("");
         newBill.setStatus(StringUtils.BILL_STATUS_ONE);
         newBill.setApplicant("");
@@ -515,7 +536,7 @@ public class PostRequestActivity extends AppCompatActivity {
         newBill.setLocation("");
         newBill.setAcceptDeadline("");
         newBill.setContactWay(getContactWay());
-        BillUtils.publishBill(handler, newBill);
+        BillUtils.publishBill(handler , newBill);
     }
 
     /**
