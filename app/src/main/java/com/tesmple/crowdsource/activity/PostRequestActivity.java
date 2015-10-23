@@ -48,8 +48,10 @@ import com.tesmple.crowdsource.utils.TimeUtils;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
@@ -148,8 +150,12 @@ public class PostRequestActivity extends AppCompatActivity {
           switch (msg.what){
               case StringUtils.POST_REQUEST_SUCCESSFULLY:
                   BillUtils.getBillsList(StringUtils.FRAGMENT_MY_PUBLISH).add(newBill);
+                  Bundle bundle = new Bundle();
+                  bundle.putString(getString(R.string.billDeadLine),newBill.getDeadline().toString());
                   Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
+                  intent.putExtras(bundle);
                   startActivity(intent);
+                  finish();
                   break;
               case StringUtils.POST_REQUEST_FAILED:
                   Snackbar.make(postrequestBtrecPostbill,"发送失败",Snackbar.LENGTH_LONG).show();
@@ -162,6 +168,8 @@ public class PostRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postrequest);
+        ArrayList<String> fuck  = TimeUtils.long2hourminutesecond(70000);
+        Log.i("deadline", fuck.get(0) + " " + fuck.get(1) + " " + fuck.get(2));
         initViewBind();
         initToolbar();
         initRadioGroup();
@@ -475,9 +483,14 @@ public class PostRequestActivity extends AppCompatActivity {
         String award = postrequestEtAward.getText().toString();
         String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText()+":00";
         if(EditTextUtils.isNumber(award)){
-            Snackbar.make(postrequestBtrecPostbill,"请输入正确的支付报酬(仅限数字)",Snackbar.LENGTH_LONG).show();
+            Snackbar.make(postrequestBtrecPostbill, R.string.please_input_right_award,Snackbar.LENGTH_LONG).show();
             return;
         }
+        if(EditTextUtils.isEmpty(postrequestEtBillDescription.getText().toString())){
+            Snackbar.make(postrequestBtrecPostbill, R.string.bill_description_cannot_be_empty,Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
 
         newBill = new Bill();
         newBill.setPublisherName(User.getInstance().getName());
@@ -486,7 +499,13 @@ public class PostRequestActivity extends AppCompatActivity {
         newBill.setAward(award);
         newBill.setDetail(postrequestEtBillDescription.getText().toString());
         java.util.Date tempDate = TimeUtils.strToDateLong(deadline);
+        Log.i("posttime1", tempDate.toString());
+
         newBill.setDeadline(TimeUtils.dateToLong(tempDate));
+        Log.i("posttime2", TimeUtils.dateToLong(tempDate).toString());
+        //Log.i("nowtime3", System.currentTimeMillis() + "");
+        Log.i("lefttime",TimeUtils.longToDate(1000l).toString());
+        //Log.i("nowtime3", new SimpleDateFormat("HH:mm:ss"/*, Locale.CHINESE*/).format(TimeUtils.dateToLong(tempDate) - System.currentTimeMillis()- 8 * 24 * 60 * 60 * 1000));
         newBill.setAddress("");
         newBill.setStatus(StringUtils.BILL_STATUS_ONE);
         newBill.setApplicant("");

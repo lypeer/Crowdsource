@@ -65,9 +65,28 @@ public class EditTextUtils {
         }
     }
 
-    public static boolean isNumber(String testString){
+    /**
+     * 判断是否是数字
+     * @param targetString 传入要检测字符串
+     * @return 返回是否是数字的布尔值，是则为true
+     */
+    public static boolean isNumber(String targetString){
         Pattern pattern = Pattern.compile("^[0-9]$");
-        Matcher matcher = pattern.matcher(testString);
+        Matcher matcher = pattern.matcher(targetString);
         return matcher.matches();
+    }
+
+    /**
+     * 判断字符串是否为空
+     * @param targetString 传入需要检测的目标字符串
+     * @return 空则true，否则false
+     */
+    public static boolean isEmpty(String targetString){
+        if(targetString == null || targetString.equals("")){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

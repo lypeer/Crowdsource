@@ -19,9 +19,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.utils.StringUtils;
+import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,11 +89,16 @@ public class AcceptableBillAdapter extends BaseAdapter {
         viewHolder.tvDetail.setText(bill.getDetail());
         viewHolder.tvAward.setText(bill.getAward());
         //剩余时间
-        String timeLeft = new SimpleDateFormat("HH:mm:ss", Locale.CHINESE).
+        ArrayList<String> timeList = new ArrayList<String>();
+        timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
+        viewHolder.tvLeftTimeHour.setText(timeList.get(0));
+        viewHolder.tvLeftTimeMinutes.setText(timeList.get(1));
+        viewHolder.tvLeftTimeSecond.setText(timeList.get(2));
+        /*String timeLeft = new SimpleDateFormat("HH:mm:ss", Locale.CHINESE).
                 format(bill.getDeadline() - System.currentTimeMillis());
         viewHolder.tvLeftTimeHour.setText(timeLeft.split(":")[0]);
         viewHolder.tvLeftTimeMinutes.setText(timeLeft.split(":")[1]);
-        viewHolder.tvLeftTimeSecond.setText(timeLeft.split(":")[2]);
+        viewHolder.tvLeftTimeSecond.setText(timeLeft.split(":")[2]);*/
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.whereEqualTo("username", bill.getPublisherPhone());

@@ -151,6 +151,8 @@ public class StringUtils {
      */
     public static final int PUSH_SUCCESSFULLY = 41;
 
+    public static final int postSuccessfully_needchangetime = 42;
+
     /**
      * 该String值代表AcceptableFragment
      */
