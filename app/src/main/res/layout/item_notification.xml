@@ -8,6 +8,7 @@
         android:layout_height="80dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp">
+
         <com.gc.materialdesign.views.ButtonFlat
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -16,63 +17,81 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <RelativeLayout
                 android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:id="@+id/notification_sdv_head_portrait"
-                android:background="@drawable/ic_account_circle_blue_grey_500_48dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_height="48dp">
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_margin="2dp"
+                    android:id="@+id/notification_iv_have_not_read"
+                    android:background="@drawable/icon_red_point"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="8dp"/>
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/notification_sdv_head_portrait"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/ic_account_circle_blue_grey_500_48dp"/>
+            </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:layout_height="0dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
                     <TextView
+                        android:id="@+id/notification_tv_name"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
                         android:text="@string/test_name"
                         android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:id="@+id/notification_tv_name"
-                        android:layout_alignParentBottom="true"
-                        android:layout_height="wrap_content"/>
+                        android:textSize="16sp"/>
+
                     <ImageView
-                        android:layout_width="wrap_content"
                         android:id="@+id/notification_sdv_gender"
-                        android:layout_toRightOf="@+id/notification_tv_name"
-                        android:layout_height="wrap_content"/>
-                    <TextView
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/notification_tv_name"/>
+
+                    <TextView
+                        android:id="@+id/notification_tv_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
                         android:layout_alignParentRight="true"
                         android:text="@string/test_time"
-                        android:layout_alignParentBottom="true"
-                        android:textSize="14sp"
-                        android:id="@+id/notification_tv_time"
-                        android:layout_height="wrap_content"/>
+                        android:textSize="14sp"/>
                 </RelativeLayout>
+
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:singleLine="true"
-                    android:gravity="center_vertical"
-                    android:textSize="14sp"
-                    android:textColor="@color/half_black"
                     android:id="@+id/notification_tv_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
                     android:text="@string/test_bill_detail"
-                    android:layout_height="0dp"/>
+                    android:textColor="@color/half_black"
+                    android:textSize="14sp"/>
             </LinearLayout>
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
-            android:background="@color/half_half_black"
+            android:layout_height="0.1dp"
             android:layout_alignParentBottom="true"
-            android:layout_height="0.1dp"/>
+            android:background="@color/half_half_black"/>
     </RelativeLayout>
 </LinearLayout>

@@ -120,6 +120,7 @@ public class PushUtils {
                         }
                         jsonObject.put("action", "com.tesmple.action");
                         jsonObject.put("alert", message);
+                        jsonObject.put("is_read" , false);
                         jsonObject.put("time", String.valueOf(System.currentTimeMillis()));
                         for (int i = 0; i < userHelperList.size(); i++) {
                             JSONArray jsonArray = userHelperList.get(i).getJSONArray("notification");
