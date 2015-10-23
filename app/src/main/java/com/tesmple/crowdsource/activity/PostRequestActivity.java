@@ -482,6 +482,7 @@ public class PostRequestActivity extends AppCompatActivity {
         newBill = new Bill();
         newBill.setPublisherName(User.getInstance().getName());
         newBill.setPublisherPhone(User.getInstance().getUserName());
+        newBill.setPublisherSchool(User.getInstance().getSchool());
         newBill.setAward(award);
         newBill.setDetail(postrequestEtBillDescription.getText().toString());
         java.util.Date tempDate = TimeUtils.strToDateLong(deadline);

@@ -175,7 +175,7 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
         String comment = commentAutoTvComment.getText().toString();
         BillComment billComment = new BillComment();
         billComment.setContent(commentAutoTvComment.getText().toString());
-        billComment.setPublisher(User.getInstance().getName());
+        billComment.setPublisher(User.getInstance().getUserName());
         billComment.setWhichBill(bill.getObjectId());
         billComment.setCreatAt(TimeUtils.getCurrentTimeMillis());
         if(!comment.equals("")){

@@ -50,7 +50,7 @@ public class User {
     private String school;
 
     /**
-     * 用户的学校
+     * 用户的姓名
      */
     private String name;
 
