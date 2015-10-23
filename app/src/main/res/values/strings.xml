@@ -123,4 +123,5 @@
     <string name="error_please_input_nickname">请输入昵称</string>
     <string name="man">男</string>
     <string name="error_stu_num_exist">您输入的学号已注册！</string>
+    <string name="hint_billdetailinput">输入#可以添加标签哦</string>
 </resources>

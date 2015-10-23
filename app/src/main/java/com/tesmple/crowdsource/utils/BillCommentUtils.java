@@ -74,7 +74,7 @@ public class BillCommentUtils  {
                     com.alibaba.fastjson.JSONObject myObject = new com.alibaba.fastjson.JSONObject();
                     JSONArray jsonArray = new JSONArray();
                     jsonArray = targetBill.getJSONArray("comment");
-                    myObject.put("publisher", User.getInstance().getName());
+                    myObject.put("publisher", User.getInstance().getUserName());
                     myObject.put("content", billComment.getContent());
                     myObject.put("creatAt",billComment.getCreatAt());
                     myObject.put("whichBill",billComment.getWhichBill());
