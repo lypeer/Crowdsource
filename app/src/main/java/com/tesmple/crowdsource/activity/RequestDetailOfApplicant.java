@@ -24,8 +24,12 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.adapter.AcceptableAdapter;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
+import com.tesmple.crowdsource.fragment.AcceptableBillFragment;
+import com.tesmple.crowdsource.fragment.AcceptedBillFragment;
 import com.tesmple.crowdsource.fragment.BillCommentFragment;
+import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
@@ -163,12 +167,18 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                         BillUtils.changeBillStatus(handler,bill,StringUtils.BILL_STATUS_TWO);
                     }//抢单模式
                     else if (bill.getRobType().equals(getString(R.string.bill_robtype_receivebillmode))){
+                        AcceptableBillFragment.notifyDateChanged();
+                        MyPublishFragment.notifyDateChanged();
+                        AcceptedBillFragment.notifyDateChanged();
                         Toast.makeText(App.getContext(),"报名成功！",Toast.LENGTH_LONG).show();
                         PushUtils.startPushTransaction(handler , StringUtils.PUSH_BECOME_APPLICANT , bill);
                         finish();
                     }//接单模式
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
+                    AcceptableBillFragment.notifyDateChanged();
+                    MyPublishFragment.notifyDateChanged();
+                    AcceptedBillFragment.notifyDateChanged();
                     finish();
                     break;
                 case StringUtils.CHANGE_APPLICANT_FAILED:
@@ -390,6 +400,13 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
      * 尝试报名
      */
     private void attempPostApplication(){
+        String applicant = bill.getApplicant();
+        if(applicant == null && applicant.equals("")){
+            bill.setApplicant(User.getInstance().getUserName());
+        }
+        else {
+            bill.setApplicant(bill.getApplicant() + "=" + User.getInstance().getUserName());
+        }
         BillUtils.changeApplicantor(handler, bill, true);
     }
 }

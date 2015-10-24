@@ -121,13 +121,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         public MyViewHolder(View itemView) {
             super(itemView);
-
             commentSdvHeadPortrait = (SimpleDraweeView)itemView.findViewById(R.id.comment_sdv_head_portrait);
             commentTvName = (TextView)itemView.findViewById(R.id.comment_tv_name);
             commentTvSchoolName = (TextView)itemView.findViewById(R.id.comment_tv_schoolname);
             commentTvDetail = (TextView)itemView.findViewById(R.id.comment_tv_detail);
             commentCbFavorite = (CheckBox)itemView.findViewById(R.id.comment_cb_favorite);
             commentTvFavoritenum = (TextView)itemView.findViewById(R.id.comment_tv_favoritenum);
+
         }
     }
 

@@ -42,36 +42,34 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
     /**
      * 刷新单的refreshlayout
      */
-    private SwipeRefreshLayout srlBill;
+    private static SwipeRefreshLayout srlBill;
 
     /**
      * 显示单的recycleview的对象
      */
-    private RecyclerView rvBill;
+    private static RecyclerView rvBill;
 
     /**
      * recycleview的adapter
      */
-    private MyPublishAdapter adapter;
+    private static MyPublishAdapter adapter;
 
     /**
      * 装单的billlist
      */
     private static List<Bill> billList = new ArrayList<>();
 
-    private Handler handler = new Handler(){
+    private static Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
                 case StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY:
                     billList = BillUtils.getBillsList(StringUtils.FRAGMENT_MY_PUBLISH);
-//                    adapter.refresh(billList);
                     adapter.refresh(billList);
                     srlBill.setRefreshing(false);
                     break;
                 case StringUtils.START_GET_BILL_TRANSACTION_FAILED:
-//                    Snackbar.make(lvBill, R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
                     Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
                     srlBill.setRefreshing(false);
                     break;
@@ -125,6 +123,14 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
         srlBill.setRefreshing(true);
+        BillUtils.clearList(StringUtils.FRAGMENT_MY_PUBLISH);
+        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH , handler , false , 0);
+    }
+
+    /**
+     * 外部刷新内容
+     */
+    public static void notifyDateChanged(){
         BillUtils.clearList(StringUtils.FRAGMENT_MY_PUBLISH);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH , handler , false , 0);
     }

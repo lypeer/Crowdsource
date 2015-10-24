@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -16,8 +17,14 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
+import com.tesmple.crowdsource.fragment.AcceptableBillFragment;
+import com.tesmple.crowdsource.fragment.AcceptedBillFragment;
 import com.tesmple.crowdsource.fragment.BillCommentFragment;
+import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.utils.BillCommentUtils;
+import com.tesmple.crowdsource.utils.BillUtils;
+import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 
@@ -66,6 +73,11 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     private TextView tvSchool;
 
     /**
+     * bill的状态
+     */
+    private TextView tvStatus;
+
+    /**
      * bill详情
      */
     private TextView tvDetail;
@@ -105,6 +117,8 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
      */
     private ArrayList<String> timeList = new ArrayList<String>();
 
+    private ButtonRectangle btrCancelBill;
+
     public final Handler handler = new android.os.Handler(){
         public void handleMessage(Message msg){
             switch (msg.what){
@@ -113,6 +127,16 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                     tvHour.setText(timeList.get(0));
                     tvMinute.setText(timeList.get(1));
                     tvSecond.setText(timeList.get(2));
+                    break;
+                case StringUtils.CHANGE_APPLICANT_SUCCESSFULLY:
+                    MainActivity.changeViewpagerItem(3);
+                    AcceptableBillFragment.notifyDateChanged();
+                    MyPublishFragment.notifyDateChanged();
+                    AcceptedBillFragment.notifyDateChanged();
+                    finish();
+                    break;
+                case StringUtils.CHANGE_APPLICANT_FAILED:
+                    Snackbar.make(btrCancelBill, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
                     break;
             }
         }
@@ -128,6 +152,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         initTabAndViewPager();
         setView();
         startUpdateTime();
+        setButtons();
     }
 
     /**
@@ -142,7 +167,9 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         tvHour = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_left_time_hour);
         tvMinute = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_left_time_minutes);
         tvSecond = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_left_time_second);
-        btrPostApplication = (ButtonRectangle)findViewById(R.id.requestdetailofapplicanted_btr_postapplication);
+        //btrPostApplication = (ButtonRectangle)findViewById(R.id.requestdetailofapplicanted_btr_postapplication);
+        tvStatus = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_status);
+        btrCancelBill = (ButtonRectangle)findViewById(R.id.requestdetailofapplicanted_btr_cancelapplicant);
     }
 
     /**
@@ -200,6 +227,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
         tvName.setText(bill.getPublisherName());
         tvSchool.setText(bill.getPublisherSchool());
+        tvStatus.setText(bill.getStatus());
         tvDetail.setText(bill.getDetail());
         tvAward.setText(bill.getAward());
         ArrayList<String> timeList = new ArrayList<String>();
@@ -207,6 +235,10 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         tvHour.setText(timeList.get(0));
         tvMinute.setText(timeList.get(1));
         tvSecond.setText(timeList.get(2));
+
+        if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+            btrCancelBill.setText("取消报名");
+        }
     }
 
     /**
@@ -223,6 +255,27 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
             }
         };
         timer.schedule(timerTask, 0, 1000);
+    }
+
+    /**
+     * 按钮绑定和设置
+     */
+    private void setButtons(){
+        btrCancelBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+                    attemptCancelApplicant();
+                }
+            }
+        });
+    }
+
+    /**
+     * 尝试取消报名
+     */
+    private void attemptCancelApplicant(){
+        BillUtils.changeApplicantor(handler,bill,false);
     }
 
 }

@@ -25,6 +25,8 @@ import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
+import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
+import com.tesmple.crowdsource.adapter.AcceptableAdapter;
 import com.tesmple.crowdsource.adapter.CommentAdapter;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.BillComment;
@@ -135,7 +137,6 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
         rvComment = (RecyclerView)rootView.findViewById(R.id.comment_rv_comment);
 
         commentAdapter = new CommentAdapter(getActivity(),commentList);
-
         rvComment.setAdapter(commentAdapter);
         rvComment.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvComment.setItemAnimator(new DefaultItemAnimator());
