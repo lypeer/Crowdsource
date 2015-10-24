@@ -139,6 +139,9 @@
     <string name="billDeadLine">billDeadLine</string>
     <string name="prompt_new_notification">通知\t\t(有新通知)</string>
     <string name="prompt_point">.</string>
+    <string name="btr_post_application">我来帮Ta</string>
+    <string name="btr_cancel_bill">取消任务</string>
+    <string name="btr_cancel_application">取消报名</string>
     <string name="prompt_just_now">刚刚</string>
     <string name="prompt_how_many_minutes">%1$s之前</string>
     <string name="prompt_one_day_ago">一天前</string>

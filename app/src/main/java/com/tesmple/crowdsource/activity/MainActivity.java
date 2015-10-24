@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, PostRequestActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, PostRequestActivity.class);
+                startActivity(intent);
                 NotificationLab.getInstance().addNotification(new Notification());
             }
         });
