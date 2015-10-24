@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
+import com.tesmple.crowdsource.activity.RequestDetailOfApplicanted;
 import com.tesmple.crowdsource.activity.RequestDetailOfPublisher;
 import com.tesmple.crowdsource.adapter.AcceptableAdapter;
 import com.tesmple.crowdsource.adapter.AcceptedBillAdapter;
@@ -99,7 +100,7 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
                 if(billList.get(position).getPublisherPhone().equals(User.getInstance().getUserName())){
                     intent = new Intent(getActivity() , RequestDetailOfPublisher.class);
                 }else {
-                    intent = new Intent(getActivity() , RequestDetailOfApplicant.class);
+                    intent = new Intent(getActivity() , RequestDetailOfApplicanted.class);
                 }
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("bill" , billList.get(position));

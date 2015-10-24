@@ -1,5 +1,7 @@
 package com.tesmple.crowdsource.activity;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,11 +13,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
 import com.tesmple.crowdsource.fragment.BillCommentFragment;
@@ -115,6 +122,31 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
      */
     private ArrayList<String> timeList = new ArrayList<String>();
 
+    /**
+     * 订单详情是否展开
+     */
+    boolean isRequestShow = true;
+
+    /**
+     * 需要操纵的linearlayout
+     */
+    private LinearLayout liNeedgone;
+
+    /**
+     * 用来代替的textview
+     */
+    private TextView tvInstead;
+
+    /**
+     * 收起按钮显示内容
+     */
+    private LinearLayout liUpInfo;
+
+    /**
+     * 展开按钮显示内容
+     */
+    private LinearLayout liDownInfo;
+
     public final Handler handler = new android.os.Handler(){
         public void handleMessage(Message msg){
             switch (msg.what){
@@ -142,6 +174,30 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_FAILED:
                     Snackbar.make(btrPostApplication,getString(R.string.please_check_your_network),Snackbar.LENGTH_LONG).show();
+                    break;
+                case -1:
+                    liNeedgone.setVisibility(View.GONE);
+                    tvInstead.setVisibility(View.VISIBLE);
+                    tvInstead.setHeight(444);
+                    Log.i("height2", String.valueOf(444));
+                    Log.i("tvinstead", String.valueOf(tvInstead.getHeight()));
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofInt(tvInstead, "Height", 444 , 0);
+                    objectAnimator.setDuration(300);
+                    objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+                    objectAnimator.start();
+                    liUpInfo.setVisibility(View.GONE);
+                    liDownInfo.setVisibility(View.VISIBLE);
+                    break;
+                case -2:
+                    tvInstead.setVisibility(View.GONE);
+                    liNeedgone.setAlpha(0f);
+                    liNeedgone.setVisibility(View.VISIBLE);
+                    ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(liNeedgone, "Alpha", 0.0f, 1.0f);
+                    objectAnimator1.setDuration(300);
+                    objectAnimator1.setInterpolator(new AccelerateDecelerateInterpolator());
+                    objectAnimator1.start();
+                    liUpInfo.setVisibility(View.VISIBLE);
+                    liDownInfo.setVisibility(View.GONE);
                     break;
             }
         }
@@ -176,6 +232,9 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         timer.schedule(timerTask, 0, 1000);
     }
 
+    /**
+     * 绑定视图
+     */
     private void initView(){
         sdvHeadPortrait = (SimpleDraweeView)findViewById(R.id.requestdetailofapplicant_sdv_head_portrait);
         tvName = (TextView)findViewById(R.id.requestdetailofapplicant_tv_name);
@@ -186,6 +245,9 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvMinute = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_minutes);
         tvSecond = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_second);
         btrPostApplication = (ButtonRectangle)findViewById(R.id.requestdetailofapplicant_btr_postapplication);
+
+        liUpInfo = (LinearLayout)findViewById(R.id.li_upinfo);
+        liDownInfo = (LinearLayout)findViewById(R.id.li_downinfo);
     }
 
     /**
@@ -254,6 +316,9 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvSecond.setText(timeList.get(2));
     }
 
+    /**
+     * 设置按钮监听事件及相关
+     */
     private void setButtons(){
         btrPostApplication.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,6 +326,62 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                 attempPostApplication();
             }
         });
+        ButtonFlat btflatUpOrDown = (ButtonFlat)findViewById(R.id.btflat_up_or_down);
+        liNeedgone = (LinearLayout)findViewById(R.id.requestdetailofapplicant_li_needgone);
+        tvInstead = (TextView)findViewById(R.id.requestdetailofapplicant_tv_instead);
+        tvInstead.setVisibility(View.GONE);
+        tvInstead.setHeight(444);
+        btflatUpOrDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                starAnimation();
+            }
+        });
+    }
+
+    /**
+     * 开始收起展开动画
+     */
+    private void starAnimation(){
+        if(isRequestShow){
+            btrPostApplication.setClickable(false);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(liNeedgone, "Alpha", 1.0f, 0.0f);
+            objectAnimator.setDuration(300);
+            objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            objectAnimator.start();
+            isRequestShow = false;
+            Timer timer = new Timer(true);
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Message message = new Message();
+                    message.what = -1;
+                    handler.sendMessage(message);
+                }
+            };
+            timer.schedule(timerTask,300);
+        }
+        else {
+            btrPostApplication.setClickable(true);
+            tvInstead.setVisibility(View.VISIBLE);
+            tvInstead.setHeight(0);
+            liNeedgone.setAlpha(0f);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(liNeedgone, "Alpha", 0.0f, 1.0f);
+            objectAnimator.setDuration(300);
+            objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            objectAnimator.start();
+            isRequestShow = true;
+            Timer timer = new Timer(true);
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Message message = new Message();
+                    message.what = -2;
+                    handler.sendMessage(message);
+                }
+            };
+            timer.schedule(timerTask,300);
+        }
     }
 
     /**
