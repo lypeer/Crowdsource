@@ -194,7 +194,6 @@ public class BillUtils {
         } else if (targetFragment.equals(StringUtils.FRAGMENT_HISTORY_BILL)) {
             targetList = historyBillList;
         }
-
         return targetList;
     }
 

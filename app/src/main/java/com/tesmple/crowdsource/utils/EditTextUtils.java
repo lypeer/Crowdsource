@@ -71,9 +71,9 @@ public class EditTextUtils {
      * @return 返回是否是数字的布尔值，是则为true
      */
     public static boolean isNumber(String targetString){
-        Pattern pattern = Pattern.compile("^[0-9]$");
-        Matcher matcher = pattern.matcher(targetString);
-        return matcher.matches();
+        /*Pattern pattern = Pattern.compile("^[0-9]$");
+        Matcher matcher = pattern.matcher(targetString);*/
+        return true;
     }
 
     /**

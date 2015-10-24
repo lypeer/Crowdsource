@@ -436,9 +436,16 @@ public class PostRequestActivity extends AppCompatActivity {
      * 初始化toolbar
      */
     private void initToolbar(){
-        Toolbar Toolbar = (Toolbar)findViewById(R.id.toolbar);
-        Toolbar.setTitle("发布请求");
-        setSupportActionBar(Toolbar);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle("发布请求");
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     /**
