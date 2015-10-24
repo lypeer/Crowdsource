@@ -68,7 +68,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
         holder.tvStatus.setText(bill.getStatus());
         holder.tvDetail.setText(bill.getDetail());
 
-        if(bill.getApplicant() != null){
+        if(bill.getApplicant() != null && !bill.getApplicant().equals("")){
             holder.tvApplicantNum.setText(Integer.toString(bill.getApplicant().
                     split(Pattern.quote(App.getContext().getString(R.string.add))).length));
         }
