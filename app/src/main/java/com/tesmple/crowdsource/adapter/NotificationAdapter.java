@@ -82,6 +82,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 if (e == null) {
                     holder.tvName.setText((String) list.get(0).get("nickname"));
                     holder.sdvHeadPortrait.setImageURI(Uri.parse(list.get(0).getAVFile("head_portrait").getUrl()));
+                    if(list.get(0).get("gender").equals(App.getContext().getString(R.string.man))){
+                       holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
+                    }else {
+                        holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
+                    }
                 } else {
                     Log.e("NotificationAdaptError", e.getMessage() + "===" + e.getCode());
                     Snackbar.make(holder.tvContent, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
