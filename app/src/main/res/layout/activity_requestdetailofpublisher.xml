@@ -149,7 +149,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
                                 <com.tesmple.crowdsource.view.ButtonRectangle
-                                    android:id="@+id/requestdetailofapplicant_btr_postapplication"
+                                    android:id="@+id/requestdetailofpublisher_btr_cancelbill"
                                     android:layout_width="wrap_content"
                                     android:layout_height="42dp"
                                     android:background="@color/colorPrimary"
