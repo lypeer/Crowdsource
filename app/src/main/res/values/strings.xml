@@ -139,4 +139,8 @@
     <string name="billDeadLine">billDeadLine</string>
     <string name="prompt_new_notification">通知\t\t(有新通知)</string>
     <string name="prompt_point">.</string>
+    <string name="prompt_just_now">刚刚</string>
+    <string name="prompt_how_many_minutes">%1$s之前</string>
+    <string name="prompt_one_day_ago">一天前</string>
+    <string name="prompt_waiting">请稍等。。。</string>
 </resources>

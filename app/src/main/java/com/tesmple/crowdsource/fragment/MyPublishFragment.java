@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
 import com.tesmple.crowdsource.activity.RequestDetailOfPublisher;
 import com.tesmple.crowdsource.adapter.AcceptableAdapter;
@@ -116,7 +117,6 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
         rvBill.setItemAnimator(new DefaultItemAnimator());
 
         srlBill.setOnRefreshListener(this);
-
         srlBill.setRefreshing(true);
         BillUtils.clearList(StringUtils.FRAGMENT_MY_PUBLISH);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH, handler, false, 0);

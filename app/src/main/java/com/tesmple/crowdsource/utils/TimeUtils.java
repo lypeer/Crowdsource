@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.activity.App;
+
 import java.sql.Date;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -132,6 +135,7 @@ public class TimeUtils {
 
     /**
      * 将一个long数字转换成小时分钟秒数格式
+     *
      * @param fucktime 传入一个long数字（秒数）
      * @return 返回一个装着小时、分钟、秒数的ArrayList
      */
@@ -148,16 +152,16 @@ public class TimeUtils {
             }
             fucktime = fucktime - 60 * 60 * 1000;
         }
-        for (int minute = 0; ; minute++){
-            if( fucktime < 60 * 1000){
+        for (int minute = 0; ; minute++) {
+            if (fucktime < 60 * 1000) {
                 minute = minute;
                 arrayList.set(1, String.valueOf(minute));
                 break;
             }
             fucktime = fucktime - 60 * 1000;
         }
-        for (int second = 0; ;second++){
-            if ( fucktime < 1000){
+        for (int second = 0; ; second++) {
+            if (fucktime < 1000) {
                 second = second;
                 arrayList.set(2, String.valueOf(second));
                 break;
@@ -165,5 +169,30 @@ public class TimeUtils {
             fucktime = fucktime - 1000;
         }
         return arrayList;
+    }
+
+    /**
+     * 判断过去的时间已经过去多久的方法
+     *
+     * @param time       发生的时候的毫秒值
+     * @param timePassed 时间夺取了多久的毫秒值
+     * @return 判断时间之后的字段
+     */
+    public static String judgeTime(Long time, Long timePassed) {
+        String handledTime;
+        if (timePassed < StringUtils.ONE_MINUTE) {
+            handledTime = App.getContext().getString(R.string.prompt_just_now);
+        } else if (timePassed < StringUtils.ONE_HOUR) {
+            Long timeIntoFormat = timePassed / StringUtils.ONE_MINUTE;
+            String value = timeIntoFormat + "分钟";
+            handledTime = String.format(App.getContext().getString(R.string.prompt_how_many_minutes), value);
+        } else if (timePassed < StringUtils.ONE_DAY) {
+            handledTime = new SimpleDateFormat("HH:mm").format(time);
+        } else if(timePassed < StringUtils.TWO_DAY){
+            handledTime = App.getContext().getString(R.string.prompt_one_day_ago);
+        }else {
+            handledTime = new SimpleDateFormat("MM月dd日").format(time);
+        }
+        return handledTime;
     }
 }

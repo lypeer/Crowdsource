@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:background="@color/bg_wechat"
-              android:layout_height="match_parent">
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/my_publish_srl_bill"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@color/bg_wechat">
 
-        <!--<ListView-->
-        <!--android:id="@+id/acceptable_bill_lv_main"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
-
-        <!--</ListView>-->
-
-        <android.support.v7.widget.RecyclerView
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/my_publish_srl_bill"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/my_publish_rv_bill"
-            >
+            android:layout_height="match_parent">
 
-        </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <!--<ListView-->
+            <!--android:id="@+id/acceptable_bill_lv_main"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--</ListView>-->
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/my_publish_rv_bill"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+            </android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

@@ -24,6 +24,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.adapter.CommentAdapter;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.BillComment;
