@@ -72,4 +72,8 @@ public class NotificationLab extends Observable{
             return false;
         }
     }
+
+    public void clearList(){
+        sNotificationList.clear();
+    }
 }

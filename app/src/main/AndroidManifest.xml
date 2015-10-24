@@ -50,6 +50,9 @@
         </activity>
         <activity android:name=".activity.RequestDetailOfApplicanted">
         </activity>
+        <activity android:name=".activity.NotificationActivity">
+
+        </activity>
         <service android:name="com.avos.avoscloud.PushService"
                  android:exported="false"/>
         <receiver android:name=".receiver.PushReceiver" android:exported="false">
