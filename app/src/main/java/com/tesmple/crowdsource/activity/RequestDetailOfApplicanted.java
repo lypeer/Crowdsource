@@ -1,6 +1,7 @@
 package com.tesmple.crowdsource.activity;
 
 import android.animation.ObjectAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -170,6 +172,12 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                 case StringUtils.CHANGE_APPLICANT_FAILED:
                     Snackbar.make(btrCancelBill, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
                     break;
+                case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
+                    finish();
+                    break;
+                case StringUtils.CHANGE_BILL_STATUS_FAILED:
+                    Snackbar.make(btrCancelBill, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
+                    break;
                 case -1:
                     liNeedgone.setVisibility(View.GONE);
                     tvInstead.setVisibility(View.VISIBLE);
@@ -298,6 +306,10 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
 
         if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
             btrCancelBill.setText("取消报名");
+        }else if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
+            btrCancelBill.setText("完成任务？");
+        }else {
+            btrCancelBill.setVisibility(View.GONE);
         }
     }
 
@@ -325,7 +337,40 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
-                    attemptCancelApplicant();
+                    new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
+                            .setMessage("确定取消报名")
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    attemptCancelApplicant();
+                                }})
+                            .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .show();
+                }else if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
+                    new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
+                            .setMessage("完成当前到期任务吗？如果选择未完成请及时与发单者联系")
+                            .setPositiveButton("完成", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    attempCompliteBill();
+                                }})
+                            .setNegativeButton("未完成", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    attemptCancelApplicant();
+                                }
+                            }).
+                            setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .show();
                 }
             }
         });
@@ -393,6 +438,14 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
      */
     private void attemptCancelApplicant(){
         BillUtils.changeApplicantor(handler,bill,false);
+    }
+
+    /**
+     * 尝试完成订单
+     */
+    private void attempCompliteBill(){
+        bill.setStatus(StringUtils.BILL_STATUS_THREE);
+        BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_THREE);
     }
 
 }

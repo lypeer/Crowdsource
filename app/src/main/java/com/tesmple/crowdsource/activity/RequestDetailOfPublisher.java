@@ -1,6 +1,7 @@
 package com.tesmple.crowdsource.activity;
 
 import android.animation.ObjectAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -163,7 +165,12 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
                     tvSecond.setText(timeList.get(2));
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
-                    PushUtils.startPushTransaction(handler , StringUtils.PUSH_PUBLISHER_REMOVE_BILL , bill);
+                    if(bill.getStatus().equals(StringUtils.BILL_STATUS_THREE)){
+                        PushUtils.startPushTransaction(handler , StringUtils.PUSH_FINISH_BILL , bill);
+                    }
+                    if(bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
+                        PushUtils.startPushTransaction(handler , StringUtils.PUSH_PUBLISHER_REMOVE_BILL , bill);
+                    }
                     AcceptableBillFragment.notifyDateChanged();
                     MyPublishFragment.notifyDateChanged();
                     AcceptedBillFragment.notifyDateChanged();
@@ -303,8 +310,8 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.menu_delete :
+                switch (item.getItemId()) {
+                    case R.id.menu_delete:
                         deleteBill();
                         break;
                 }
@@ -317,7 +324,43 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
      * 撤销订单的方法
      */
     private void deleteBill(){
-
+        if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)) {
+            new AlertDialog.Builder(this).setTitle(R.string.prompt_remind)
+                    .setMessage("取消当前进行中任务？如果取消了任务请及时联系接单者").setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    attempCancelBill();
+                }
+            }).setNegativeButton(R.string.prompt_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            }).show();
+        }else if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+            new AlertDialog.Builder(this).setTitle(R.string.prompt_remind)
+                    .setMessage("取消当前待报名任务？").setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    attempCancelBill();
+                }
+            }).setNegativeButton(R.string.prompt_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            }).show();
+        } else if (bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)||bill.getStatus().equals(StringUtils.BILL_STATUS_THREE)) {
+            new AlertDialog.Builder(this).setTitle(R.string.prompt_remind)
+                    .setMessage("删除当前任务？").setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    attempDeleteBill();
+                }
+            }).setNegativeButton(R.string.prompt_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            }).show();
+        }
     }
 
     /**
@@ -336,12 +379,17 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         tvMinute.setText(timeList.get(1));
         tvSecond.setText(timeList.get(2));
 
-        if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) || bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+        if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
+            btrCancelBill.setText("完成任务？");
+        }else {
+            btrCancelBill.setVisibility(View.GONE);
+        }
+        /*if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) || bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
             btrCancelBill.setText("取消任务");
         }
         if (bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
             btrCancelBill.setText("删除任务");
-        }
+        }*/
     }
 
     /**
@@ -351,10 +399,42 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         btrCancelBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) || bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)) {
-                    attempCancelBill();
-                } else if (bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)) {
-                    attempDeleteBill();
+                if(tvHour.getText().equals("0") && tvMinute.getText().equals("0") && tvMinute.getText().equals("0")){
+                    new AlertDialog.Builder(RequestDetailOfPublisher.this).setTitle(R.string.prompt_remind)
+                            .setMessage("完成当前到期任务吗？如果选择未完成请及时与接单者联系")
+                            .setPositiveButton("完成", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            attempCompliteBill();
+                        }})
+                            .setNegativeButton("未完成", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            attempCancelBill();
+                        }
+                    }).
+                            setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .show();
+                }else {
+                    new AlertDialog.Builder(RequestDetailOfPublisher.this).setTitle(R.string.prompt_remind)
+                            .setMessage("完成当前任务吗？")
+                            .setPositiveButton("完成", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    attempCompliteBill();
+                                }})
+                            .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .show();
                 }
             }
         });
@@ -422,7 +502,6 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
     private void attempCancelBill(){
         bill.setStatus(StringUtils.BILL_STATUS_FOUR);
         BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_FOUR);
-        MyPublishFragment.notifyDateChanged();
     }
 
     /**
@@ -435,7 +514,15 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_delete , menu);
+        getMenuInflater().inflate(R.menu.menu_delete, menu);
         return true;
+    }
+
+    /**
+     * 尝试完成订单
+     */
+    private void attempCompliteBill(){
+        bill.setStatus(StringUtils.BILL_STATUS_THREE);
+        BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_THREE);
     }
 }
