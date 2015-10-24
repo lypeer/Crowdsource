@@ -47,7 +47,8 @@
         <activity
             android:name=".activity.RequestDetailOfApplicant"
             android:windowSoftInputMode="adjustPan">
-
+        </activity>
+        <activity android:name=".activity.RequestDetailOfApplicanted">
         </activity>
         <service android:name="com.avos.avoscloud.PushService"
                  android:exported="false"/>

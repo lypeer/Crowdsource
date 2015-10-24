@@ -104,14 +104,14 @@
     <string name="rmb">¥</string>
     <string name="test_award">1</string>
     <string name="prompt_look_detail">\t查看详情\t</string>
-    <string name="prompt_left_time">剩余时间</string>
+    <string name="prompt_left_time">剩余</string>
     <string name="test_hour">01</string>
     <string name="prompt_hour">小时</string>
     <string name="test_minutes">14</string>
     <string name="prompt_minutes">分钟</string>
     <string name="test_second">45</string>
     <string name="prompt_second">秒</string>
-    <string name="add">+</string>
+    <string name="add">=</string>
     <string name="prompt_people">人</string>
     <string name="prompt_applicant">报名</string>
     <string name="prompt_notification">通知</string>
@@ -139,4 +139,7 @@
     <string name="billDeadLine">billDeadLine</string>
     <string name="prompt_new_notification">通知\t\t(有新通知)</string>
     <string name="prompt_point">.</string>
+    <string name="btr_post_application">我来帮Ta</string>
+    <string name="btr_cancel_bill">取消任务</string>
+    <string name="btr_cancel_application">取消报名</string>
 </resources>

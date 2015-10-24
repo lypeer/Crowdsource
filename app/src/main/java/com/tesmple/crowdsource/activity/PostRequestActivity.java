@@ -46,6 +46,8 @@ import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 
+import org.json.JSONArray;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -174,7 +176,7 @@ public class PostRequestActivity extends AppCompatActivity {
         initToolbar();
         initRadioGroup();
         initDateAndTimeButton();
-        setAwardEditText();
+        //setAwardEditText();
         setDescriptionEditText();
         setDatePicker();
         setTimePicker();

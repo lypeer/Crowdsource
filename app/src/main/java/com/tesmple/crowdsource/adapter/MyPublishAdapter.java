@@ -67,9 +67,10 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
         final Bill bill = billsList.get(position);
         holder.tvStatus.setText(bill.getStatus());
         holder.tvDetail.setText(bill.getDetail());
-        holder.tvApplicantNum.setText(Integer.toString(bill.getApplicant().
-                split(Pattern.quote(App.getContext().getString(R.string.add))).length - 1));
-        ArrayList<String> timeList = new ArrayList<String>();
+        /*holder.tvApplicantNum.setText(Integer.toString(bill.getApplicant().
+                split(Pattern.quote(App.getContext().getString(R.string.add))).length - 1));*/
+        holder.tvApplicantNum.setText("0");
+        ArrayList<String> timeList;
         timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
         holder.tvLeftTimeHour.setText(timeList.get(0));
         holder.tvLeftTimeMinutes.setText(timeList.get(1));
