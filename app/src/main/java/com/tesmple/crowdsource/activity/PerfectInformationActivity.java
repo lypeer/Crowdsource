@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -218,6 +219,13 @@ public class PerfectInformationActivity extends AppCompatActivity {
         User.getInstance().setDepartment(strings[22]);
         User.getInstance().setMajor(strings[24]);
         User.getInstance().setGender(strings[10]);
+        if(User.getInstance().getGender().equals(getString(R.string.man))){
+            User.getInstance().setHeadProtrait(Uri.
+                    parse("android.resource://com.tesmple.crowdsource/drawable/default_head_portrait_boy").toString());
+        }else {
+            User.getInstance().setHeadProtrait(Uri.
+                    parse("android.resource://com.tesmple.crowdsource/drawable/default_head_portrait_girl").toString());
+        }
     }
 
     /**

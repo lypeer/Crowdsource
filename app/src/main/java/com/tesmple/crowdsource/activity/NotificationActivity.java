@@ -22,6 +22,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.AcceptedBillAdapter;
 import com.tesmple.crowdsource.adapter.NotificationAdapter;
+import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Notification;
 import com.tesmple.crowdsource.object.NotificationLab;
 import com.tesmple.crowdsource.object.User;
@@ -100,7 +101,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
         adapter = new NotificationAdapter(this, NotificationLab.getInstance().getNotificationList());
         adapter.setOnItemClickListener(new NotificationAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View v, int position) {
+            public void onItemClick(View v, final int position) {
                 if (!NotificationLab.getInstance().getNotificationList().get(position).isRead()) {
                     NotificationLab.getInstance().getNotificationList().get(position).setIsRead(true);
                     final JSONArray jsonArray = new JSONArray();
@@ -127,8 +128,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                                     @Override
                                     public void done(AVException e) {
                                         if (e == null) {
-                                            finish();
-                                            MainActivity.changeViewpagerItem(1);
+                                            jump(NotificationLab.getInstance().getNotificationList().get(position).getType());
                                         } else {
                                             Log.e("NotificActSaveError", e.getMessage() + "===" + e.getCode());
                                             Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
@@ -142,8 +142,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                         }
                     });
                 } else {
-                    finish();
-                    MainActivity.changeViewpagerItem(1);
+                    jump(NotificationLab.getInstance().getNotificationList().get(position).getType());
                 }
             }
 
@@ -161,6 +160,28 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
         srlBill.setRefreshing(true);
         NotificationLab.getInstance().clearList();
         getNotifications();
+    }
+
+    /**
+     * 跳转到别的地方去的方法
+     *
+     * @param type 这个通知的类型
+     */
+    private void jump(String type) {
+        if (type.equals(StringUtils.PUSH_BECOME_APPLICANT) ||
+                type.equals(StringUtils.PUSH_HAVE_ROBBED) ||
+                type.equals(StringUtils.PUSH_CONFIRMER_REMOVE_BILL) ||
+                type.equals(StringUtils.PUSH_REMIND_PUBLISHER) ||
+                type.equals(StringUtils.PUSH_SYSTEM_FINISH)) {
+            finish();
+            MainActivity.changeViewpagerItem(1);
+        } else if (type.equals(StringUtils.PUSH_BECOME_COMFIRMER) ||
+                type.equals(StringUtils.PUSH_NOT_BECOME_COMFIRMER) ||
+                type.equals(StringUtils.PUSH_PUBLISHER_REMOVE_BILL) ||
+                type.equals(StringUtils.PUSH_FINISH_BILL)) {
+            finish();
+            MainActivity.changeViewpagerItem(2);
+        }
     }
 
     @Override

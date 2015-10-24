@@ -53,6 +53,9 @@
         <activity android:name=".activity.NotificationActivity">
 
         </activity>
+        <activity android:name=".activity.SettingActivity">
+
+        </activity>
         <service android:name="com.avos.avoscloud.PushService"
                  android:exported="false"/>
         <receiver android:name=".receiver.PushReceiver" android:exported="false">
