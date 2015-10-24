@@ -121,9 +121,6 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
         rvBill.setItemAnimator(new DefaultItemAnimator());
 
         srlBill.setOnRefreshListener(this);
-        srlBill.setRefreshing(true);
-        BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
-        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);
     }
 
     @Override
@@ -145,7 +142,6 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("AcceptedBillOnResume", "enter");
         srlBill.setRefreshing(true);
 
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);

@@ -11,4 +11,5 @@
     <color name="half_half_black">#bdbdbd</color>
     <color name="bg_wechat">#e0e0e0</color>
     <color name="empty">#00000000</color>
+    <color name="half_white">#99ffffff</color>
 </resources>

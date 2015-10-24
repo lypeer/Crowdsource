@@ -69,7 +69,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                     Bill bill = new Bill();
                     bill.setPublisherName((String) list.get(0).get("name"));
                     bill.setPublisherSchool((String) list.get(0).get("school"));
-                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
+                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false , 96 , 96));
                     holder.commentSdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
                     holder.commentTvName.setText(bill.getPublisherName());
                     holder.commentTvSchoolName.setText(bill.getPublisherSchool());

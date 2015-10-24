@@ -125,9 +125,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvName = (TextView) findViewById(R.id.nav_tv_name);
         tvDepartment = (TextView) findViewById(R.id.nav_tv_department);
 
-        sdvHeadPortrait.setImageURI(Uri.parse(User.getInstance().getHeadProtrait()));
-        tvName.setText(User.getInstance().getName());
-        tvDepartment.setText(User.getInstance().getDepartment() + getString(R.string.enter) + User.getInstance().getMajor());
+        sdvHeadPortrait.setImageURI(Uri.parse(AVUser.getCurrentUser().getAVFile("head_portrait").getUrl()));
+        tvName.setText(User.getInstance().getNickName());
+        tvDepartment.setText(User.getInstance().getDepartment() );
     }
 
     /**
@@ -251,8 +251,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         }
 
-        sdvHeadPortrait.setImageURI(Uri.parse(User.getInstance().getHeadProtrait()));
-        tvName.setText(User.getInstance().getName());
-        tvDepartment.setText(User.getInstance().getDepartment() + getString(R.string.enter) + User.getInstance().getMajor());
+        sdvHeadPortrait.setImageURI(Uri.parse(AVUser.getCurrentUser().getAVFile("head_portrait").getUrl()));
+        tvName.setText(AVUser.getCurrentUser().get("nickname").toString());
+        tvDepartment.setText(User.getInstance().getDepartment());
     }
 }
