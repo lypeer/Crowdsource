@@ -1,5 +1,6 @@
 package com.tesmple.crowdsource.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.support.annotation.Nullable;
@@ -12,10 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.adapter.ApplicantAdapter;
 import com.tesmple.crowdsource.object.Applicant;
+import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.utils.BillUtils;
+import com.tesmple.crowdsource.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +53,11 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
      */
     private ApplicantAdapter applicantAdapter;
 
+    /**
+     * 绑定的bill
+     */
+    private Bill bill;
+
     private static List<Applicant> applicantList = new ArrayList<>();
 
     @Nullable
@@ -52,9 +65,20 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(rootView == null){
             rootView = inflater.inflate(R.layout.fragment_applicant , container , false);
+            getBundle();
             initView();
+            setView();
         }
         return rootView;
+    }
+
+    /**
+     * 获得bundle的目标bill
+     */
+    private void getBundle(){
+        Intent intent = getActivity().getIntent();
+        Bundle bundle = intent.getExtras();
+        bill = (Bill)bundle.getSerializable("bill");
     }
 
     /**
@@ -63,44 +87,6 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
     private void initView(){
         srlApplicant = (SwipeRefreshLayout)rootView.findViewById(R.id.applicant_srl_applicant);
         rvApplicant = (RecyclerView)rootView.findViewById(R.id.applicant_rv_applicant);
-
-        Applicant applicant1 = new Applicant();
-        applicant1.setApplicantName("余烜");
-        applicant1.setApplicantSchool("电子科技大学");
-        applicant1.setApplicantIsChecked(false);
-        applicant1.setApplicantCreditValue(5);
-
-        Applicant applicant2 = new Applicant();
-        applicant2.setApplicantName("李宇航");
-        applicant2.setApplicantSchool("电子科技大学");
-        applicant2.setApplicantIsChecked(true);
-        applicant2.setApplicantCreditValue(5);
-
-        Applicant applicant3 = new Applicant();
-        applicant3.setApplicantName("罗阳");
-        applicant3.setApplicantSchool("电子科技大学");
-        applicant3.setApplicantIsChecked(false);
-        applicant3.setApplicantCreditValue(5);
-
-        Applicant applicant4 = new Applicant();
-        applicant4.setApplicantName("焦钰博");
-        applicant4.setApplicantSchool("电子科技大学");
-        applicant4.setApplicantIsChecked(false);
-        applicant4.setApplicantCreditValue(5);
-
-        Applicant applicant5 = new Applicant();
-        applicant5.setApplicantName("王梓瑞");
-        applicant5.setApplicantSchool("电子科技大学");
-        applicant5.setApplicantIsChecked(false);
-        applicant5.setApplicantCreditValue(5);
-
-        applicantList.clear();
-        applicantList.add(applicant1);
-        applicantList.add(applicant2);
-        applicantList.add(applicant3);
-        applicantList.add(applicant4);
-        applicantList.add(applicant5);
-
 
         applicantAdapter = new ApplicantAdapter(getActivity(),applicantList);
 
@@ -112,6 +98,26 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
         srlApplicant.setRefreshing(true);
     }
 
+    private void setView(){
+        /*if(bill.getApplicant()==null){
+
+        }else if(!bill.getApplicant().contains("=")){
+            Applicant applicant = new Applicant();
+            AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+            avQuery.whereEqualTo("username", bill.getApplicant());
+            avQuery.findInBackground(new FindCallback<AVObject>() {
+                @Override
+                public void done(List<AVObject> list, AVException e) {
+                    if (e == null) {
+
+                    }
+                }
+            });
+        }else {
+            bill.getApplicant().split("=");
+        }*/
+    }
+
     /**
      * 刷新报名者列表
      */
@@ -119,4 +125,5 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
     public void onRefresh() {
         srlApplicant.setRefreshing(true);
     }
+
 }

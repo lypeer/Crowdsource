@@ -111,7 +111,7 @@
     <string name="prompt_minutes">分钟</string>
     <string name="test_second">45</string>
     <string name="prompt_second">秒</string>
-    <string name="add">+</string>
+    <string name="add">=</string>
     <string name="prompt_people">人</string>
     <string name="prompt_applicant">报名</string>
     <string name="prompt_notification">通知</string>

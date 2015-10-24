@@ -18,8 +18,11 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
+import com.tesmple.crowdsource.fragment.AcceptableBillFragment;
+import com.tesmple.crowdsource.fragment.AcceptedBillFragment;
 import com.tesmple.crowdsource.fragment.ApplicantFragment;
 import com.tesmple.crowdsource.fragment.BillCommentFragment;
+import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.BillUtils;
@@ -73,6 +76,11 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
     private TextView tvSchool;
 
     /**
+     * bill状态
+     */
+    private TextView tvStatus;
+
+    /**
      * bill详情
      */
     private TextView tvDetail;
@@ -110,7 +118,8 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
     /**
      * 取消任务的buttonrectangle
      */
-    private ButtonRectangle btrCancelBilll;
+    private ButtonRectangle btrCancelBill;
+
 
     public final Handler handler = new android.os.Handler(){
         public void handleMessage(Message msg){
@@ -122,10 +131,16 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
                     tvSecond.setText(timeList.get(2));
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
+                    AcceptableBillFragment.notifyDateChanged();
+                    MyPublishFragment.notifyDateChanged();
+                    AcceptedBillFragment.notifyDateChanged();
                     finish();
                     break;
+                case StringUtils.CHANGE_APPLICANT_FAILED:
+                    Snackbar.make(btrCancelBill, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
+                    break;
                 case StringUtils.POST_REQUEST_FAILED:
-                    Snackbar.make(btrCancelBilll, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btrCancelBill, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
                     break;
             }
         }
@@ -169,7 +184,8 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         tvHour = (TextView)findViewById(R.id.requestdetailofpublisher_tv_left_time_hour);
         tvMinute = (TextView)findViewById(R.id.requestdetailofpublisher_tv_left_time_minutes);
         tvSecond = (TextView)findViewById(R.id.requestdetailofpublisher_tv_left_time_second);
-        btrCancelBilll = (ButtonRectangle)findViewById(R.id.requestdetailofpublisher_btr_cancelbill);
+        btrCancelBill = (ButtonRectangle)findViewById(R.id.requestdetailofpublisher_btr_cancelbill);
+        tvStatus = (TextView)findViewById(R.id.requestdetailofpublisher_tv_status);
     }
 
     /**
@@ -231,6 +247,7 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
         tvName.setText(bill.getPublisherName());
         tvSchool.setText(bill.getPublisherSchool());
+        tvStatus.setText(bill.getStatus());
         tvDetail.setText(bill.getDetail());
         tvAward.setText(bill.getAward());
         ArrayList<String> timeList = new ArrayList<String>();
@@ -238,16 +255,27 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         tvHour.setText(timeList.get(0));
         tvMinute.setText(timeList.get(1));
         tvSecond.setText(timeList.get(2));
+
+        if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) || bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+            btrCancelBill.setText("取消任务");
+        }
+        if (bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
+            btrCancelBill.setText("删除任务");
+        }
     }
 
     /**
      * 设置button按钮监听及相关
      */
     private void setButtons(){
-        btrCancelBilll.setOnClickListener(new View.OnClickListener() {
+        btrCancelBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attempCancelBill();
+                if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) || bill.getStatus().equals(StringUtils.BILL_STATUS_ONE) ){
+                    attempCancelBill();
+                }else if (bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
+                    attempDeleteBill();
+                }
             }
         });
     }
@@ -256,6 +284,16 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
      * 尝试取消bill
      */
     private void attempCancelBill(){
+        bill.setStatus(StringUtils.BILL_STATUS_FOUR);
         BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_FOUR);
+        MyPublishFragment.notifyDateChanged();
+    }
+
+    /**
+     * 尝试删除bill
+     */
+    private void attempDeleteBill(){
+        bill.setStatus(StringUtils.BILL_STATUS_FIVE);
+        BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_FIVE);
     }
 }

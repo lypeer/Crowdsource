@@ -42,24 +42,24 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
     /**
      * 刷新单的refreshlayout
      */
-    private SwipeRefreshLayout srlBill;
+    private static SwipeRefreshLayout srlBill;
 
     /**
      * 显示单的recycleview的对象
      */
-    private RecyclerView rvBill;
+    private static RecyclerView rvBill;
 
     /**
      * recycleview的adapter
      */
-    private AcceptedBillAdapter adapter;
+    private static AcceptedBillAdapter adapter;
 
     /**
      * 装单的billlist
      */
     private static List<Bill> billList = new ArrayList<>();
 
-    private Handler handler = new Handler(){
+    private static Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -131,5 +131,13 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
 
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL , handler , false , 0);
+    }
+
+    /**
+     * 外部刷新内容
+     */
+    public static void notifyDateChanged(){
+        BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
+        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);
     }
 }

@@ -303,24 +303,29 @@ public class BillUtils {
                         }
                     } else {
                         //如果是要取消报名的话就将他的username从那里取消
-                        String[] applicantorArray = bill.getApplicant().split(App.getContext().getString(R.string.add));
-                        StringBuilder newApplicant = new StringBuilder();
-                        for (int i = 0; i < applicantorArray.length; i++) {
-                            if (applicantorArray[i].equals(User.getInstance().getUserName())) {
-                                applicantorArray[i] = 0 + "";
-                                break;
-                            }
-                        }
-                        for (int i = 0; i < applicantorArray.length; i++) {
-                            if (!applicantorArray[i].equals("0")) {
-                                if (i == applicantorArray.length - 1) {
-                                    newApplicant.append(applicantorArray[i]);
-                                } else {
-                                    newApplicant.append(applicantorArray[i]).append("=");
+                        if(bill.getApplicant().contains("=")){
+                            String[] applicantorArray = bill.getApplicant().split(App.getContext().getString(R.string.add));
+                            StringBuilder newApplicant = new StringBuilder();
+                            for (int i = 0; i < applicantorArray.length; i++) {
+                                if (applicantorArray[i].equals(User.getInstance().getUserName())) {
+                                    applicantorArray[i] = 0 + "";
+                                    break;
                                 }
                             }
+                            for (int i = 0; i < applicantorArray.length; i++) {
+                                if (!applicantorArray[i].equals("0")) {
+                                    if (i == applicantorArray.length - 1) {
+                                        newApplicant.append(applicantorArray[i]);
+                                    } else {
+                                        newApplicant.append(applicantorArray[i]).append("=");
+                                    }
+                                }
+                            }
+                            avObject.put("applicant", newApplicant.toString());
                         }
-                        avObject.put("applicant", newApplicant.toString());
+                        else {
+                            avObject.put("applicant","");
+                        }
                     }
                     avObject.saveInBackground(new SaveCallback() {
                         @Override
