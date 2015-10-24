@@ -64,12 +64,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_my_publish, parent, false));
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final Notification notification = notificationsList.get(notificationsList.size() - position - 1);
+        final Notification notification = notificationsList.get(position);
         holder.tvTime.setText(TimeUtils.judgeTime(Long.valueOf(notification.getTime()),
                 System.currentTimeMillis() - Long.valueOf(notification.getTime())));
         holder.tvContent.setText(notification.getContent());

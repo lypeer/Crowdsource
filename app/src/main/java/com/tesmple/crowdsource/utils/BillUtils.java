@@ -122,7 +122,7 @@ public class BillUtils {
                 break;
         }
         // 根据 createdAt 字段升序显示数据
-        avQuery.orderByAscending("createdAt");
+        avQuery.orderByDescending("createdAt");
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
@@ -174,38 +174,7 @@ public class BillUtils {
             }
         });
 
-        AVQuery<AVObject> avQuery1 = new AVQuery<>("UserHelper");
-        avQuery1.whereEqualTo("username" , User.getInstance().getUserName());
-        avQuery1.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if(e == null){
-                    JSONArray jsonArray = list.get(0).getJSONArray("notification");
-                    if(jsonArray != null ){
-                        for(int i = 0 ; i < jsonArray.length() ; i++){
-                            Notification notification = new Notification();
-                            try {
-                                JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
-                                notification.setTime(TimeUtils.judgeTime(Long.valueOf((String) tempJsonObject.get("time")) ,
-                                        System.currentTimeMillis() - Long.valueOf((String) tempJsonObject.get("time"))));
-                                notification.setContent(tempJsonObject.getString("alert"));
-                                notification.setIsRead(tempJsonObject.getBoolean("is_read"));
-                                notification.setPublisher(tempJsonObject.getString("sender"));
-                                notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-                            if(!NotificationLab.getInstance().getNotificationList().contains(notification)){
-                                NotificationLab.getInstance().addNotification(notification);
-                            }
-                        }
 
-                    }
-                }else {
-                    Log.e("BillUtilsUserHelper" , e.getMessage() + "===" + e.getCode());
-                }
-            }
-        });
     }
 
     /**
