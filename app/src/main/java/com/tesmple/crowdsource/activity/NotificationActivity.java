@@ -197,6 +197,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     private void getNotifications() {
         AVQuery<AVObject> avQuery1 = new AVQuery<>("UserHelper");
         avQuery1.whereEqualTo("username", User.getInstance().getUserName());
+        avQuery1.orderByDescending("createdAt");
         avQuery1.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
@@ -216,6 +217,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                                 e1.printStackTrace();
                             }
                             NotificationLab.getInstance().addNotification(notification);
+
                         }
                     }
                     Message message = new Message();

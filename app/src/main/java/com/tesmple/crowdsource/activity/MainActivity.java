@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_notification) {
             Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_setting) {
             Intent intent = new Intent(MainActivity.this , SettingActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_slideshow) {

@@ -164,7 +164,8 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                 case StringUtils.CHANGE_APPLICANT_SUCCESSFULLY:
                     if (bill.getRobType().equals(getString(R.string.bill_robtype_grabbillmode))){
                         bill.setConfirmer(User.getInstance().getUserName());
-                        BillUtils.changeBillStatus(handler,bill,StringUtils.BILL_STATUS_TWO);
+                        BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_TWO);
+                        PushUtils.startPushTransaction(handler, StringUtils.PUSH_HAVE_ROBBED, bill);
                     }//抢单模式
                     else if (bill.getRobType().equals(getString(R.string.bill_robtype_receivebillmode))){
                         AcceptableBillFragment.notifyDateChanged();
@@ -401,7 +402,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
      */
     private void attempPostApplication(){
         String applicant = bill.getApplicant();
-        if(applicant == null && applicant.equals("")){
+        if(applicant == null || applicant.equals("")){
             bill.setApplicant(User.getInstance().getUserName());
         }
         else {

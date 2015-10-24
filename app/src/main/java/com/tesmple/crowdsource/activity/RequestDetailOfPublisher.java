@@ -26,6 +26,7 @@ import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.BillUtils;
+import com.tesmple.crowdsource.utils.PushUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
@@ -131,6 +132,7 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
                     tvSecond.setText(timeList.get(2));
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
+                    PushUtils.startPushTransaction(handler , StringUtils.PUSH_PUBLISHER_REMOVE_BILL , bill);
                     AcceptableBillFragment.notifyDateChanged();
                     MyPublishFragment.notifyDateChanged();
                     AcceptedBillFragment.notifyDateChanged();

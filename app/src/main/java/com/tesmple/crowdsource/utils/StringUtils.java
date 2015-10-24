@@ -189,7 +189,7 @@ public class StringUtils {
     public static final String FRAGMENT_BILL_COMMENT = "fragment_bill_comment";
 
     /**
-     * 表示用户成为申请者时的推送
+     * 表示用户成为申请者时的推送,已做
      */
     public static final String PUSH_BECOME_APPLICANT = "push_become_applicant";
 
@@ -204,12 +204,12 @@ public class StringUtils {
     public static final String PUSH_NOT_BECOME_COMFIRMER = "push_not_become_confirmer";
 
     /**
-     * 表示抢单模式中有人抢了用户的单时的推送
+     * 表示抢单模式中有人抢了用户的单时的推送，已做
      */
     public static final String PUSH_HAVE_ROBBED = "push_have_robbed";
 
     /**
-     * 表示发单者撤单时的推送
+     * 表示发单者撤单时的推送，已做
      */
     public static final String PUSH_PUBLISHER_REMOVE_BILL = "push_publisher_remove_bill";
 
