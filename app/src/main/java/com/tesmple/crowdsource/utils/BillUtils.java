@@ -122,7 +122,7 @@ public class BillUtils {
                 break;
         }
         // 根据 createdAt 字段升序显示数据
-        avQuery.orderByDescending("createdAt");
+        avQuery.orderByDescending("updateAt");
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {

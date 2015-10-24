@@ -99,7 +99,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     private void setView(){
-        /*if(bill.getApplicant()==null){
+        if(bill.getApplicant()==null){
 
         }else if(!bill.getApplicant().contains("=")){
             Applicant applicant = new Applicant();
@@ -115,7 +115,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
             });
         }else {
             bill.getApplicant().split("=");
-        }*/
+        }
     }
 
     /**

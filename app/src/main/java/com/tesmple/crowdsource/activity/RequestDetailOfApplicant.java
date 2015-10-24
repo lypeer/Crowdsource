@@ -123,6 +123,11 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
     private TextView tvSecond;
 
     /**
+     * bill状态
+     */
+    private TextView tvStatus;
+
+    /**
      * 剩余时间list，0为小时数，1为分钟数，2为秒数
      */
     private ArrayList<String> timeList = new ArrayList<String>();
@@ -257,7 +262,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvMinute = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_minutes);
         tvSecond = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_second);
         btrPostApplication = (ButtonRectangle)findViewById(R.id.requestdetailofapplicant_btr_postapplication);
-
+        tvStatus = (TextView)findViewById(R.id.requestdetailofapplicant_tv_status);
         liUpInfo = (LinearLayout)findViewById(R.id.li_upinfo);
         liDownInfo = (LinearLayout)findViewById(R.id.li_downinfo);
     }
@@ -321,6 +326,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvSchool.setText(bill.getPublisherSchool());
         tvDetail.setText(bill.getDetail());
         tvAward.setText(bill.getAward());
+        tvStatus.setText(bill.getStatus());
         ArrayList<String> timeList = new ArrayList<String>();
         timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
         tvHour.setText(timeList.get(0));
@@ -401,7 +407,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
      */
     private void attempPostApplication(){
         String applicant = bill.getApplicant();
-        if(applicant == null && applicant.equals("")){
+        if(applicant == null || applicant.equals("")){
             bill.setApplicant(User.getInstance().getUserName());
         }
         else {
