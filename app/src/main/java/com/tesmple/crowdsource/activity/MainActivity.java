@@ -161,7 +161,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_notification) {
-            // Handle the camera action
+            Intent intent = new Intent(MainActivity.this , NotificationActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -198,6 +199,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void update(Observable observable, Object data) {
+        if (NotificationLab.getInstance().isExistNotRead()) {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.getMenu().getItem(0).setTitle(R.string.prompt_new_notification);
+            toolbar.setNavigationIcon(R.drawable.ic_menu_white_new_24dp);
+        }else {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.getMenu().getItem(0).setTitle(R.string.prompt_notification);
+            toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (NotificationLab.getInstance().isExistNotRead()) {
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_new_notification);

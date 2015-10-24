@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <include layout="@layout/include_progressbar"/>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/comment_srl_comment"
         android:layout_width="match_parent"

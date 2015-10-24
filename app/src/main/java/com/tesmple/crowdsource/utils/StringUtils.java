@@ -154,6 +154,16 @@ public class StringUtils {
     public static final int postSuccessfully_needchangetime = 42;
 
     /**
+     * 表示获得通知的数据成功
+     */
+    public static final int GET_NOTIFICATION_SUCCESSFULLY = 43;
+
+    /**
+     * 表示获得通知的数据失败
+     */
+    public static final int GET_NOTIFICATION_FAILED = 44;
+
+    /**
      * 该String值代表AcceptableFragment
      */
     public static final String FRAGMENT_ACCEPTABLE_BILL = "fragment_acceptable_bill";
@@ -223,7 +233,25 @@ public class StringUtils {
      */
     public static final String PUSH_SYSTEM_FINISH = "push_system_finish";
 
+    /**
+     * 一分钟的毫秒值
+     */
+    public static final long ONE_MINUTE = 60 * 1000;
 
+    /**
+     * 一小时的毫秒值
+     */
+    public static final long ONE_HOUR = 60 * ONE_MINUTE;
+
+    /**
+     * 一天的毫秒值
+     */
+    public static final long ONE_DAY = 24 * ONE_HOUR;
+
+    /**
+     * 两天的毫秒值
+     */
+    public static final long TWO_DAY = 2 * ONE_DAY;
 
     /**
      * 电子科技大学的string值

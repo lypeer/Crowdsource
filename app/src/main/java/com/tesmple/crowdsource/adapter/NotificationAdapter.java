@@ -1,17 +1,35 @@
 package com.tesmple.crowdsource.adapter;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.Notification;
+import com.tesmple.crowdsource.utils.TimeUtils;
 
+import java.net.URI;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Created by lypeer on 10/23/2015.
@@ -24,9 +42,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private Context context;
 
     /**
-     * 装载bill的list
+     * 装载notification的list
      */
-    private List<Bill> billsList;
+    private List<Notification> notificationsList;
 
     /**
      * 点击的监听器的对象
@@ -35,32 +53,71 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     /**
      * adpater的构造方法
-     * @param context 调用的activity的context
-     * @param billsList 装载单的数据的list
+     *
+     * @param context           调用的activity的context
+     * @param notificationsList 装通知的数据的list
      */
-    public NotificationAdapter(Context context , List<Bill> billsList){
+    public NotificationAdapter(Context context, List<Notification> notificationsList) {
         this.context = context;
-        this.billsList = billsList;
+        this.notificationsList = notificationsList;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_my_publish , parent , false));
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final Bill bill = billsList.get(position);
+        final Notification notification = notificationsList.get(position);
+        holder.tvTime.setText(TimeUtils.judgeTime(Long.valueOf(notification.getTime()),
+                System.currentTimeMillis() - Long.valueOf(notification.getTime())));
+        holder.tvContent.setText(notification.getContent());
 
+        AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+        avQuery.whereEqualTo("username", notification.getPublisher());
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (e == null) {
+                    holder.tvName.setText((String) list.get(0).get("nickname"));
+                    holder.sdvHeadPortrait.setImageURI(Uri.parse(list.get(0).getAVFile("head_portrait").getUrl()));
+                    if(list.get(0).get("gender").equals(App.getContext().getString(R.string.man))){
+                       holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
+                    }else {
+                        holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
+                    }
+                } else {
+                    Log.e("NotificationAdaptError", e.getMessage() + "===" + e.getCode());
+                    Snackbar.make(holder.tvContent, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+                }
+            }
+        });
 
+        if (onItemClickListener != null) {
+            holder.btnMain.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = holder.getLayoutPosition();
+                    onItemClickListener.onItemClick(holder.btnMain, pos);
+                }
+            });
 
-
-
+            holder.btnMain.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = holder.getLayoutPosition();
+                    onItemClickListener.onItemLongCick(holder.btnMain, pos);
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return billsList.size();
+        return notificationsList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -78,7 +135,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         /**
          * 表示性别的simpledraweeview
          */
-        private SimpleDraweeView sdvGender;
+        private ImageView ivGender;
 
         /**
          * 表示通知的时间的textview
@@ -90,15 +147,21 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
          */
         private TextView tvContent;
 
+        /**
+         * 显示按钮的点击效果的按钮
+         */
+        private ButtonFlat btnMain;
+
         public MyViewHolder(View itemView) {
             super(itemView);
 
             sdvHeadPortrait = (SimpleDraweeView) itemView.
                     findViewById(R.id.notification_sdv_head_portrait);
-            sdvGender = (SimpleDraweeView) itemView.findViewById(R.id.notification_sdv_gender);
+            ivGender = (ImageView) itemView.findViewById(R.id.notification_sdv_gender);
             tvName = (TextView) itemView.findViewById(R.id.notification_tv_name);
             tvTime = (TextView) itemView.findViewById(R.id.notification_tv_time);
             tvContent = (TextView) itemView.findViewById(R.id.notification_tv_content);
+            btnMain = (ButtonFlat) itemView.findViewById(R.id.notification_btn_main);
         }
     }
 
@@ -130,10 +193,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     /**
      * 提示数据有了变动，刷新数据的方法
-     * @param billsList 变动之后的list
+     *
+     * @param notificationsList 变动之后的list
      */
-    public void refresh(List<Bill> billsList){
-        this.billsList = billsList;
+    public void refresh(List<Notification> notificationsList) {
+        this.notificationsList = notificationsList;
         notifyDataSetChanged();
     }
 }
