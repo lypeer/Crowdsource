@@ -23,6 +23,7 @@ import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.BillUtils;
+import com.tesmple.crowdsource.utils.PushUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
@@ -131,6 +132,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                     }//抢单模式
                     else if (bill.getRobType().equals(getString(R.string.bill_robtype_receivebillmode))){
                         Toast.makeText(App.getContext(),"报名成功！",Toast.LENGTH_LONG).show();
+                        PushUtils.startPushTransaction(handler , StringUtils.PUSH_BECOME_APPLICANT , bill);
                         finish();
                     }//接单模式
                     break;

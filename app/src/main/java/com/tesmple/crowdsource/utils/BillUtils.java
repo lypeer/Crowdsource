@@ -14,9 +14,13 @@ import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.Notification;
+import com.tesmple.crowdsource.object.NotificationLab;
 import com.tesmple.crowdsource.object.User;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -25,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 
 /**
  * Created by lypeer on 10/14/2015.
@@ -84,7 +89,6 @@ public class BillUtils {
                 break;
             case StringUtils.FRAGMENT_ACCEPTED_BILL:
                 //表示我报名了还没有选定的筛选条件
-                // TODO: 2015/10/24
                 //此处存疑
                 AVQuery<AVObject> myApplicant = AVQuery.getQuery("Bill");
                 myApplicant.whereContains("applicant", User.getInstance().getUserName());
@@ -141,10 +145,9 @@ public class BillUtils {
                         bill.setContactWay((String) avObject.get("contact_way"));
                         switch (targetFragment) {
                             case StringUtils.FRAGMENT_ACCEPTABLE_BILL:
-                                if(userIsApplicant(bill)){
+                                if (userIsApplicant(bill)) {
                                     break;
-                                }
-                                else {
+                                } else {
                                     acceptableBillList.add(bill);
                                 }
                                 break;
@@ -167,6 +170,39 @@ public class BillUtils {
                     Message message = new Message();
                     message.what = StringUtils.START_GET_BILL_TRANSACTION_FAILED;
                     handler.sendMessage(message);
+                }
+            }
+        });
+
+        AVQuery<AVObject> avQuery1 = new AVQuery<>("UserHelper");
+        avQuery1.whereEqualTo("username" , User.getInstance().getUserName());
+        avQuery1.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if(e == null){
+                    JSONArray jsonArray = list.get(0).getJSONArray("notification");
+                    if(jsonArray != null ){
+                        for(int i = 0 ; i < jsonArray.length() ; i++){
+                            Notification notification = new Notification();
+                            try {
+                                JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
+                                notification.setTime(TimeUtils.judgeTime(Long.valueOf((String) tempJsonObject.get("time")) ,
+                                        System.currentTimeMillis() - Long.valueOf((String) tempJsonObject.get("time"))));
+                                notification.setContent(tempJsonObject.getString("alert"));
+                                notification.setIsRead(tempJsonObject.getBoolean("is_read"));
+                                notification.setPublisher(tempJsonObject.getString("sender"));
+                                notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                            if(!NotificationLab.getInstance().getNotificationList().contains(notification)){
+                                NotificationLab.getInstance().addNotification(notification);
+                            }
+                        }
+
+                    }
+                }else {
+                    Log.e("BillUtilsUserHelper" , e.getMessage() + "===" + e.getCode());
                 }
             }
         });

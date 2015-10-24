@@ -48,4 +48,5 @@ dependencies {
     compile 'org.jsoup:jsoup:1.8.3'
 
     compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'com.github.d-max:spots-dialog:0.4@aar'
 }

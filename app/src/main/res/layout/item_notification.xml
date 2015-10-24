@@ -6,11 +6,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        >
 
         <com.gc.materialdesign.views.ButtonFlat
             android:layout_width="match_parent"
+            android:id="@+id/notification_btn_main"
             android:layout_height="match_parent">
 
         </com.gc.materialdesign.views.ButtonFlat>
@@ -18,6 +18,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:orientation="horizontal">
 
             <RelativeLayout
@@ -61,8 +63,12 @@
 
                     <ImageView
                         android:id="@+id/notification_sdv_gender"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@drawable/icon_male"
+                        android:layout_alignParentBottom="true"
                         android:layout_toRightOf="@+id/notification_tv_name"/>
 
                     <TextView
@@ -92,6 +98,8 @@
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
             android:layout_alignParentBottom="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@color/half_half_black"/>
     </RelativeLayout>
 </LinearLayout>

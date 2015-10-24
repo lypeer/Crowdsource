@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
 import com.tesmple.crowdsource.activity.RequestDetailOfPublisher;
 import com.tesmple.crowdsource.adapter.AcceptableAdapter;
@@ -118,7 +119,6 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
         rvBill.setItemAnimator(new DefaultItemAnimator());
 
         srlBill.setOnRefreshListener(this);
-
         srlBill.setRefreshing(true);
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);
@@ -127,6 +127,7 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
         srlBill.setRefreshing(true);
+
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL , handler , false , 0);
     }

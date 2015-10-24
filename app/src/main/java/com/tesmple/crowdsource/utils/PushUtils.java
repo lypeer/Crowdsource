@@ -127,8 +127,10 @@ public class PushUtils {
                             try {
                                 //判断原先是否有通知，如果没有就新建一个，避免空异常
                                 if (jsonArray != null) {
+                                    Log.e("fuckJson", "here");
                                     jsonArray.put(jsonArray.length(), jsonObject);
                                 } else {
+                                    Log.e("fuckJson" , "there");
                                     jsonArray = new JSONArray();
                                     jsonArray.put(jsonObject);
                                 }
@@ -136,6 +138,7 @@ public class PushUtils {
                                 e1.printStackTrace();
                             }
                             //本来想让他和i一样成为一个指标的，结果好像有问题。。。
+                            userHelperList.get(i).put("notification" , jsonArray);
                             final int j = i;
                             userHelperList.get(i).saveInBackground(new SaveCallback() {
                                 @Override
@@ -235,5 +238,27 @@ public class PushUtils {
 
     }
 
-
+    public static String getPushType(String content){
+        String type = null;
+        if(content.equals(App.getContext().getString(R.string.push_become_applicant))){
+            type = StringUtils.PUSH_BECOME_APPLICANT;
+        }else if (content.equals(App.getContext().getString(R.string.push_become_confirmer))){
+            type = StringUtils.PUSH_BECOME_COMFIRMER;
+        } else if (content.equals(App.getContext().getString(R.string.push_not_become_applicant))){
+            type = StringUtils.PUSH_NOT_BECOME_COMFIRMER;
+        }else if (content.equals(App.getContext().getString(R.string.push_have_robbed))){
+            type = StringUtils.PUSH_HAVE_ROBBED;
+        }else if (content.equals(App.getContext().getString(R.string.push_publisher_remove_bill))){
+            type = StringUtils.PUSH_PUBLISHER_REMOVE_BILL;
+        }else if (content.equals(App.getContext().getString(R.string.push_confirmer_remove_bill))){
+            type = StringUtils.PUSH_CONFIRMER_REMOVE_BILL;
+        }else if (content.equals(App.getContext().getString(R.string.push_finish_bill))){
+            type = StringUtils.PUSH_FINISH_BILL;
+        }else if (content.equals(App.getContext().getString(R.string.push_remind_publisher))){
+            type = StringUtils.PUSH_REMIND_PUBLISHER;
+        }else if (content.equals(App.getContext().getString(R.string.push_system_finish))){
+            type = StringUtils.PUSH_SYSTEM_FINISH;
+        }
+        return type;
+    }
 }

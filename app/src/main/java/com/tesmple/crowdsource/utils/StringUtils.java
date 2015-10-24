@@ -223,7 +223,25 @@ public class StringUtils {
      */
     public static final String PUSH_SYSTEM_FINISH = "push_system_finish";
 
+    /**
+     * 一分钟的毫秒值
+     */
+    public static final long ONE_MINUTE = 60 * 1000;
 
+    /**
+     * 一小时的毫秒值
+     */
+    public static final long ONE_HOUR = 60 * ONE_MINUTE;
+
+    /**
+     * 一天的毫秒值
+     */
+    public static final long ONE_DAY = 24 * ONE_HOUR;
+
+    /**
+     * 两天的毫秒值
+     */
+    public static final long TWO_DAY = 2 * ONE_DAY;
 
     /**
      * 电子科技大学的string值
