@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,6 +138,16 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
      * 外部刷新内容
      */
     public static void notifyDateChanged(){
+        BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
+        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("AcceptedBillOnResume", "enter");
+        srlBill.setRefreshing(true);
+
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);
     }

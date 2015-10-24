@@ -87,7 +87,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
      */
     private void initToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("发布成功");
+        toolbar.setTitle(R.string.prompt_notification);
         toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
     }

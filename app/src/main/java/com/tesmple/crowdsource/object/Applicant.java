@@ -4,6 +4,12 @@ package com.tesmple.crowdsource.object;
  * Created by ESIR on 2015/10/18.
  */
 public class Applicant {
+
+    /**
+     * 报名者的username
+     */
+    private String username;
+
     /**
      * 报名者头像的url
      */
@@ -28,6 +34,14 @@ public class Applicant {
      * 报名者信用度
      */
     private int applicantCreditValue;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getApplicantHeadPortrait() {
         return applicantHeadPortrait;

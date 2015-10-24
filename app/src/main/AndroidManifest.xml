@@ -56,6 +56,9 @@
         <activity android:name=".activity.SettingActivity">
 
         </activity>
+        <activity android:name=".activity.ConfirmSuccessfullyActivity">
+
+        </activity>
         <service android:name="com.avos.avoscloud.PushService"
                  android:exported="false"/>
         <receiver android:name=".receiver.PushReceiver" android:exported="false">

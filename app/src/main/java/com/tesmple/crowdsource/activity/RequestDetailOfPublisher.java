@@ -14,6 +14,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
@@ -297,6 +299,25 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
                 finish();
             }
         });
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.menu_delete :
+                        deleteBill();
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    /**
+     * 撤销订单的方法
+     */
+    private void deleteBill(){
+
     }
 
     /**
@@ -410,5 +431,11 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
     private void attempDeleteBill(){
         bill.setStatus(StringUtils.BILL_STATUS_FIVE);
         BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_FIVE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_delete , menu);
+        return true;
     }
 }
