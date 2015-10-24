@@ -171,9 +171,6 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
                     if(bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
                         PushUtils.startPushTransaction(handler , StringUtils.PUSH_PUBLISHER_REMOVE_BILL , bill);
                     }
-                    AcceptableBillFragment.notifyDateChanged();
-                    MyPublishFragment.notifyDateChanged();
-                    AcceptedBillFragment.notifyDateChanged();
                     finish();
                     break;
                 case StringUtils.CHANGE_APPLICANT_FAILED:
