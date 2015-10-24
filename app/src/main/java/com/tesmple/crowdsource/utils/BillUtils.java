@@ -122,7 +122,7 @@ public class BillUtils {
                 break;
         }
         // 根据 createdAt 字段升序显示数据
-        avQuery.orderByDescending("updatedAt");
+        avQuery.orderByDescending("updateAt");
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
@@ -174,35 +174,6 @@ public class BillUtils {
             }
         });
 
-        AVQuery<AVObject> avQuery1 = new AVQuery<>("UserHelper");
-        avQuery1.whereEqualTo("username", User.getInstance().getUserName());
-        avQuery1.orderByDescending("createdAt");
-        avQuery1.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if (e == null) {
-                    JSONArray jsonArray = list.get(0).getJSONArray("notification");
-                    if (jsonArray != null) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            Notification notification = new Notification();
-                            try {
-                                JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
-                                notification.setTime((String) tempJsonObject.get("time"));
-                                notification.setContent(tempJsonObject.getString("alert"));
-                                notification.setIsRead(tempJsonObject.getBoolean("is_read"));
-                                notification.setPublisher(tempJsonObject.getString("sender"));
-                                notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-                            NotificationLab.getInstance().addNotification(notification);
-                        }
-                    }
-                } else {
-                    Log.e("BillUtilsUserHelper", e.getMessage() + "===" + e.getCode());
-                }
-            }
-        });
 
     }
 
@@ -335,21 +306,20 @@ public class BillUtils {
                         if(bill.getApplicant().contains("=")){
                             String[] applicantorArray = bill.getApplicant().split(App.getContext().getString(R.string.add));
                             StringBuilder newApplicant = new StringBuilder();
-                            int ss = -1;
                             for (int i = 0; i < applicantorArray.length; i++) {
                                 if (applicantorArray[i].equals(User.getInstance().getUserName())) {
-                                    ss = i;
-                                    applicantorArray[i] = "";
+                                    applicantorArray[i] = 0 + "";
                                     break;
                                 }
                             }
                             for (int i = 0; i < applicantorArray.length; i++) {
-                                if(i != ss && i != applicantorArray.length - 1 && ss != applicantorArray.length - 1){
-                                    newApplicant.append(applicantorArray[i]).append("=");
-                                }else{
-                                    newApplicant.append(applicantorArray[i]);
+                                if (!applicantorArray[i].equals("0")) {
+                                    if (i == applicantorArray.length - 1) {
+                                        newApplicant.append(applicantorArray[i]);
+                                    } else {
+                                        newApplicant.append(applicantorArray[i]).append("=");
+                                    }
                                 }
-
                             }
                             avObject.put("applicant", newApplicant.toString());
                         }
