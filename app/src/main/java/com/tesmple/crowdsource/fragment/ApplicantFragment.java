@@ -2,13 +2,13 @@ package com.tesmple.crowdsource.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +18,9 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.tesmple.crowdsource.R;
-import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.adapter.ApplicantAdapter;
 import com.tesmple.crowdsource.object.Applicant;
 import com.tesmple.crowdsource.object.Bill;
-import com.tesmple.crowdsource.utils.BillUtils;
-import com.tesmple.crowdsource.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +64,6 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
             rootView = inflater.inflate(R.layout.fragment_applicant , container , false);
             getBundle();
             initView();
-            setView();
         }
         return rootView;
     }
@@ -96,25 +92,55 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
 
         srlApplicant.setOnRefreshListener(this);
         srlApplicant.setRefreshing(true);
+        applicantList.clear();
+        setApplicantList();
     }
 
-    private void setView(){
+    private void setApplicantList(){
         if(bill.getApplicant()==null){
 
         }else if(!bill.getApplicant().contains("=")){
-            Applicant applicant = new Applicant();
+            //final Applicant applicant = new Applicant();
             AVQuery<AVObject> avQuery = new AVQuery<>("_User");
             avQuery.whereEqualTo("username", bill.getApplicant());
             avQuery.findInBackground(new FindCallback<AVObject>() {
                 @Override
                 public void done(List<AVObject> list, AVException e) {
                     if (e == null) {
-
+                        Applicant applicant = new Applicant();
+                        applicant.setApplicantName(list.get(0).get("name").toString());
+                        applicant.setApplicantSchool(list.get(0).get("department").toString());
+                        applicantList.add(applicant);
+                        Log.i("applicantlist", String.valueOf(applicantList.size()));
+                        srlApplicant.setRefreshing(false);
+                    }
+                    else {
+                        Log.i("e1",e.getMessage());
                     }
                 }
             });
         }else {
-            bill.getApplicant().split("=");
+            String[] tempList = bill.getApplicant().split("=");
+            for(int i = 0 ;i < tempList.length ; i ++){
+                AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+                avQuery.whereEqualTo("username", tempList[i]);
+                avQuery.findInBackground(new FindCallback<AVObject>() {
+                    @Override
+                    public void done(List<AVObject> list, AVException e) {
+                        if (e == null) {
+                            Applicant applicant = new Applicant();
+                            applicant.setApplicantName(list.get(0).get("name").toString());
+                            applicant.setApplicantSchool(list.get(0).get("department").toString());
+                            applicantList.add(applicant);
+                            Log.i("applicantlist", String.valueOf(applicantList.size()));
+                        }else {
+                            Log.i("e2",e.getMessage());
+                        }
+                    }
+                });
+            }
+            srlApplicant.setRefreshing(false);
+            applicantAdapter.refresh(applicantList);
         }
     }
 
@@ -124,6 +150,8 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
         srlApplicant.setRefreshing(true);
+        applicantList.clear();
+        setApplicantList();
     }
 
 }

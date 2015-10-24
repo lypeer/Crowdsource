@@ -173,9 +173,8 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                         PushUtils.startPushTransaction(handler, StringUtils.PUSH_HAVE_ROBBED, bill);
                     }//抢单模式
                     else if (bill.getRobType().equals(getString(R.string.bill_robtype_receivebillmode))){
-
                         Toast.makeText(App.getContext(),"报名成功！",Toast.LENGTH_LONG).show();
-                        PushUtils.startPushTransaction(handler, StringUtils.PUSH_BECOME_APPLICANT, bill);
+                        PushUtils.startPushTransaction(handler , StringUtils.PUSH_BECOME_APPLICANT , bill);
                         AcceptableBillFragment.notifyDateChanged();
                         MyPublishFragment.notifyDateChanged();
                         AcceptedBillFragment.notifyDateChanged();
