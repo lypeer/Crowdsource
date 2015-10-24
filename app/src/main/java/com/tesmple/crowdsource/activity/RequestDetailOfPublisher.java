@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -21,7 +22,10 @@ import com.tesmple.crowdsource.fragment.ApplicantFragment;
 import com.tesmple.crowdsource.fragment.BillCommentFragment;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.utils.ActivityCollector;
+import com.tesmple.crowdsource.utils.BillUtils;
+import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
+import com.tesmple.crowdsource.view.ButtonRectangle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +107,11 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
      */
     private ArrayList<String> timeList = new ArrayList<String>();
 
+    /**
+     * 取消任务的buttonrectangle
+     */
+    private ButtonRectangle btrCancelBilll;
+
     public final Handler handler = new android.os.Handler(){
         public void handleMessage(Message msg){
             switch (msg.what){
@@ -111,6 +120,12 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
                     tvHour.setText(timeList.get(0));
                     tvMinute.setText(timeList.get(1));
                     tvSecond.setText(timeList.get(2));
+                    break;
+                case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
+                    finish();
+                    break;
+                case StringUtils.POST_REQUEST_FAILED:
+                    Snackbar.make(btrCancelBilll, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
                     break;
             }
         }
@@ -126,6 +141,7 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         initTabAndViewPager();
         setView();
         startUpdateTime();
+        setButtons();
     }
 
     /**
@@ -153,6 +169,7 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         tvHour = (TextView)findViewById(R.id.requestdetailofpublisher_tv_left_time_hour);
         tvMinute = (TextView)findViewById(R.id.requestdetailofpublisher_tv_left_time_minutes);
         tvSecond = (TextView)findViewById(R.id.requestdetailofpublisher_tv_left_time_second);
+        btrCancelBilll = (ButtonRectangle)findViewById(R.id.requestdetailofpublisher_btr_cancelbill);
     }
 
     /**
@@ -221,5 +238,24 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         tvHour.setText(timeList.get(0));
         tvMinute.setText(timeList.get(1));
         tvSecond.setText(timeList.get(2));
+    }
+
+    /**
+     * 设置button按钮监听及相关
+     */
+    private void setButtons(){
+        btrCancelBilll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attempCancelBill();
+            }
+        });
+    }
+
+    /**
+     * 尝试取消bill
+     */
+    private void attempCancelBill(){
+        BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_FOUR);
     }
 }
