@@ -104,6 +104,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
             public void onItemClick(View v, final int position) {
                 if (!NotificationLab.getInstance().getNotificationList().get(position).isRead()) {
                     NotificationLab.getInstance().getNotificationList().get(position).setIsRead(true);
+                    NotificationLab.getInstance().reverseList();
                     final JSONArray jsonArray = new JSONArray();
                     for (Notification notification : NotificationLab.getInstance().getNotificationList()) {
                         JSONObject jsonObject = new JSONObject();
@@ -112,7 +113,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                             jsonObject.put("alert", notification.getContent());
                             jsonObject.put("time", notification.getTime());
                             jsonObject.put("sender", notification.getPublisher());
-                            jsonArray.put(jsonArray.length(), jsonObject);
+                            jsonArray.put(jsonObject);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -197,7 +198,6 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     private void getNotifications() {
         AVQuery<AVObject> avQuery1 = new AVQuery<>("UserHelper");
         avQuery1.whereEqualTo("username", User.getInstance().getUserName());
-        avQuery1.orderByDescending("createdAt");
         avQuery1.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
@@ -220,6 +220,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
 
                         }
                     }
+                    NotificationLab.getInstance().reverseList();
                     Message message = new Message();
                     message.what = StringUtils.GET_NOTIFICATION_SUCCESSFULLY;
                     mHandler.sendMessage(message);

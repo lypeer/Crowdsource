@@ -1,6 +1,7 @@
 package com.tesmple.crowdsource.object;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 
@@ -73,7 +74,17 @@ public class NotificationLab extends Observable{
         }
     }
 
+    /**
+     * 清除通知的list的方法
+     */
     public void clearList(){
         sNotificationList.clear();
+    }
+
+    /**
+     * 反转list的方法
+     */
+    public void reverseList(){
+        Collections.reverse(sNotificationList);
     }
 }

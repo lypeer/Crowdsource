@@ -23,6 +23,7 @@ import com.tesmple.crowdsource.object.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,21 @@ import java.util.List;
  * Created by lypeer on 10/17/2015.
  */
 public class PushUtils {
+
+    /**
+     * 标示异步过程中遍历了多少次的list
+     */
+    private static List<Boolean> sBooleanList1;
+
+    /**
+     * 标示异步过程中遍历了多少次的list
+     */
+    private static List<Boolean> sBooleanList2;
+
+    /**
+     * 获得的通知的size
+     */
+    private static int size;
 
     /**
      * 开启推送事物的方法
@@ -122,6 +138,9 @@ public class PushUtils {
                         jsonObject.put("alert", message);
                         jsonObject.put("is_read" , false);
                         jsonObject.put("time", String.valueOf(System.currentTimeMillis()));
+                        size = userHelperList.size();
+                        sBooleanList1 = new ArrayList<>();
+                        sBooleanList2 = new ArrayList<>();
                         for (int i = 0; i < userHelperList.size(); i++) {
                             JSONArray jsonArray = userHelperList.get(i).getJSONArray("notification");
                             try {
@@ -137,13 +156,13 @@ public class PushUtils {
                             }
                             //本来想让他和i一样成为一个指标的，结果好像有问题。。。
                             userHelperList.get(i).put("notification" , jsonArray);
-                            final int j = i;
                             userHelperList.get(i).saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(AVException e) {
                                     if (e == null) {
+                                        sBooleanList1.add(true);
                                         AVQuery<AVObject> avQuery1 = new AVQuery<>("_User");
-                                        avQuery1.whereEqualTo("username", userHelperList.get(j).get("username"));
+                                        avQuery1.whereEqualTo("username", userHelperList.get(sBooleanList1.size() - 1).get("username"));
                                         avQuery1.findInBackground(new FindCallback<AVObject>() {
                                             @Override
                                             public void done(List<AVObject> list, AVException e) {
@@ -185,7 +204,8 @@ public class PushUtils {
                                                             @Override
                                                             public void done(AVException e) {
                                                                 if (e == null) {
-                                                                    if (j == userHelperList.size()) {
+                                                                    sBooleanList2.add(true);
+                                                                    if (sBooleanList2.size() == size) {
                                                                         Message message1 = new Message();
                                                                         message1.what = StringUtils.PUSH_SUCCESSFULLY;
                                                                         handler.sendMessage(message1);
