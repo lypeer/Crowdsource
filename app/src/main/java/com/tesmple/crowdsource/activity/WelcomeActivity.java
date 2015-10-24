@@ -146,20 +146,22 @@ public class WelcomeActivity extends AppCompatActivity {
                                         if (e == null) {
                                             if (list.size() != 0) {
                                                 JSONArray jsonArray = list.get(0).getJSONArray("notification");
-                                                for (int i = 0; i < jsonArray.length(); i++) {
-                                                    Notification notification = new Notification();
-                                                    try {
-                                                        JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
-                                                        notification.setTime((String) tempJsonObject.get("time"));
-                                                        notification.setContent(tempJsonObject.getString("alert"));
-                                                        notification.setIsRead(tempJsonObject.getBoolean("is_read"));
-                                                        notification.setPublisher(tempJsonObject.getString("sender"));
-                                                        notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
-                                                    } catch (JSONException e1) {
-                                                        e1.printStackTrace();
-                                                    }
-                                                    if (!NotificationLab.getInstance().getNotificationList().contains(notification)) {
-                                                        NotificationLab.getInstance().addNotification(notification);
+                                                if(jsonArray != null){
+                                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                                        Notification notification = new Notification();
+                                                        try {
+                                                            JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
+                                                            notification.setTime((String) tempJsonObject.get("time"));
+                                                            notification.setContent(tempJsonObject.getString("alert"));
+                                                            notification.setIsRead(tempJsonObject.getBoolean("is_read"));
+                                                            notification.setPublisher(tempJsonObject.getString("sender"));
+                                                            notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
+                                                        } catch (JSONException e1) {
+                                                            e1.printStackTrace();
+                                                        }
+                                                        if (!NotificationLab.getInstance().getNotificationList().contains(notification)) {
+                                                            NotificationLab.getInstance().addNotification(notification);
+                                                        }
                                                     }
                                                 }
                                             }
