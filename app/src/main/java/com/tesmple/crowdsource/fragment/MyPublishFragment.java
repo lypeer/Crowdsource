@@ -116,9 +116,6 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
         rvBill.setItemAnimator(new DefaultItemAnimator());
 
         srlBill.setOnRefreshListener(this);
-        srlBill.setRefreshing(true);
-        BillUtils.clearList(StringUtils.FRAGMENT_MY_PUBLISH);
-        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH, handler, false, 0);
     }
 
     @Override
@@ -139,7 +136,6 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("MyPublishOnResume" , "enter");
         srlBill.setRefreshing(true);
         BillUtils.clearList(StringUtils.FRAGMENT_MY_PUBLISH);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH, handler, false, 0);
