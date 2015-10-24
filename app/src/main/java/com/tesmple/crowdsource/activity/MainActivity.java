@@ -1,6 +1,7 @@
 package com.tesmple.crowdsource.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -18,8 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.avos.avoscloud.AVUser;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
 import com.tesmple.crowdsource.fragment.AcceptableBillFragment;
@@ -27,6 +30,7 @@ import com.tesmple.crowdsource.fragment.AcceptedBillFragment;
 import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Notification;
 import com.tesmple.crowdsource.object.NotificationLab;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 
 import java.util.ArrayList;
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * 主界面的viewpager
      */
-    private static ViewPager  vpMain;
+    private static ViewPager vpMain;
 
     /**
      * 装viewpager的每一个界面的list
@@ -55,6 +59,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * 装fragment的每一个对象的list
      */
     private List<Fragment> fragmentList;
+
+    /**
+     * dev里面的头像
+     */
+    private SimpleDraweeView sdvHeadPortrait;
+
+    /**
+     * dev里面的名字
+     */
+    private TextView tvName;
+
+    /**
+     * dev里面的名字
+     */
+    private TextView tvDepartment;
 
     /**
      * 这个页面的toolbar
@@ -102,6 +121,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        sdvHeadPortrait = (SimpleDraweeView) findViewById(R.id.nav_sdv_head_portrait);
+        tvName = (TextView) findViewById(R.id.nav_tv_name);
+        tvDepartment = (TextView) findViewById(R.id.nav_tv_department);
+
+        sdvHeadPortrait.setImageURI(Uri.parse(User.getInstance().getHeadProtrait()));
+        tvName.setText(User.getInstance().getName());
+        tvDepartment.setText(User.getInstance().getDepartment() + getString(R.string.enter) + User.getInstance().getMajor());
     }
 
     /**
@@ -161,10 +187,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_notification) {
-            Intent intent = new Intent(MainActivity.this , NotificationActivity.class);
+            Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_gallery) {
-
+            Intent intent = new Intent(MainActivity.this , SettingActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -185,9 +212,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * 外部修改viewpager的页面
+     *
      * @param i
      */
-    public static void changeViewpagerItem(int i){
+    public static void changeViewpagerItem(int i) {
         vpMain.setCurrentItem(i);
     }
 
@@ -203,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_new_notification);
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_new_24dp);
-        }else {
+        } else {
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_notification);
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
@@ -217,10 +245,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_new_notification);
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_new_24dp);
-        }else {
+        } else {
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_notification);
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         }
+
+        sdvHeadPortrait.setImageURI(Uri.parse(User.getInstance().getHeadProtrait()));
+        tvName.setText(User.getInstance().getName());
+        tvDepartment.setText(User.getInstance().getDepartment() + getString(R.string.enter) + User.getInstance().getMajor());
     }
 }

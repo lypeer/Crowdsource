@@ -7,9 +7,9 @@
             android:icon="@drawable/ic_notifications_blue_grey_500_36dp"
             android:title="@string/prompt_notification"/>
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@android:drawable/ic_menu_gallery"
-            android:title="Gallery"/>
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_settings_blue_grey_500_36dp"
+            android:title="@string/prompt_setting"/>
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@android:drawable/ic_menu_slideshow"

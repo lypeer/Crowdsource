@@ -146,4 +146,7 @@
     <string name="prompt_how_many_minutes">%1$s之前</string>
     <string name="prompt_one_day_ago">一天前</string>
     <string name="prompt_waiting">请稍等。。。</string>
+    <string name="test_department">通信与信息工程学院\n通信工程（大类招生）</string>
+    <string name="enter">\n</string>
+    <string name="prompt_setting">设置</string>
 </resources>

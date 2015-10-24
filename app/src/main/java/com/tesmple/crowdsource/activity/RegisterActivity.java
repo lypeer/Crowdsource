@@ -31,6 +31,8 @@ import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 
+import org.json.JSONArray;
+
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -219,8 +221,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 User.getInstance().setUserName(etPhone.getText().toString().trim());
                                 AVObject avObject = new AVObject("UserHelper");
                                 avObject.put("username", User.getInstance().getUserName());
-                                avObject.put("notification", "");
-                                avObject.put("user_comment", "");
+                                avObject.put("notification", new JSONArray());
+                                avObject.put("user_comment", new JSONArray());
                                 avObject.saveInBackground(new SaveCallback() {
                                     @Override
                                     public void done(AVException e) {
