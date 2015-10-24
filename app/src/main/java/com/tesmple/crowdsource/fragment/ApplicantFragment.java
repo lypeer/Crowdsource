@@ -107,12 +107,14 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                 @Override
                 public void done(List<AVObject> list, AVException e) {
                     if (e == null) {
+                        applicantList.clear();
                         Applicant applicant = new Applicant();
                         applicant.setApplicantName(list.get(0).get("name").toString());
                         applicant.setApplicantSchool(list.get(0).get("department").toString());
                         applicantList.add(applicant);
                         Log.i("applicantlist", String.valueOf(applicantList.size()));
                         srlApplicant.setRefreshing(false);
+                        applicantAdapter.refresh(applicantList);
                     }
                     else {
                         Log.i("e1",e.getMessage());
@@ -121,6 +123,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
             });
         }else {
             String[] tempList = bill.getApplicant().split("=");
+            //applicantList.clear();
             for(int i = 0 ;i < tempList.length ; i ++){
                 AVQuery<AVObject> avQuery = new AVQuery<>("_User");
                 avQuery.whereEqualTo("username", tempList[i]);
@@ -132,6 +135,8 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                             applicant.setApplicantName(list.get(0).get("name").toString());
                             applicant.setApplicantSchool(list.get(0).get("department").toString());
                             applicantList.add(applicant);
+                            srlApplicant.setRefreshing(false);
+                            applicantAdapter.refresh(applicantList);
                             Log.i("applicantlist", String.valueOf(applicantList.size()));
                         }else {
                             Log.i("e2",e.getMessage());
@@ -139,8 +144,6 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                     }
                 });
             }
-            srlApplicant.setRefreshing(false);
-            applicantAdapter.refresh(applicantList);
         }
     }
 
@@ -150,7 +153,6 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
         srlApplicant.setRefreshing(true);
-        applicantList.clear();
         setApplicantList();
     }
 
