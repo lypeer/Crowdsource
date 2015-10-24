@@ -74,6 +74,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 System.currentTimeMillis() - Long.valueOf(notification.getTime())));
         holder.tvContent.setText(notification.getContent());
 
+        if(!notification.isRead()){
+            holder.ivHaveNotRead.setVisibility(View.VISIBLE);
+            holder.ivHaveNotRead.bringToFront();
+        }else {
+            holder.ivHaveNotRead.setVisibility(View.GONE);
+        }
+
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.whereEqualTo("username", notification.getPublisher());
         avQuery.findInBackground(new FindCallback<AVObject>() {
@@ -128,6 +135,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         private SimpleDraweeView sdvHeadPortrait;
 
         /**
+         * 表示还没有阅读过的小红点
+         */
+        private ImageView ivHaveNotRead;
+
+        /**
          * 发单者名字的textview
          */
         private TextView tvName;
@@ -157,6 +169,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             sdvHeadPortrait = (SimpleDraweeView) itemView.
                     findViewById(R.id.notification_sdv_head_portrait);
+            ivHaveNotRead = (ImageView)itemView.findViewById(R.id.notification_iv_have_not_read);
             ivGender = (ImageView) itemView.findViewById(R.id.notification_sdv_gender);
             tvName = (TextView) itemView.findViewById(R.id.notification_tv_name);
             tvTime = (TextView) itemView.findViewById(R.id.notification_tv_time);

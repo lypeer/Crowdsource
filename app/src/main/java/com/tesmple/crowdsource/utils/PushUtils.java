@@ -127,10 +127,8 @@ public class PushUtils {
                             try {
                                 //判断原先是否有通知，如果没有就新建一个，避免空异常
                                 if (jsonArray != null) {
-                                    Log.e("fuckJson", "here");
                                     jsonArray.put(jsonArray.length(), jsonObject);
                                 } else {
-                                    Log.e("fuckJson" , "there");
                                     jsonArray = new JSONArray();
                                     jsonArray.put(jsonObject);
                                 }
