@@ -174,6 +174,37 @@ public class BillUtils {
             }
         });
 
+        AVQuery<AVObject> avQuery1 = new AVQuery<>("UserHelper");
+        avQuery1.whereEqualTo("username", User.getInstance().getUserName());
+        avQuery1.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (e == null) {
+                    JSONArray jsonArray = list.get(0).getJSONArray("notification");
+                    if (jsonArray != null) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            Notification notification = new Notification();
+                            try {
+                                JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
+                                notification.setTime((String) tempJsonObject.get("time"));
+                                notification.setContent(tempJsonObject.getString("alert"));
+                                notification.setIsRead(tempJsonObject.getBoolean("is_read"));
+                                notification.setPublisher(tempJsonObject.getString("sender"));
+                                notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                            NotificationLab.getInstance().addNotification(notification);
+
+                        }
+                    }
+                    NotificationLab.getInstance().reverseList();
+                } else {
+                    Log.e("BillUtilsUserHelper", e.getMessage() + "===" + e.getCode());
+                }
+            }
+        });
+
 
     }
 
@@ -252,8 +283,8 @@ public class BillUtils {
             public void done(AVObject avObject, AVException e) {
                 if (e == null) {
                     avObject.put("status", targetStatus);
-                    if(bill.getConfirmer()!=null){
-                        avObject.put("confirmer",bill.getConfirmer());
+                    if (bill.getConfirmer() != null) {
+                        avObject.put("confirmer", bill.getConfirmer());
                     }
                     avObject.saveInBackground(new SaveCallback() {
                         @Override
@@ -294,16 +325,16 @@ public class BillUtils {
             public void done(AVObject avObject, AVException e) {
                 if (e == null) {
                     if (isAdd) {
-                        if ( avObject.get("applicant") == null || avObject.get("applicant").equals("") ) {
+                        if (avObject.get("applicant") == null || avObject.get("applicant").equals("")) {
                             avObject.put("applicant", User.getInstance().getUserName());
-                            Log.i("applicant","要添加到空");
+                            Log.i("applicant", "要添加到空");
                         } else {
                             avObject.put("applicant", avObject.get("applicant") + "=" + User.getInstance().getUserName());
                             Log.i("applicant", "要添加进去");
                         }
                     } else {
                         //如果是要取消报名的话就将他的username从那里取消
-                        if(bill.getApplicant().contains("=")){
+                        if (bill.getApplicant().contains("=")) {
                             String[] applicantorArray = bill.getApplicant().split(App.getContext().getString(R.string.add));
                             StringBuilder newApplicant = new StringBuilder();
                             for (int i = 0; i < applicantorArray.length; i++) {
@@ -322,9 +353,8 @@ public class BillUtils {
                                 }
                             }
                             avObject.put("applicant", newApplicant.toString());
-                        }
-                        else {
-                            avObject.put("applicant","");
+                        } else {
+                            avObject.put("applicant", "");
                         }
                     }
                     avObject.saveInBackground(new SaveCallback() {
@@ -371,14 +401,14 @@ public class BillUtils {
 
     /**
      * 判断user是否已经报名了
+     *
      * @param bill 传入目标bill
      * @return 返回布尔值，如果已经报名则true，否则false
      */
     public static boolean userIsApplicant(Bill bill) {
-        if (bill.getApplicant() == null){
+        if (bill.getApplicant() == null) {
             return false;
-        }
-        else {
+        } else {
             return bill.getApplicant().contains(User.getInstance().getUserName());
         }
         /*String[] applicantorArray = bill.getApplicant().split(App.getContext().getString(R.string.add));
