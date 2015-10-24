@@ -3,6 +3,7 @@ package com.tesmple.crowdsource.utils;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -14,6 +15,8 @@ import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
+
+import org.json.JSONArray;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -73,6 +76,7 @@ public class BillUtils {
             case StringUtils.FRAGMENT_ACCEPTABLE_BILL:
                 avQuery.whereNotEqualTo("publisher_phone", User.getInstance().getUserName());
                 avQuery.whereEqualTo("status", StringUtils.BILL_STATUS_ONE);
+
                 break;
             case StringUtils.FRAGMENT_MY_PUBLISH:
                 avQuery.whereEqualTo("publisher_phone", User.getInstance().getUserName());
@@ -80,6 +84,7 @@ public class BillUtils {
                 break;
             case StringUtils.FRAGMENT_ACCEPTED_BILL:
                 //表示我报名了还没有选定的筛选条件
+                // TODO: 2015/10/24
                 //此处存疑
                 AVQuery<AVObject> myApplicant = AVQuery.getQuery("Bill");
                 myApplicant.whereContains("applicant", User.getInstance().getUserName());
@@ -136,7 +141,12 @@ public class BillUtils {
                         bill.setContactWay((String) avObject.get("contact_way"));
                         switch (targetFragment) {
                             case StringUtils.FRAGMENT_ACCEPTABLE_BILL:
-                                acceptableBillList.add(bill);
+                                if(userIsApplicant(bill)){
+                                    break;
+                                }
+                                else {
+                                    acceptableBillList.add(bill);
+                                }
                                 break;
                             case StringUtils.FRAGMENT_MY_PUBLISH:
                                 myPublishList.add(bill);
@@ -192,7 +202,7 @@ public class BillUtils {
     public static void publishBill(final Handler handler, Bill bill) {
         AVObject avObject = new AVObject("Bill");
         avObject.put("publisher_phone", bill.getPublisherPhone());
-        avObject.put("publiser_school",bill.getPublisherSchool());
+        avObject.put("publiser_school", bill.getPublisherSchool());
         avObject.put("award", bill.getAward());
         avObject.put("detail", bill.getDetail());
         avObject.put("deadline", bill.getDeadline());
@@ -238,6 +248,9 @@ public class BillUtils {
             public void done(AVObject avObject, AVException e) {
                 if (e == null) {
                     avObject.put("status", targetStatus);
+                    if(bill.getConfirmer()!=null){
+                        avObject.put("confirmer",bill.getConfirmer());
+                    }
                     avObject.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(AVException e) {
@@ -277,7 +290,13 @@ public class BillUtils {
             public void done(AVObject avObject, AVException e) {
                 if (e == null) {
                     if (isAdd) {
-                        avObject.put("applicant", avObject.get("applicant") + "+" + User.getInstance().getUserName());
+                        if ( avObject.get("applicant") == null || avObject.get("applicant").equals("") ) {
+                            avObject.put("applicant", User.getInstance().getUserName());
+                            Log.i("applicant","要添加到空");
+                        } else {
+                            avObject.put("applicant", avObject.get("applicant") + "=" + User.getInstance().getUserName());
+                            Log.i("applicant", "要添加进去");
+                        }
                     } else {
                         //如果是要取消报名的话就将他的username从那里取消
                         String[] applicantorArray = bill.getApplicant().split(App.getContext().getString(R.string.add));
@@ -289,11 +308,11 @@ public class BillUtils {
                             }
                         }
                         for (int i = 0; i < applicantorArray.length; i++) {
-                            if (applicantorArray[i].equals("0")) {
+                            if (!applicantorArray[i].equals("0")) {
                                 if (i == applicantorArray.length - 1) {
                                     newApplicant.append(applicantorArray[i]);
                                 } else {
-                                    newApplicant.append(applicantorArray[i]).append("+");
+                                    newApplicant.append(applicantorArray[i]).append("=");
                                 }
                             }
                         }
@@ -341,5 +360,23 @@ public class BillUtils {
         }
     }
 
-
+    /**
+     * 判断user是否已经报名了
+     * @param bill 传入目标bill
+     * @return 返回布尔值，如果已经报名则true，否则false
+     */
+    public static boolean userIsApplicant(Bill bill) {
+        if (bill.getApplicant() == null){
+            return false;
+        }
+        else {
+            return bill.getApplicant().contains(User.getInstance().getUserName());
+        }
+        /*String[] applicantorArray = bill.getApplicant().split(App.getContext().getString(R.string.add));
+        for (int i = 0; i < applicantorArray.length; i++) {
+            if (applicantorArray[i].equals(User.getInstance().getUserName())) {
+                return true;
+            }
+        }*/
+    }
 }

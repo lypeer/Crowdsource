@@ -5,20 +5,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.ViewPagerAdapter;
 import com.tesmple.crowdsource.fragment.BillCommentFragment;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
+import com.tesmple.crowdsource.utils.BillUtils;
+import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
+import com.tesmple.crowdsource.view.ButtonRectangle;
 
 import org.w3c.dom.Text;
 
@@ -74,6 +81,11 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
     private TextView tvDetail;
 
     /**
+     * 可接订单进入到订单详情后的报名按钮
+     */
+    private ButtonRectangle btrPostApplication;
+
+    /**
      * publisher看到的bill详情的目标bill
      */
     private Bill bill;
@@ -111,7 +123,26 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                     tvHour.setText(timeList.get(0));
                     tvMinute.setText(timeList.get(1));
                     tvSecond.setText(timeList.get(2));
-                break;
+                    break;
+                case StringUtils.CHANGE_APPLICANT_SUCCESSFULLY:
+                    if (bill.getRobType().equals(getString(R.string.bill_robtype_grabbillmode))){
+                        bill.setConfirmer(User.getInstance().getUserName());
+                        BillUtils.changeBillStatus(handler,bill,StringUtils.BILL_STATUS_TWO);
+                    }//抢单模式
+                    else if (bill.getRobType().equals(getString(R.string.bill_robtype_receivebillmode))){
+                        Toast.makeText(App.getContext(),"报名成功！",Toast.LENGTH_LONG).show();
+                        finish();
+                    }//接单模式
+                    break;
+                case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
+                    finish();
+                    break;
+                case StringUtils.CHANGE_APPLICANT_FAILED:
+                    Snackbar.make(btrPostApplication,getString(R.string.please_check_your_network),Snackbar.LENGTH_LONG).show();
+                    break;
+                case StringUtils.CHANGE_BILL_STATUS_FAILED:
+                    Snackbar.make(btrPostApplication,getString(R.string.please_check_your_network),Snackbar.LENGTH_LONG).show();
+                    break;
             }
         }
     };
@@ -126,6 +157,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         initTabAndViewPager();
         setView();
         startUpdateTime();
+        setButtons();
     }
 
     /**
@@ -141,7 +173,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                 handler.sendMessage(message);
             }
         };
-        timer.schedule(timerTask,0,1000);
+        timer.schedule(timerTask, 0, 1000);
     }
 
     private void initView(){
@@ -153,6 +185,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvHour = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_hour);
         tvMinute = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_minutes);
         tvSecond = (TextView)findViewById(R.id.requestdetailofapplicant_tv_left_time_second);
+        btrPostApplication = (ButtonRectangle)findViewById(R.id.requestdetailofapplicant_btr_postapplication);
     }
 
     /**
@@ -195,8 +228,14 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
     private void initToolbar(){
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("任务详情");
-        toolbar.setLogo(R.drawable.ic_back);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     /**
@@ -213,5 +252,21 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvHour.setText(timeList.get(0));
         tvMinute.setText(timeList.get(1));
         tvSecond.setText(timeList.get(2));
+    }
+
+    private void setButtons(){
+        btrPostApplication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attempPostApplication();
+            }
+        });
+    }
+
+    /**
+     * 尝试报名
+     */
+    private void attempPostApplication(){
+        BillUtils.changeApplicantor(handler, bill, true);
     }
 }
