@@ -117,7 +117,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
         srlApplicant = (SwipeRefreshLayout) rootView.findViewById(R.id.applicant_srl_applicant);
         rvApplicant = (RecyclerView) rootView.findViewById(R.id.applicant_rv_applicant);
 
-        applicantAdapter = new ApplicantAdapter(getActivity(), applicantList);
+        applicantAdapter = new ApplicantAdapter(getActivity(), applicantList,bill);
 
         rvApplicant.setAdapter(applicantAdapter);
         rvApplicant.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -128,17 +128,21 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
         applicantList.clear();
         setApplicantList();
 
-        applicantAdapter.setOnItemClickListener(new ApplicantAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                showSureDialog(applicantList.get(position));
-            }
+        if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+            applicantAdapter.setOnItemClickListener(new ApplicantAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int position) {
+                    showSureDialog(applicantList.get(position));
+                }
 
-            @Override
-            public void onItemLongCick(View v, int position) {
+                @Override
+                public void onItemLongCick(View v, int position) {
 
-            }
-        });
+                }
+            });
+        }else if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
+            applicantAdapter.setOnItemClickListener(null);
+        }
     }
 
     private void setApplicantList() {
@@ -158,6 +162,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                             applicant.setApplicantName(list.get(0).get("nickname").toString());
                             applicant.setApplicantSchool(list.get(0).get("department").toString());
                             applicant.setApplicantHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
+                            applicant.setApplicantIsChecked(true);
                             applicantList.add(applicant);
                             Log.i("applicantlist", String.valueOf(applicantList.size()));
                             srlApplicant.setRefreshing(false);
@@ -169,7 +174,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                 }
             });
         } else {
-            String[] tempList = bill.getApplicant().split("=");
+            final String[] tempList = bill.getApplicant().split("=");
             for (int i = 0; i < tempList.length; i++) {
                 AVQuery<AVObject> avQuery = new AVQuery<>("_User");
                 avQuery.whereEqualTo("username", tempList[i]);
@@ -182,6 +187,12 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                             applicant.setApplicantName(list.get(0).get("nickname").toString());
                             applicant.setApplicantSchool(list.get(0).get("department").toString());
                             applicant.setApplicantHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
+                            Log.i("checklinfo",bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) + " " + applicant.getUsername() + " " + bill.getConfirmer());
+                            if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) && applicant.getUsername().equals(bill.getConfirmer())){
+                                applicant.setApplicantIsChecked(true);
+                            }else {
+                                applicant.setApplicantIsChecked(false);
+                            }
                             applicantList.add(applicant);
                             srlApplicant.setRefreshing(false);
                             applicantAdapter.refresh(applicantList);
@@ -192,7 +203,6 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                     }
                 });
             }
-
         }
     }
 

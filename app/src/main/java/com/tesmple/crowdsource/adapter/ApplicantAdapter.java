@@ -46,6 +46,11 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.MyVi
     private List<Applicant> applicantList;
 
     /**
+     * 依附的订单bill
+     */
+    private Bill bill;
+
+    /**
      * 点击的监听器的对象
      */
     private OnItemClickListener onItemClickListener;
@@ -56,9 +61,10 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.MyVi
      * @param context       调用的activity的context
      * @param applicantList 装载报名者数据的list
      */
-    public ApplicantAdapter(Context context, List<Applicant> applicantList) {
+    public ApplicantAdapter(Context context, List<Applicant> applicantList , Bill bill) {
         this.context = context;
         this.applicantList = applicantList;
+        this.bill = bill;
     }
 
     @Override
@@ -73,8 +79,10 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.MyVi
         holder.applicantSdvHeadPortrait.setImageURI(Uri.parse(applicant.getApplicantHeadPortrait()));
         holder.applicantTvName.setText(applicant.getApplicantName());
         holder.applicantTvSchoolName.setText(applicant.getApplicantSchool());
-        holder.applicantCbIschecked.setChecked(false);
-
+        holder.applicantCbIschecked.setChecked(applicant.getApplicantIsChecked());
+        if(!bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+            holder.applicantCbIschecked.setClickable(false);
+        }
         if (onItemClickListener != null) {
             holder.applicantCbIschecked.setOnClickListener(new View.OnClickListener() {
                 @Override

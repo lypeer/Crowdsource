@@ -113,12 +113,11 @@
                             android:textColor="@color/black"/>
                     </LinearLayout>
 
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
-
-                        <LinearLayout
+                        &lt;!&ndash;<LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
@@ -137,10 +136,8 @@
                                 android:text="@string/test_award"
                                 android:textColor="@color/colorPrimary"
                                 android:textSize="24sp"/>
-                        </LinearLayout>
-
-
-                    </LinearLayout>
+                        </LinearLayout>&ndash;&gt;
+                    </LinearLayout>-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -155,18 +152,38 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/rmb"
+                                        android:textColor="@color/colorPrimary"
+                                        android:textSize="24sp"/>
+
+                                    <TextView
+                                        android:id="@+id/requestdetailofpublisher_tv_award"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/test_award"
+                                        android:textColor="@color/colorPrimary"
+                                        android:textSize="24sp"/>
+                                </LinearLayout>
                                 <com.tesmple.crowdsource.view.ButtonRectangle
                                     android:id="@+id/requestdetailofpublisher_btr_cancelbill"
                                     android:layout_width="wrap_content"
                                     android:layout_height="42dp"
                                     android:background="@color/colorPrimary"
-                                    android:text="@string/btr_cancel_bill"/>
+                                    android:text="button"/>
                             </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
+                                android:layout_gravity="bottom"
                                 android:gravity="right">
                                 <TextView
                                     android:layout_width="wrap_content"
