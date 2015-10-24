@@ -302,7 +302,7 @@ public class BillUtils {
                         }
                     });
                 } else {
-                    Log.e("ChangeAppliSaveError", e.getMessage() + "===" + e.getCode());
+                    Log.e("ChangeAppliGetError", e.getMessage() + "===" + e.getCode());
                     Message message = new Message();
                     message.what = StringUtils.CHANGE_BILL_STATUS_FAILED;
                     handler.sendMessage(message);

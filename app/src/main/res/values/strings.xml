@@ -149,4 +149,10 @@
     <string name="test_department">通信与信息工程学院\n通信工程（大类招生）</string>
     <string name="enter">\n</string>
     <string name="prompt_setting">设置</string>
+    <string name="prompt_remind">提示</string>
+    <string name="prompt_let_be_confirmer">选择%1$s成为您的接单者?</string>
+    <string name="prompt_choose_successfully">选择成功</string>
+    <string name="prompt_confirm_successfully">恭喜您，已经有同学接单了\n请耐心等待他完成任务</string>
+    <string name="prompt_confirm_successflly">指派成功</string>
+    <string name="delete">delete</string>
 </resources>

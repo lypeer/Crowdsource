@@ -155,4 +155,13 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTABLE_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTABLE_BILL, handler, false, 0);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("AcceptableBillOnResume", "enter");
+        srlBill.setRefreshing(true);
+        BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTABLE_BILL);
+        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTABLE_BILL, handler, false, 0);
+    }
 }
