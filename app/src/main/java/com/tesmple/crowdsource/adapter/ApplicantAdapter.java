@@ -14,6 +14,7 @@ import com.gc.materialdesign.views.CheckBox;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.object.Applicant;
+import com.tesmple.crowdsource.object.BillComment;
 
 import java.util.List;
 
@@ -90,5 +91,14 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.MyVi
             applicantTvSchoolName = (TextView) itemView.findViewById(R.id.applicant_tv_schoolname);
             applicantCbIschecked = (android.widget.CheckBox)itemView.findViewById(R.id.applicant_cb_ischecked);
         }
+    }
+
+    /**
+     * 提示数据有了变动，刷新数据的方法
+     * @param applicantList 变动之后的list
+     */
+    public void refresh(List<Applicant> applicantList){
+        this.applicantList = applicantList;
+        notifyDataSetChanged();
     }
 }
