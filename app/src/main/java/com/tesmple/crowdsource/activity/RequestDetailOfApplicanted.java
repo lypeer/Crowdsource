@@ -164,9 +164,6 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                     break;
                 case StringUtils.CHANGE_APPLICANT_SUCCESSFULLY:
                     MainActivity.changeViewpagerItem(3);
-                    AcceptableBillFragment.notifyDateChanged();
-                    MyPublishFragment.notifyDateChanged();
-                    AcceptedBillFragment.notifyDateChanged();
                     finish();
                     break;
                 case StringUtils.CHANGE_APPLICANT_FAILED:

@@ -175,16 +175,10 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                     else if (bill.getRobType().equals(getString(R.string.bill_robtype_receivebillmode))){
                         Toast.makeText(App.getContext(),"报名成功！",Toast.LENGTH_LONG).show();
                         PushUtils.startPushTransaction(handler , StringUtils.PUSH_BECOME_APPLICANT , bill);
-                        AcceptableBillFragment.notifyDateChanged();
-                        MyPublishFragment.notifyDateChanged();
-                        AcceptedBillFragment.notifyDateChanged();
                         finish();
                     }//接单模式
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
-                    AcceptableBillFragment.notifyDateChanged();
-                    MyPublishFragment.notifyDateChanged();
-                    AcceptedBillFragment.notifyDateChanged();
                     finish();
                     break;
                 case StringUtils.CHANGE_APPLICANT_FAILED:
