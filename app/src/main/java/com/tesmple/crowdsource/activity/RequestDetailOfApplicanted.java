@@ -15,6 +15,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
@@ -251,6 +253,58 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                 finish();
             }
         });
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_delete:
+                        if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+                            new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
+                                    .setMessage("确定取消报名")
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            attemptCancelApplicant();
+                                        }})
+                                    .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                        }
+                                    })
+                                    .show();
+                        }else if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
+                            new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
+                                    .setMessage("完成当前到期任务吗？如果选择未完成请及时与发单者联系")
+                                    .setPositiveButton("完成", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            attempCompliteBill();
+                                        }})
+                                    .setNegativeButton("未完成", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            attemptCancelApplicant();
+                                        }
+                                    }).
+                                    setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                                    .show();
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_delete, menu);
+        return true;
     }
 
     /**
@@ -302,9 +356,9 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         tvSecond.setText(timeList.get(2));
 
         if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
-            btrCancelBill.setText("取消报名");
+            btrCancelBill.setVisibility(View.GONE);
         }else if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
-            btrCancelBill.setText("完成任务？");
+            btrCancelBill.setText("联系TA");
         }else {
             btrCancelBill.setVisibility(View.GONE);
         }
@@ -333,7 +387,34 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         btrCancelBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+                bill.getContactWay();
+                new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
+                        .setMessage("请选择联系方式")
+                        .setPositiveButton("短信", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Uri smsToUri = Uri.parse("smsto:"+bill.getPublisherPhone());
+                                Intent intent = new Intent( android.content.Intent.ACTION_SENDTO, smsToUri );
+                                intent.putExtra("sms_body", "Hello~很高兴通过校园众包app认识你，有些事要跟你说哦。。。");
+                                startActivity( intent );
+                            }})
+                        .setNegativeButton("电话", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                /*Intent intent=new Intent("android.intent.action.CALL",Uri.parse("tel:"+bill.getPublisherPhone()));
+                                startActivity(intent);*/
+                                Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:" + bill.getPublisherPhone()));
+                                startActivity(intent);
+                            }
+                        })
+                        .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                /*if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
                     new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
                             .setMessage("确定取消报名")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -368,7 +449,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                                 }
                             })
                             .show();
-                }
+                }*/
             }
         });
 

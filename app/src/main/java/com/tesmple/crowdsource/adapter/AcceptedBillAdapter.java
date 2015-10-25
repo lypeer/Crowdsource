@@ -79,8 +79,8 @@ public class AcceptedBillAdapter extends RecyclerView.Adapter<AcceptedBillAdapte
             @Override
             public void done(List<AVObject> list, AVException e) {
                 if(e == null){
-                    bill.setPublisherName((String) list.get(0).get("name"));
-                    bill.setPublisherSchool((String) list.get(0).get("school"));
+                    bill.setPublisherName((String) list.get(0).get("nickname"));
+                    bill.setPublisherSchool((String)list.get(0).get("major"));
                     bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false , 96 , 96));
                     holder.sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
                     holder.tvName.setText(bill.getPublisherName());

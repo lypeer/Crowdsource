@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.AVException;
@@ -23,6 +24,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
@@ -82,7 +84,6 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
      */
     private Bill bill;
 
-    private AVObject avBill;
 
     private static List<BillComment> commentList = new ArrayList<>();
 
@@ -92,6 +93,7 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
             super.handleMessage(msg);
             switch (msg.what){
                 case StringUtils.START_GET_BILL_COMMENT_SUCCESSFULLY:
+                    //App.dismissDialog();
                     commentList = BillCommentUtils.getBillCommentList(StringUtils.FRAGMENT_BILL_COMMENT);
                     commentAdapter.refresh(commentList);
                     srlComment.setRefreshing(false);
@@ -103,8 +105,10 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
                 case StringUtils.START_POST_BILL_COMMENT_SUCCESSFULLY:
                     BillCommentUtils.clearList(StringUtils.FRAGMENT_BILL_COMMENT);
                     BillCommentUtils.startGetBillCommentTransaction(StringUtils.FRAGMENT_BILL_COMMENT, handler, bill.getObjectId());
+                    App.dismissDialog();
                     break;
                 case StringUtils.START_POST_BILL_COMMENT_FAILED:
+                    App.dismissDialog();
                     Snackbar.make(rvComment, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
                     break;
             }
@@ -147,6 +151,7 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
         commentAutoTvComment = (AutoCompleteTextView)rootView.findViewById(R.id.comment_autotv_comment);
         commentBtrCommiteComment = (ButtonRectangle)rootView.findViewById(R.id.comment_btr_commitecomment);
 
+
         srlComment.setOnRefreshListener(this);
         srlComment.setRefreshing(true);
         BillCommentUtils.clearList(StringUtils.FRAGMENT_BILL_COMMENT);
@@ -185,6 +190,8 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
                     handler,
                     billComment,
                     bill.getObjectId());
+            App.showDialog(getActivity());
+            commentAutoTvComment.setText("");
         }
     }
 

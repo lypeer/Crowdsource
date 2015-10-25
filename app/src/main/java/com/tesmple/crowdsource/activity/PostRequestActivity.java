@@ -498,7 +498,7 @@ public class PostRequestActivity extends AppCompatActivity {
     private void attempPostBill(){
         String award = postrequestEtAward.getText().toString();
         String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText()+":00";
-        if (!EditTextUtils.isNumber(award)){
+        if (!EditTextUtils.isNumber(award) || !EditTextUtils.isEmpty(award)){
             Snackbar.make(postrequestBtrecPostbill, R.string.please_input_right_award,Snackbar.LENGTH_LONG).show();
             return;
         }
@@ -530,7 +530,7 @@ public class PostRequestActivity extends AppCompatActivity {
         }
 
         newBill = new Bill();
-        newBill.setPublisherName(User.getInstance().getName());
+        newBill.setPublisherName(User.getInstance().getNickName());
         newBill.setPublisherPhone(User.getInstance().getUserName());
         newBill.setPublisherSchool(User.getInstance().getSchool());
         newBill.setAward(award);

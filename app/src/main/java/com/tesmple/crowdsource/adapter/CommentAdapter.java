@@ -72,7 +72,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                     bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false , 96 , 96));
                     holder.commentSdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
                     holder.commentTvName.setText(bill.getPublisherName());
-                    holder.commentTvSchoolName.setText(bill.getPublisherSchool());
+                    holder.commentTvSchoolName.setText(list.get(0).get("major").toString());
                     holder.commentTvDetail.setText(comment.getContent());
                 } else {
                     Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
