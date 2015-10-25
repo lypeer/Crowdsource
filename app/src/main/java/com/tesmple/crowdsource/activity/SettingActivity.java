@@ -141,6 +141,12 @@ public class SettingActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.prompt_setting);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     /**

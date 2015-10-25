@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="54dp"
-        android:text="detail"/>
+        android:text="loding.."/>
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -66,6 +66,7 @@
             android:id="@+id/comment_cb_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:button="@drawable/favorite_radiobutton"/>
         <!--<ImageButton
             android:id="@+id/comment_ib_favorite"
@@ -77,6 +78,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="("
+            android:visibility="gone"
             android:textSize="16sp"
             android:textColor="@color/colorPrimary"/>
         <TextView
@@ -92,6 +94,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text=")"
+            android:visibility="gone"
             android:textSize="16sp"
             android:textColor="@color/colorPrimary"/>
     </LinearLayout>

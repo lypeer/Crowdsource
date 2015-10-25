@@ -33,6 +33,7 @@ import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.utils.BillCommentUtils;
 import com.tesmple.crowdsource.utils.BillUtils;
+import com.tesmple.crowdsource.utils.PushUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
@@ -172,6 +173,9 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                     Snackbar.make(btrCancelBill, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
+                    if(bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
+                        PushUtils.startPushTransaction(handler,StringUtils.PUSH_CONFIRMER_REMOVE_BILL,bill);
+                    }
                     finish();
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_FAILED:
@@ -274,22 +278,15 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                                     .show();
                         }else if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
                             new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
-                                    .setMessage("完成当前到期任务吗？如果选择未完成请及时与发单者联系")
-                                    .setPositiveButton("完成", new DialogInterface.OnClickListener() {
+                                    .setMessage("不能完成了吗？记得联系分派任务者哦~")
+                                    .setPositiveButton("无法完成", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            attempCompliteBill();
+                                            attempCancelBill();
                                         }})
-                                    .setNegativeButton("未完成", new DialogInterface.OnClickListener() {
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            attemptCancelApplicant();
-                                        }
-                                    }).
-                                    setNeutralButton("取消", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
                                         }
                                     })
                                     .show();
@@ -524,6 +521,14 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     private void attempCompliteBill(){
         bill.setStatus(StringUtils.BILL_STATUS_THREE);
         BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_THREE);
+    }
+
+    /**
+     * 尝试未完成订单
+     */
+    private void attempCancelBill(){
+        bill.setStatus(StringUtils.BILL_STATUS_FOUR);
+        BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_FOUR);
     }
 
 }
