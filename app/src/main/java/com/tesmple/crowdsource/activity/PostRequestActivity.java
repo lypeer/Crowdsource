@@ -498,7 +498,7 @@ public class PostRequestActivity extends AppCompatActivity {
     private void attempPostBill(){
         String award = postrequestEtAward.getText().toString();
         String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText()+":00";
-        if (!EditTextUtils.isNumber(award) || !EditTextUtils.isEmpty(award)){
+        if (!EditTextUtils.isNumber(award) || EditTextUtils.isEmpty(award)){
             Snackbar.make(postrequestBtrecPostbill, R.string.please_input_right_award,Snackbar.LENGTH_LONG).show();
             return;
         }

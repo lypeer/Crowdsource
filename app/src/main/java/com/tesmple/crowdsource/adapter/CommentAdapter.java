@@ -23,6 +23,7 @@ import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.BillComment;
 import com.tesmple.crowdsource.object.Comment;
+import com.tesmple.crowdsource.utils.TimeUtils;
 
 import java.net.CookieHandler;
 import java.util.List;
@@ -42,6 +43,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
      */
     private List<BillComment> commentList;
 
+    private BillComment comment;
+
     /**
      * adpater的构造方法
      * @param context 调用的activity的context
@@ -60,7 +63,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
-        final BillComment comment = commentList.get(position);
+        comment = commentList.get(position);
         avQuery.whereEqualTo("username", comment.getPublisher());
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
@@ -69,11 +72,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                     Bill bill = new Bill();
                     bill.setPublisherName((String) list.get(0).get("name"));
                     bill.setPublisherSchool((String) list.get(0).get("school"));
-                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false , 96 , 96));
+                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96));
                     holder.commentSdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
                     holder.commentTvName.setText(bill.getPublisherName());
                     holder.commentTvSchoolName.setText(list.get(0).get("major").toString());
                     holder.commentTvDetail.setText(comment.getContent());
+                    holder.commentTvFavoritenum.setText(TimeUtils.longToDate(comment.getCreatAt()));
                 } else {
                     Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
                     Snackbar.make(holder.itemView, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)

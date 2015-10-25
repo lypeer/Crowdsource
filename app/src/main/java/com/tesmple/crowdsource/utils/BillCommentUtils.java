@@ -136,6 +136,7 @@ public class BillCommentUtils  {
                                     JSONObject tempJsonObeject = new JSONObject(commentJsonArray.getString(i).toString());
                                     billComment.setContent(tempJsonObeject.getString("content"));
                                     billComment.setPublisher(tempJsonObeject.getString("publisher"));
+                                    billComment.setCreatAt(Long.valueOf(tempJsonObeject.get("creatAt").toString()));
                                     billCommentList.add(billComment);
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();

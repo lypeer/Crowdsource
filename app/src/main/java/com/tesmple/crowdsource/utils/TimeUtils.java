@@ -126,11 +126,11 @@ public class TimeUtils {
         return date.getTime();
     }
 
-    public static java.util.Date longToDate(Long longTime) {
+    public static String longToDate(Long longTime) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        java.util.Date dt = new Date(longTime);
+        Date dt = new Date(longTime);
         String sDateTime = sdf.format(dt);
-        return dt;
+        return sDateTime;
     }
 
     /**

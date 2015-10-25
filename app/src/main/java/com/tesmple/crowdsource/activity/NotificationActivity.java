@@ -98,6 +98,12 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
         toolbar.setTitle(R.string.prompt_notification);
         toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     /**
