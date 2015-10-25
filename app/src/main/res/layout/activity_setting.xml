@@ -41,6 +41,7 @@
                     android:id="@+id/setting_sdv_head_portrait"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
+                    fresco:roundAsCircle="true"
                     android:layout_toLeftOf="@+id/iv_account_head_arrow"
                     android:background="@drawable/ic_account_circle_blue_grey_500_48dp"
                     android:focusableInTouchMode="true"

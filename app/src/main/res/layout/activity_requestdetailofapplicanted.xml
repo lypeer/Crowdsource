@@ -49,6 +49,7 @@
                             android:id="@+id/requestdetailofapplicanted_sdv_head_portrait"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            fresco:actualImageScaleType="fitCenter"
                             android:background="@drawable/ic_account_circle_blue_grey_500_48dp"
                             fresco:roundAsCircle="true"/>
 

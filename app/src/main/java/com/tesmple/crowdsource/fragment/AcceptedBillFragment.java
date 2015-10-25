@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -56,6 +57,11 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
     private static AcceptedBillAdapter adapter;
 
     /**
+     * 表示是否在刷新的布尔值，false表示没有刷新，true表示正在刷新
+     */
+    private static boolean isRefreshing = false;
+
+    /**
      * 装单的billlist
      */
     private static List<Bill> billList = new ArrayList<>();
@@ -69,10 +75,12 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
                     billList = BillUtils.getBillsList(StringUtils.FRAGMENT_ACCEPTED_BILL);
                     adapter.refresh(billList);
                     srlBill.setRefreshing(false);
+                    isRefreshing = false;
                     break;
                 case StringUtils.START_GET_BILL_TRANSACTION_FAILED:
                     Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
                     srlBill.setRefreshing(false);
+                    isRefreshing = false;
                     break;
             }
         }
@@ -121,11 +129,23 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
         rvBill.setItemAnimator(new DefaultItemAnimator());
 
         srlBill.setOnRefreshListener(this);
+
+        rvBill.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (isRefreshing) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     @Override
     public void onRefresh() {
         srlBill.setRefreshing(true);
+        isRefreshing = true;
 
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL , handler , false , 0);
@@ -143,6 +163,7 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
     public void onResume() {
         super.onResume();
         srlBill.setRefreshing(true);
+        isRefreshing = true;
 
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);

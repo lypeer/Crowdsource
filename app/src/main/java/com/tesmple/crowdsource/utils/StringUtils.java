@@ -194,12 +194,12 @@ public class StringUtils {
     public static final String PUSH_BECOME_APPLICANT = "push_become_applicant";
 
     /**
-     * 表示用户成为确认者时的推送
+     * 表示用户成为确认者时的推送,已做
      */
     public static final String PUSH_BECOME_COMFIRMER = "push_become_confirmer";
 
     /**
-     * 表示用户被拒绝成为确认者时的推送
+     * 表示用户被拒绝成为确认者时的推送，已做
      */
     public static final String PUSH_NOT_BECOME_COMFIRMER = "push_not_become_confirmer";
 
@@ -219,7 +219,7 @@ public class StringUtils {
     public static final String PUSH_CONFIRMER_REMOVE_BILL = "push_confirmer_remove_bill";
 
     /**
-     * 表示发单者确认完成订单时的
+     * 表示发单者确认完成订单时的，已做
      */
     public static final String PUSH_FINISH_BILL = "push_finish_bill";
 
