@@ -43,7 +43,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
      */
     private List<BillComment> commentList;
 
-    private BillComment comment;
 
     /**
      * adpater的构造方法
@@ -63,7 +62,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
-        comment = commentList.get(position);
+        final BillComment comment = commentList.get(position);
         avQuery.whereEqualTo("username", comment.getPublisher());
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
