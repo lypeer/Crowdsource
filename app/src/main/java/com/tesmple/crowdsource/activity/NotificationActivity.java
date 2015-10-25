@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.avos.avoscloud.AVException;
@@ -56,6 +57,11 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
      */
     private NotificationAdapter adapter;
 
+    /**
+     * 表示是否在刷新的布尔值，false表示没有刷新，true表示正在刷新
+     */
+    private static boolean isRefreshing = false;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -64,10 +70,12 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                 case StringUtils.GET_NOTIFICATION_SUCCESSFULLY:
                     adapter.refresh(NotificationLab.getInstance().getNotificationList());
                     srlBill.setRefreshing(false);
+                    isRefreshing = false;
                     break;
                 case StringUtils.GET_NOTIFICATION_FAILED:
                     Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
                     srlBill.setRefreshing(false);
+                    isRefreshing = false;
                     break;
             }
         }
@@ -159,8 +167,20 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
 
         srlBill.setOnRefreshListener(this);
         srlBill.setRefreshing(true);
+        isRefreshing = true;
         NotificationLab.getInstance().clearList();
         getNotifications();
+
+        rvBill.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (isRefreshing) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     /**
@@ -188,6 +208,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     @Override
     public void onRefresh() {
         srlBill.setRefreshing(true);
+        isRefreshing = true;
         NotificationLab.getInstance().clearList();
         getNotifications();
     }
