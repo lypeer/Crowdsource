@@ -18,46 +18,71 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity android:name=".activity.RegisterActivity">
+        <activity android:name=".activity.RegisterActivity"
+                  android:screenOrientation="portrait"
+            >
+        </activity>
+        <activity android:name=".activity.ForgetPasswordActivity"
+                  android:screenOrientation="portrait"
+            >
 
         </activity>
-        <activity android:name=".activity.ForgetPasswordActivity">
-
-        </activity>
-        <activity android:name=".activity.WelcomeActivity">
+        <activity android:name=".activity.WelcomeActivity"
+                  android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity"
+                  android:screenOrientation="portrait"
+            >
         </activity>
-        <activity android:name=".activity.PostRequestActivity">
+        <activity android:name=".activity.PostRequestActivity"
+                  android:screenOrientation="portrait"
+            >
         </activity>
-        <activity android:name=".activity.PerfectInformationActivity">
+        <activity android:name=".activity.PerfectInformationActivity"
+                  android:screenOrientation="portrait"
+            >
         </activity>
-        <activity android:name=".activity.PostBillSuccessful">
+        <activity android:name=".activity.PostBillSuccessful"
+                  android:screenOrientation="portrait"
+            >
         </activity>
         <activity
             android:name=".activity.RequestDetailOfPublisher"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".activity.RequestDetailOfApplicant"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
         </activity>
-        <activity android:name=".activity.RequestDetailOfApplicanted">
+        <activity android:name=".activity.RequestDetailOfApplicanted"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustPan"
+            >
         </activity>
-        <activity android:name=".activity.NotificationActivity">
+        <activity android:name=".activity.NotificationActivity"
+                  android:screenOrientation="portrait"
+            >
 
         </activity>
-        <activity android:name=".activity.SettingActivity">
+        <activity android:name=".activity.SettingActivity"
+                  android:screenOrientation="portrait"
+            >
 
         </activity>
-        <activity android:name=".activity.ConfirmSuccessfullyActivity">
+        <activity android:name=".activity.ConfirmSuccessfullyActivity"
+                  android:screenOrientation="portrait"
+            >
 
         </activity>
         <service android:name="com.avos.avoscloud.PushService"

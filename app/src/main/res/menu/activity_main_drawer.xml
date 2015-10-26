@@ -11,25 +11,22 @@
             android:icon="@drawable/ic_settings_blue_grey_500_36dp"
             android:title="@string/prompt_setting"/>
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="Slideshow"/>
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_history_blue_grey_500_36dp"
+            android:title="@string/prompt_history"/>
+
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools"/>
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_exit_to_app_blue_grey_500_36dp"
+            android:title="@string/prompt_logout"/>
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/prompt_versoin">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@android:drawable/ic_menu_share"
-                android:title="Share"/>
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@android:drawable/ic_menu_send"
-                android:title="Send"/>
+                android:id="@+id/nav_version"
+                android:icon="@drawable/ic_info_blue_grey_500_36dp"
+                android:title="@string/prompt_version"/>
         </menu>
     </item>
 

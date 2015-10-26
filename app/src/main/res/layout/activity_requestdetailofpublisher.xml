@@ -3,11 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_wechat"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context=".RequstDetailOfPublisher">
+
     <include layout="@layout/include_toolbar"/>
     <!--<include layout="@layout/item_acceptable_bill" />-->
     <LinearLayout
@@ -17,16 +19,18 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_margin="4dp"
             android:id="@+id/acceptable_bill_cv_bill"
-            android:clickable="true"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:clickable="true"
             >
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:id="@+id/li_needgone"
                     android:layout_width="match_parent"
@@ -35,12 +39,14 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
                     android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/tv_instead"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
                         />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -50,9 +56,9 @@
                             android:id="@+id/requestdetailofpublisher_sdv_head_portrait"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/ic_account_circle_blue_grey_500_48dp"
                             fresco:actualImageScaleType="fitCenter"
                             fresco:roundAsCircle="true"
-                            android:background="@drawable/ic_account_circle_blue_grey_500_48dp"
                             />
 
                         <LinearLayout
@@ -110,9 +116,9 @@
                             android:id="@+id/requestdetailofpublisher_tv_detail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="16sp"
                             android:text="@string/test_bill_detail"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/black"
+                            android:textSize="16sp"/>
                     </LinearLayout>
 
                     <!--<LinearLayout
@@ -145,6 +151,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -154,6 +161,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
+
                                 <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -174,6 +182,7 @@
                                         android:textColor="@color/colorPrimary"
                                         android:textSize="24sp"/>
                                 </LinearLayout>
+
                                 <com.tesmple.crowdsource.view.ButtonRectangle
                                     android:id="@+id/requestdetailofpublisher_btr_cancelbill"
                                     android:layout_width="wrap_content"
@@ -187,6 +196,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom"
                                 android:gravity="right">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -238,55 +248,65 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <com.gc.materialdesign.views.ButtonFlat
                         android:id="@+id/btflat_up_or_down"
                         android:layout_width="match_parent"
                         android:layout_height="26dp"/>
+
                     <LinearLayout
                         android:id="@+id/li_upinfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_centerInParent="true"
+                        android:orientation="horizontal"
                         android:visibility="visible">
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_keyboard_arrow_up_18dp"
                             />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:text="收起"
-                            android:textSize="13sp"
-                            android:textColor="@color/colorAccent"/>
+                            android:textColor="@color/colorAccent"
+                            android:textSize="13sp"/>
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_keyboard_arrow_up_18dp"
                             />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/li_downinfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:orientation="horizontal"
-                        android:visibility="gone"
-                        android:layout_centerInParent="true">
+                        android:visibility="gone">
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_keyboard_arrow_down_18dp"
                             />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:text="展开"
-                            android:textSize="13sp"
-                            android:textColor="@color/colorAccent"/>
+                            android:textColor="@color/colorAccent"
+                            android:textSize="13sp"/>
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -297,25 +317,30 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_marginTop="4dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_marginTop="4dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <android.support.design.widget.TabLayout
                 android:id="@+id/requestdetailofpublisher_tl_compliantandcomment"
                 android:layout_width="180dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 />
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/requestdetailofpublisher_vp_compliantandcomment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

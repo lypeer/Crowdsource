@@ -13,22 +13,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
 
-import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.SaveCallback;
-import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
-import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
-import com.tesmple.crowdsource.adapter.AcceptableAdapter;
 import com.tesmple.crowdsource.adapter.CommentAdapter;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.BillComment;
@@ -37,9 +29,6 @@ import com.tesmple.crowdsource.utils.BillCommentUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
-
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +73,10 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
      */
     private Bill bill;
 
+    /**
+     * 表示是否在刷新的布尔值，false表示没有刷新，true表示正在刷新
+     */
+    private static boolean isRefreshing = false;
 
     private static List<BillComment> commentList = new ArrayList<>();
 
@@ -97,10 +90,12 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
                     commentList = BillCommentUtils.getBillCommentList(StringUtils.FRAGMENT_BILL_COMMENT);
                     commentAdapter.refresh(commentList);
                     srlComment.setRefreshing(false);
+                    isRefreshing = false;
                     break;
                 case StringUtils.START_GET_BILL_COMMENT_FAILED:
                     Snackbar.make(rvComment, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
                     srlComment.setRefreshing(false);
+                    isRefreshing = false;
                     break;
                 case StringUtils.START_POST_BILL_COMMENT_SUCCESSFULLY:
                     BillCommentUtils.clearList(StringUtils.FRAGMENT_BILL_COMMENT);
@@ -145,17 +140,26 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
         rvComment.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvComment.setItemAnimator(new DefaultItemAnimator());
 
-        srlComment.setOnRefreshListener(this);
-        srlComment.setRefreshing(true);
-
         commentAutoTvComment = (AutoCompleteTextView)rootView.findViewById(R.id.comment_autotv_comment);
         commentBtrCommiteComment = (ButtonRectangle)rootView.findViewById(R.id.comment_btr_commitecomment);
 
 
         srlComment.setOnRefreshListener(this);
         srlComment.setRefreshing(true);
+        isRefreshing = true;
         BillCommentUtils.clearList(StringUtils.FRAGMENT_BILL_COMMENT);
         BillCommentUtils.startGetBillCommentTransaction(StringUtils.FRAGMENT_BILL_COMMENT, handler, bill.getObjectId());
+
+        rvComment.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (isRefreshing) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     /**

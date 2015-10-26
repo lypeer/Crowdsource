@@ -64,19 +64,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         final BillComment comment = commentList.get(position);
         avQuery.whereEqualTo("username", comment.getPublisher());
+        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
                 if (e == null) {
                     Bill bill = new Bill();
-                    bill.setPublisherName((String) list.get(0).get("name"));
+                    bill.setPublisherName((String) list.get(0).get("nickname"));
                     bill.setPublisherSchool((String) list.get(0).get("school"));
                     bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96));
                     holder.commentSdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
                     holder.commentTvName.setText(bill.getPublisherName());
                     holder.commentTvSchoolName.setText(list.get(0).get("major").toString());
                     holder.commentTvDetail.setText(comment.getContent());
-                    holder.commentTvFavoritenum.setText(TimeUtils.longToDate(comment.getCreatAt()));
+                    holder.commentTvFavoritenum.setText(TimeUtils.judgeTime(comment.getCreatAt(),
+                            System.currentTimeMillis() - comment.getCreatAt()));
                 } else {
                     Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
                     Snackbar.make(holder.itemView, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)

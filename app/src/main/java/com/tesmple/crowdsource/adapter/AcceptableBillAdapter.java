@@ -102,6 +102,7 @@ public class AcceptableBillAdapter extends BaseAdapter {
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.whereEqualTo("username", bill.getPublisherPhone());
+        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {

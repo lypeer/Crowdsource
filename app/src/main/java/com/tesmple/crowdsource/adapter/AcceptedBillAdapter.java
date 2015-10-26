@@ -75,13 +75,14 @@ public class AcceptedBillAdapter extends RecyclerView.Adapter<AcceptedBillAdapte
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.whereEqualTo("username", bill.getPublisherPhone());
+        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
                 if(e == null){
                     bill.setPublisherName((String) list.get(0).get("nickname"));
-                    bill.setPublisherSchool((String)list.get(0).get("major"));
-                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false , 96 , 96));
+                    bill.setPublisherSchool((String) list.get(0).get("major"));
+                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96));
                     holder.sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
                     holder.tvName.setText(bill.getPublisherName());
                     holder.tvSchool.setText(bill.getPublisherSchool());

@@ -1,6 +1,5 @@
 package com.tesmple.crowdsource.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,15 +20,12 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
-import com.tesmple.crowdsource.adapter.AcceptedBillAdapter;
 import com.tesmple.crowdsource.adapter.NotificationAdapter;
-import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Notification;
 import com.tesmple.crowdsource.object.NotificationLab;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.PushUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
-import com.tesmple.crowdsource.utils.TimeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -133,6 +129,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                         }
                     }
                     AVQuery<AVObject> avQuery = new AVQuery<>("UserHelper");
+                    avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
                     avQuery.whereEqualTo("username", User.getInstance().getUserName());
                     avQuery.findInBackground(new FindCallback<AVObject>() {
                         @Override
@@ -225,6 +222,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     private void getNotifications() {
         AVQuery<AVObject> avQuery1 = new AVQuery<>("UserHelper");
         avQuery1.whereEqualTo("username", User.getInstance().getUserName());
+        avQuery1.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
         avQuery1.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
