@@ -38,8 +38,8 @@
                     android:layout_height="8dp"/>
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/notification_sdv_head_portrait"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     fresco:roundAsCircle="true"
                     fresco:actualImageScaleType="fitCenter"
                     android:background="@drawable/ic_account_circle_blue_grey_500_48dp"/>

@@ -175,6 +175,8 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
                     if(bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
                         PushUtils.startPushTransaction(handler,StringUtils.PUSH_CONFIRMER_REMOVE_BILL,bill);
+                        Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:" + bill.getPublisherPhone()));
+                        startActivity(intent);
                     }
                     finish();
                     break;

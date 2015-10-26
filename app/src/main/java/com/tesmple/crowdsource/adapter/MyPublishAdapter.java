@@ -49,82 +49,97 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
 
     /**
      * adpater的构造方法
-     * @param context 调用的activity的context
+     *
+     * @param context   调用的activity的context
      * @param billsList 装载单的数据的list
      */
-    public MyPublishAdapter(Context context , List<Bill> billsList){
+    public MyPublishAdapter(Context context, List<Bill> billsList) {
         this.context = context;
         this.billsList = billsList;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_my_publish , parent , false));
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_my_publish, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final Bill bill = billsList.get(position);
-        holder.tvStatus.setText(bill.getStatus());
-        holder.tvDetail.setText(bill.getDetail());
+        if (billsList.size() != 0) {
+            final Bill bill = billsList.get(position);
+            holder.tvStatus.setText(bill.getStatus());
+            holder.tvDetail.setText(bill.getDetail());
 
-        if(bill.getApplicant() != null && !bill.getApplicant().equals("")){
-            holder.tvApplicantNum.setText(Integer.toString(bill.getApplicant().
-                    split(Pattern.quote(App.getContext().getString(R.string.add))).length));
-        }
-        else {
-            holder.tvApplicantNum.setText("0");
-        }
-        ArrayList<String> timeList;
-        timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
-        holder.tvLeftTimeHour.setText(timeList.get(0));
-        holder.tvLeftTimeMinutes.setText(timeList.get(1));
-        holder.tvLeftTimeSecond.setText(timeList.get(2));
-
-        AVQuery<AVObject> avQuery = new AVQuery<>("_User");
-        avQuery.whereEqualTo("username", bill.getPublisherPhone());
-        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
-        avQuery.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if(e == null){
-                    bill.setPublisherName((String) list.get(0).get("nickname"));
-                    bill.setPublisherSchool((String) list.get(0).get("major"));
-                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false , 96 , 96));
-                    holder.sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
-                    holder.tvName.setText(bill.getPublisherName());
-                    holder.tvSchool.setText(bill.getPublisherSchool());
-                }else {
-                    Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
-                    Snackbar.make(holder.tvApplicantNum, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                }
+            if (bill.getApplicant() != null && !bill.getApplicant().equals("")) {
+                holder.tvApplicantNum.setText(Integer.toString(bill.getApplicant().
+                        split(Pattern.quote(App.getContext().getString(R.string.add))).length));
+            } else {
+                holder.tvApplicantNum.setText("0");
             }
-        });
+            ArrayList<String> timeList;
+            timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
+            holder.tvLeftTimeHour.setText(timeList.get(0));
+            holder.tvLeftTimeMinutes.setText(timeList.get(1));
+//        holder.tvLeftTimeSecond.setText(timeList.get(2));
 
-        if (onItemClickListener != null) {
-            holder.cvBill.setOnClickListener(new View.OnClickListener() {
+            AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+            avQuery.whereEqualTo("username", bill.getPublisherPhone());
+            avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
+            avQuery.findInBackground(new FindCallback<AVObject>() {
                 @Override
-                public void onClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    onItemClickListener.onItemClick(holder.cvBill, pos);
+                public void done(List<AVObject> list, AVException e) {
+                    if (e == null) {
+                        bill.setPublisherName((String) list.get(0).get("nickname"));
+                        bill.setPublisherSchool((String) list.get(0).get("major"));
+                        bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96));
+                        holder.sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
+                        holder.tvName.setText(bill.getPublisherName());
+                        holder.tvSchool.setText(bill.getPublisherSchool());
+                    } else {
+                        Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
+                        Snackbar.make(holder.tvApplicantNum, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
+                    }
                 }
             });
 
-            holder.cvBill.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    onItemClickListener.onItemLongCick(holder.cvBill, pos);
-                    return false;
-                }
-            });
+            if (onItemClickListener != null) {
+                holder.cvBill.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        onItemClickListener.onItemClick(holder.cvBill, pos);
+                    }
+                });
+
+                holder.cvBill.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        onItemClickListener.onItemLongCick(holder.cvBill, pos);
+                        return false;
+                    }
+                });
+            }
+        } else {
+            holder.sdvHeadPortrait.setBackground(App.getContext().getResources().getDrawable(R.drawable.ic_systemgg));
+            holder.tvName.setText(R.string.system_name);
+            holder.tvSchool.setText(R.string.system_major);
+            holder.tvSchool.setText(R.string.system_status);
+            holder.tvDetail.setText(R.string.system_detail);
+            holder.tvApplicantNum.setText(R.string.system_applicant);
+            holder.tvLeftTimeHour.setText(R.string.system_hour);
+            holder.tvLeftTimeMinutes.setText(R.string.system_hour);
         }
     }
 
     @Override
     public int getItemCount() {
-        return billsList.size();
+        if (billsList.size() == 0) {
+            return 1;
+        } else {
+            return billsList.size();
+        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -174,15 +189,15 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
          */
         private TextView tvLeftTimeMinutes;
 
-        /**
-         * 剩下的时间的秒数
-         */
-        private TextView tvLeftTimeSecond;
+//        /**
+//         * 剩下的时间的秒数
+//         */
+//        private TextView tvLeftTimeSecond;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            cvBill = (CardView)itemView.findViewById(R.id.my_publish_cv_bill);
+            cvBill = (CardView) itemView.findViewById(R.id.my_publish_cv_bill);
             sdvHeadPortrait = (SimpleDraweeView) itemView.
                     findViewById(R.id.my_publish_sdv_head_portrait);
             tvName = (TextView) itemView.findViewById(R.id.my_publish_tv_name);
@@ -192,7 +207,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
             tvApplicantNum = (TextView) itemView.findViewById(R.id.my_publish_tv_applicant_num);
             tvLeftTimeHour = (TextView) itemView.findViewById(R.id.my_publish_tv_left_time_hour);
             tvLeftTimeMinutes = (TextView) itemView.findViewById(R.id.my_publish_tv_left_time_minutes);
-            tvLeftTimeSecond = (TextView) itemView.findViewById(R.id.my_publish_tv_left_time_second);
+//            tvLeftTimeSecond = (TextView) itemView.findViewById(R.id.my_publish_tv_left_time_second);
         }
     }
 
@@ -224,9 +239,10 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
 
     /**
      * 提示数据有了变动，刷新数据的方法
+     *
      * @param billsList 变动之后的list
      */
-    public void refresh(List<Bill> billsList){
+    public void refresh(List<Bill> billsList) {
         this.billsList = billsList;
         notifyDataSetChanged();
     }

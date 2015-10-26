@@ -78,7 +78,7 @@ public class AcceptableBillAdapter extends BaseAdapter {
             viewHolder.tvAward = (TextView)convertView.findViewById(R.id.acceptable_bill_tv_award);
             viewHolder.tvLeftTimeHour = (TextView)convertView.findViewById(R.id.acceptable_bill_tv_left_time_hour);
             viewHolder.tvLeftTimeMinutes = (TextView)convertView.findViewById(R.id.acceptable_bill_tv_left_time_minutes);
-            viewHolder.tvLeftTimeSecond = (TextView)convertView.findViewById(R.id.acceptable_bill_tv_left_time_second);
+//            viewHolder.tvLeftTimeSecond = (TextView)convertView.findViewById(R.id.acceptable_bill_tv_left_time_second);
 //            viewHolder.btnForDetail = (ButtonRectangle)convertView.findViewById(R.id.acceptable_bill_btn_for_detail);
             convertView.setTag(viewHolder);
         }else {

@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Created by lypeer on 10/14/2015.
  */
-public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     /**
      * 根视图的对象
      */
@@ -66,11 +66,11 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
      */
     private static List<Bill> billList = new ArrayList<>();
 
-    private static Handler handler = new Handler(){
+    private static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY:
                     billList = BillUtils.getBillsList(StringUtils.FRAGMENT_ACCEPTED_BILL);
                     adapter.refresh(billList);
@@ -89,8 +89,8 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(rootView == null){
-            rootView = inflater.inflate(R.layout.fragment_accepted_bill , container , false);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_accepted_bill, container, false);
             initView();
         }
         return rootView;
@@ -99,23 +99,25 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
     /**
      * 初始化fragment中的各种view的方法
      */
-    private void initView(){
-        srlBill = (SwipeRefreshLayout)rootView.findViewById(R.id.accepted_bill_srl_bill);
-        rvBill = (RecyclerView)rootView.findViewById(R.id.accepted_bill_rv_bill);
-        adapter = new AcceptedBillAdapter(getActivity() , billList);
+    private void initView() {
+        srlBill = (SwipeRefreshLayout) rootView.findViewById(R.id.accepted_bill_srl_bill);
+        rvBill = (RecyclerView) rootView.findViewById(R.id.accepted_bill_rv_bill);
+        adapter = new AcceptedBillAdapter(getActivity(), billList);
         adapter.setOnItemClickListener(new AcceptedBillAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Intent intent;
-                if(billList.get(position).getPublisherPhone().equals(User.getInstance().getUserName())){
-                    intent = new Intent(getActivity() , RequestDetailOfPublisher.class);
-                }else {
-                    intent = new Intent(getActivity() , RequestDetailOfApplicanted.class);
+                if (billList.size() != 0) {
+                    Intent intent;
+                    if (billList.get(position).getPublisherPhone().equals(User.getInstance().getUserName())) {
+                        intent = new Intent(getActivity(), RequestDetailOfPublisher.class);
+                    } else {
+                        intent = new Intent(getActivity(), RequestDetailOfApplicanted.class);
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("bill", billList.get(position));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("bill" , billList.get(position));
-                intent.putExtras(bundle);
-                startActivity(intent);
             }
 
             @Override
@@ -148,13 +150,13 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
         isRefreshing = true;
 
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
-        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL , handler , false , 0);
+        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);
     }
 
     /**
      * 外部刷新内容
      */
-    public static void notifyDateChanged(){
+    public static void notifyDateChanged() {
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);
     }

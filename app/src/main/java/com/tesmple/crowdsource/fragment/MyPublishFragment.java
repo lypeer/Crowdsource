@@ -11,33 +11,25 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tesmple.crowdsource.R;
-import com.tesmple.crowdsource.activity.App;
-import com.tesmple.crowdsource.activity.RequestDetailOfApplicant;
 import com.tesmple.crowdsource.activity.RequestDetailOfPublisher;
-import com.tesmple.crowdsource.adapter.AcceptableAdapter;
 import com.tesmple.crowdsource.adapter.MyPublishAdapter;
 import com.tesmple.crowdsource.object.Bill;
-import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
-import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
-
 /**
  * Created by lypeer on 10/14/2015.
  */
-public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     /**
      * 根视图的对象
@@ -69,11 +61,11 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
      */
     private static boolean isRefreshing = false;
 
-    private static Handler handler = new Handler(){
+    private static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY:
                     billList = BillUtils.getBillsList(StringUtils.FRAGMENT_MY_PUBLISH);
                     adapter.refresh(billList);
@@ -92,8 +84,8 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(rootView == null){
-            rootView = inflater.inflate(R.layout.fragment_my_publish , container , false);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_my_publish, container, false);
             initView();
         }
         return rootView;
@@ -102,18 +94,20 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
     /**
      * 初始化fragment中的各种view的方法
      */
-    private void initView(){
-        srlBill = (SwipeRefreshLayout)rootView.findViewById(R.id.my_publish_srl_bill);
-        rvBill = (RecyclerView)rootView.findViewById(R.id.my_publish_rv_bill);
-        adapter = new MyPublishAdapter(getActivity() , billList);
+    private void initView() {
+        srlBill = (SwipeRefreshLayout) rootView.findViewById(R.id.my_publish_srl_bill);
+        rvBill = (RecyclerView) rootView.findViewById(R.id.my_publish_rv_bill);
+        adapter = new MyPublishAdapter(getActivity(), billList);
         adapter.setOnItemClickListener(new MyPublishAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Intent intent = new Intent(getActivity(), RequestDetailOfPublisher.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("bill", billList.get(position));
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (billList.size() != 0) {
+                    Intent intent = new Intent(getActivity(), RequestDetailOfPublisher.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("bill", billList.get(position));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
 
             @Override
@@ -145,15 +139,15 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
         srlBill.setRefreshing(true);
         isRefreshing = true;
         BillUtils.clearList(StringUtils.FRAGMENT_MY_PUBLISH);
-        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH , handler , false , 0);
+        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH, handler, false, 0);
     }
 
     /**
      * 外部刷新内容
      */
-    public static void notifyDateChanged(){
+    public static void notifyDateChanged() {
         BillUtils.clearList(StringUtils.FRAGMENT_MY_PUBLISH);
-        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH , handler , false , 0);
+        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH, handler, false, 0);
     }
 
     @Override
