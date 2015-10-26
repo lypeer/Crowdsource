@@ -55,7 +55,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/bg_loginactivity"/>
+                        android:background="@drawable/bg_login"/>
                 </com.tesmple.crowdsource.view.ImageLinearLayout>
 
                 <android.support.design.widget.TextInputLayout android:layout_width="match_parent"

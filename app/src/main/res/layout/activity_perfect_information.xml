@@ -10,8 +10,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/include_progressbar"/>
+        <!--<include layout="@layout/include_progressbar"/>-->
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:id="@+id/rl_dialog"
+            android:layout_height="match_parent">
 
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:id="@+id/ll_background"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:layout_height="match_parent">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textSize="24sp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/prompt_time_will_be_short"
+                    android:layout_height="wrap_content"/>
+                <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+                    android:id="@+id/proBar_progress"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@color/colorPrimaryDark"
+                    />
+            </LinearLayout>
+
+        </RelativeLayout>
         <com.gc.materialdesign.views.ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">

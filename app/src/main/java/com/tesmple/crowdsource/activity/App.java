@@ -1,10 +1,8 @@
 package com.tesmple.crowdsource.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -13,11 +11,6 @@ import com.avos.avoscloud.PushService;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
-import com.tesmple.crowdsource.fragment.AcceptableBillFragment;
-import com.tesmple.crowdsource.object.NotificationLab;
-import com.tesmple.crowdsource.utils.StringUtils;
-
-import dmax.dialog.SpotsDialog;
 
 /**
  * Created by lypeer on 10/7/2015.
@@ -178,7 +171,8 @@ public class App extends Application {
      * 隐藏正在加载的dialog
      */
     public static void dismissDialog() {
-        llBackground.setVisibility(View.GONE);
+        llBackground.setAlpha(0.0f);
+//        llBackground.setVisibility(View.GONE);
         llProgressbar.setVisibility(View.GONE);
     }
 

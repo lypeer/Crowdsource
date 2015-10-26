@@ -57,7 +57,7 @@ public class PushUtils {
     public static void startPushTransaction(final Handler handler, final String pushType, final Bill bill) {
 
         //首先对UserHelper进行读写操作
-        AVQuery<AVObject> avQuery = new AVQuery<>("UserHelper");
+        final AVQuery<AVObject> avQuery = new AVQuery<>("UserHelper");
         switch (pushType) {
             //根据推送的类型的不同设置查找条件
             case StringUtils.PUSH_BECOME_APPLICANT:
@@ -86,6 +86,7 @@ public class PushUtils {
                 break;
         }
         //开始寻找需要新建通知的单
+        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(final List<AVObject> list, AVException e) {
@@ -163,6 +164,7 @@ public class PushUtils {
                                         sBooleanList1.add(true);
                                         AVQuery<AVObject> avQuery1 = new AVQuery<>("_User");
                                         avQuery1.whereEqualTo("username", userHelperList.get(sBooleanList1.size() - 1).get("username"));
+                                        avQuery1.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
                                         avQuery1.findInBackground(new FindCallback<AVObject>() {
                                             @Override
                                             public void done(List<AVObject> list, AVException e) {

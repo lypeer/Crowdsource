@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -65,6 +66,11 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
      * 绑定的bill
      */
     private Bill bill;
+
+    /**
+     * 表示是否在刷新的布尔值，false表示没有刷新，true表示正在刷新
+     */
+    private static boolean isRefreshing = false;
 
     private static List<Applicant> applicantList = new ArrayList<>();
 
@@ -125,6 +131,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
 
         srlApplicant.setOnRefreshListener(this);
         srlApplicant.setRefreshing(true);
+        isRefreshing = true;
         applicantList.clear();
         setApplicantList();
 
@@ -143,6 +150,17 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
         }else if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
             applicantAdapter.setOnItemClickListener(null);
         }
+
+        rvApplicant.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (isRefreshing) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     private void setApplicantList() {
@@ -166,6 +184,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                             applicantList.add(applicant);
                             Log.i("applicantlist", String.valueOf(applicantList.size()));
                             srlApplicant.setRefreshing(false);
+                            isRefreshing = false;
                             applicantAdapter.refresh(applicantList);
                         }
                     } else {
@@ -187,7 +206,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                             applicant.setApplicantName(list.get(0).get("nickname").toString());
                             applicant.setApplicantSchool(list.get(0).get("department").toString());
                             applicant.setApplicantHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
-                            Log.i("checklinfo",bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) + " " + applicant.getUsername() + " " + bill.getConfirmer());
+                            Log.i("checklinfo", bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) + " " + applicant.getUsername() + " " + bill.getConfirmer());
                             if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) && applicant.getUsername().equals(bill.getConfirmer())){
                                 applicant.setApplicantIsChecked(true);
                             }else {
@@ -195,6 +214,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
                             }
                             applicantList.add(applicant);
                             srlApplicant.setRefreshing(false);
+                            isRefreshing = false;
                             applicantAdapter.refresh(applicantList);
                             Log.i("applicantlist", String.valueOf(applicantList.size()));
                         } else {
@@ -244,6 +264,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
         srlApplicant.setRefreshing(true);
+        isRefreshing = true;
         applicantList.clear();
         setApplicantList();
     }

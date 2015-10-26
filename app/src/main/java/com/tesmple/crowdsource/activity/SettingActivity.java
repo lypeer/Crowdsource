@@ -108,7 +108,7 @@ public class SettingActivity extends AppCompatActivity {
         sdvHeadPortrait = (SimpleDraweeView) findViewById(R.id.setting_sdv_head_portrait);
         tvName = (TextView) findViewById(R.id.setting_tv_name);
 
-        sdvHeadPortrait.setImageURI(Uri.parse(User.getInstance().getHeadProtrait()));
+        sdvHeadPortrait.setImageURI(Uri.parse(AVUser.getCurrentUser().getAVFile("head_portrait").getUrl()));
         tvName.setText(User.getInstance().getNickName());
 
         findViewById(R.id.setting_rl_head_portrait).setOnClickListener(new View.OnClickListener() {

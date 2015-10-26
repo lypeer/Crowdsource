@@ -77,6 +77,7 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
         holder.tvLeftTimeSecond.setText(timeList.get(2));
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
         avQuery.whereEqualTo("username", bill.getPublisherPhone());
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override

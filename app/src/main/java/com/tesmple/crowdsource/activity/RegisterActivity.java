@@ -1,10 +1,12 @@
 package com.tesmple.crowdsource.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,6 +25,7 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
+import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.CheckBox;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.User;
@@ -70,7 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * 表示用户协议的文本
      */
-    private TextView tvAgreement;
+    private ButtonFlat btnAgreement;
 
     /**
      * 确认注册的按钮
@@ -137,7 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
         etProveCode = (EditText) findViewById(R.id.register_et_prove_code);
         btnGetProveCode = (ButtonRectangle) findViewById(R.id.register_btn_get_prove_code);
         cbAgreeAgreement = (CheckBox) findViewById(R.id.register_cb_agree_agreement);
-        tvAgreement = (TextView) findViewById(R.id.register_tv_agreement);
+        btnAgreement = (ButtonFlat) findViewById(R.id.register_btn_agreement);
         btnRegister = (ButtonRectangle) findViewById(R.id.register_btn_register);
 
         etPhone.setError(null);
@@ -179,6 +182,38 @@ public class RegisterActivity extends AppCompatActivity {
 //                startActivity(intent);
             }
         });
+
+        btnAgreement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAgreementDialog();
+            }
+        });
+    }
+
+    /**
+     * 显示用户协议的dialog
+     */
+    private void showAgreementDialog(){
+        new AlertDialog.Builder(this ).setTitle(R.string.prompt_agreement)
+                .setMessage(R.string.prompt_agreement_content)
+                .setPositiveButton(R.string.prompt_agree, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cbAgreeAgreement.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                cbAgreeAgreement.setChecked(true);
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(R.string.prompt_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     /**

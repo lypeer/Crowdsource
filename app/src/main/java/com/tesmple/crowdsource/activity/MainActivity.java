@@ -1,6 +1,9 @@
 package com.tesmple.crowdsource.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +15,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         sdvHeadPortrait.setImageURI(Uri.parse(AVUser.getCurrentUser().getAVFile("head_portrait").getUrl()));
         tvName.setText(User.getInstance().getNickName());
-        tvDepartment.setText(User.getInstance().getDepartment() );
+        tvDepartment.setText(User.getInstance().getDepartment());
     }
 
     /**
@@ -189,25 +193,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_notification) {
             Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_history) {
+
         } else if (id == R.id.nav_setting) {
-            Intent intent = new Intent(MainActivity.this , SettingActivity.class);
+            Intent intent = new Intent(MainActivity.this, SettingActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_logout) {
             AVUser.logOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
+        } else if (id == R.id.nav_version) {
+            showVersionDialog();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * 显示关于版本号的dialog
+     */
+    private void showVersionDialog(){
+        new AlertDialog.Builder(this).setTitle(R.string.title_remind)
+                .setMessage(R.string.prompt_new_version_now)
+                .setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
     }
 
     /**
@@ -241,18 +257,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (NotificationLab.getInstance().isExistNotRead()) {
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_new_notification);
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_new_24dp);
         } else {
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_notification);
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        }
+        try {
+            navigationView.getMenu().getItem(4).setTitle(getString(R.string.prompt_versoin) + "\t(" + getVersionName() + ")");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         sdvHeadPortrait.setImageURI(Uri.parse(AVUser.getCurrentUser().getAVFile("head_portrait").getUrl()));
         tvName.setText(AVUser.getCurrentUser().get("nickname").toString());
         tvDepartment.setText(User.getInstance().getDepartment());
+    }
+
+    /**
+     * 获得版本号的方法
+     * @return  当前应用的版本号
+     * @throws Exception
+     */
+    private String getVersionName() throws Exception {
+        // 获取packagemanager的实例
+        PackageManager packageManager = getPackageManager();
+        // getPackageName()是你当前类的包名，0代表是获取版本信息
+        PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(),0);
+        String version = packInfo.versionName;
+        return version;
     }
 }

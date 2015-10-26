@@ -131,13 +131,11 @@
                         android:layout_gravity="center"
                         android:text="@string/know_and_agree"/>
 
-                    <TextView
-                        android:id="@+id/register_tv_agreement"
+                    <com.gc.materialdesign.views.ButtonFlat
+                        android:id="@+id/register_btn_agreement"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:clickable="true"
-                        android:focusable="false"
                         android:text="@string/school_crowdresource_agreement"
                         android:textColor="@color/colorPrimaryDark"/>
 

@@ -83,6 +83,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.whereEqualTo("username", notification.getPublisher());
+        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {

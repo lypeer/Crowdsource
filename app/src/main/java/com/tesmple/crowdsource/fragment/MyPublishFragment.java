@@ -31,6 +31,9 @@ import com.tesmple.crowdsource.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
+
 /**
  * Created by lypeer on 10/14/2015.
  */

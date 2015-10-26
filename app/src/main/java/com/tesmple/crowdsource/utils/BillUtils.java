@@ -80,11 +80,13 @@ public class BillUtils {
         switch (targetFragment) {
             case StringUtils.FRAGMENT_ACCEPTABLE_BILL:
                 avQuery.whereNotEqualTo("publisher_phone", User.getInstance().getUserName());
+                avQuery.orderByDescending("createdAt");
                 avQuery.whereEqualTo("status", StringUtils.BILL_STATUS_ONE);
 
                 break;
             case StringUtils.FRAGMENT_MY_PUBLISH:
                 avQuery.whereEqualTo("publisher_phone", User.getInstance().getUserName());
+                avQuery.orderByDescending("updatedAt");
                 avQuery.whereNotEqualTo("status", StringUtils.BILL_STATUS_FIVE);
                 break;
             case StringUtils.FRAGMENT_ACCEPTED_BILL:
@@ -96,13 +98,13 @@ public class BillUtils {
                 //表示我被确认了并且订单的状态是进行中的筛选条件
                 AVQuery<AVObject> myConfirm = AVQuery.getQuery("Bill");
                 myConfirm.whereEqualTo("confirmer", User.getInstance().getUserName());
-                myConfirm.whereEqualTo("status", StringUtils.BILL_STATUS_TWO);
+                myConfirm.whereNotEqualTo("status", StringUtils.BILL_STATUS_ONE);
 
                 List<AVQuery<AVObject>> queries = new ArrayList<>();
                 queries.add(myApplicant);
                 queries.add(myConfirm);
-
                 avQuery = AVQuery.or(queries);
+                avQuery.orderByDescending("updatedAt");
                 break;
             case StringUtils.FRAGMENT_HISTORY_BILL:
                 String[] status = {StringUtils.BILL_STATUS_THREE, StringUtils.BILL_STATUS_FOUR};
@@ -121,8 +123,8 @@ public class BillUtils {
                 avQuery.whereContainedIn("status", Arrays.asList(status));
                 break;
         }
-        // 根据 createdAt 字段升序显示数据
-        avQuery.orderByDescending("updatedAt");
+        // 采用缓存策略
+        avQuery.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
@@ -176,6 +178,7 @@ public class BillUtils {
 
         AVQuery<AVObject> avQuery1 = new AVQuery<>("UserHelper");
         avQuery1.whereEqualTo("username", User.getInstance().getUserName());
+        avQuery1.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
         avQuery1.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
