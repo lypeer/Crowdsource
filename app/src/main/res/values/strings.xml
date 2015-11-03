@@ -180,6 +180,8 @@
     <string name="system_hour">XX</string>
     <string name="system_applicant">0</string>
     <string name="system_detail0">还没有接单，快去接个单吧~</string>
+    <string name="title_have_new_version">有新版本！</string>
+    <string name="error_someting_worng">服务器开小差了，请稍后再试！</string>
 
     <array name="get_photo_type">
         <item>拍照</item>

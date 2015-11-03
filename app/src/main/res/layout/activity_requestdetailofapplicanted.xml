@@ -302,6 +302,7 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/requestdetailofapplicanted_tl_compliantandcomment"
                 android:layout_width="180dp"
+                android:visibility="gone"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 />

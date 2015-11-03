@@ -52,7 +52,7 @@ public class BillCommentUtils {
         List<BillComment> tempBillCommentList = new ArrayList<>();
         if (targetFragment.equals(StringUtils.FRAGMENT_BILL_COMMENT)) {
             tempBillCommentList = billCommentList;
-            Collections.reverse(tempBillCommentList);
+//            Collections.reverse(tempBillCommentList);
         }
         return tempBillCommentList;
     }

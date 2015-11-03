@@ -84,7 +84,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
 
             AVQuery<AVObject> avQuery = new AVQuery<>("_User");
             avQuery.whereEqualTo("username", bill.getPublisherPhone());
-            avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
+            avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_THEN_NETWORK);
             avQuery.findInBackground(new FindCallback<AVObject>() {
                 @Override
                 public void done(List<AVObject> list, AVException e) {
@@ -97,8 +97,11 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
                         holder.tvSchool.setText(bill.getPublisherSchool());
                     } else {
                         Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
-                        Snackbar.make(holder.tvApplicantNum, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
+                        //没有缓存数据
+                        if (e.getCode() != 120) {
+                            Snackbar.make(holder.tvApplicantNum, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                    .setAction("Action", null).show();
+                        }
                     }
                 }
             });

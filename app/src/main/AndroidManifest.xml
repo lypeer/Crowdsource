@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:allowBackup="true"
@@ -63,7 +64,7 @@
         <activity
             android:name=".activity.RequestDetailOfApplicant"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustUnspecified">
         </activity>
         <activity android:name=".activity.RequestDetailOfApplicanted"
                   android:screenOrientation="portrait"
@@ -96,6 +97,7 @@
                 <action android:name="com.tesmple.action"/>
             </intent-filter>
         </receiver>
+        <meta-data android:value="69701ff620ee3030fcb6273fac1d363a" android:name="BUG_HD_SDK_GENERAL_KEY" />
     </application>
 
 </manifest>

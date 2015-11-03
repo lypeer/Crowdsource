@@ -84,10 +84,10 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
             switch (msg.what) {
                 case StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY:
                     billList = BillUtils.getBillsList(StringUtils.FRAGMENT_ACCEPTABLE_BILL);
-//                    adapter.refresh(billList);
                     adapter.refresh(billList);
                     srlBill.setRefreshing(false);
                     isRefreshing = false;
+
                     break;
                 case StringUtils.START_GET_BILL_TRANSACTION_FAILED:
 //                    Snackbar.make(lvBill, R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();

@@ -457,6 +457,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         tvInstead.setVisibility(View.GONE);
         tvInstead.setHeight(444);
         ButtonFlat btflatUpOrDown = (ButtonFlat)findViewById(R.id.btflat_up_or_down);
+        btflatUpOrDown.setRippleSpeed(60.0f);
         btflatUpOrDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

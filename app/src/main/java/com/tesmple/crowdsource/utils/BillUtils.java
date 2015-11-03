@@ -176,12 +176,12 @@ public class BillUtils {
                                     historyBillList.add(bill);
                                     break;
                             }
-
-                            Message message = new Message();
-                            message.what = StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY;
-                            handler.sendMessage(message);
                         }
+
                     }
+                    Message message = new Message();
+                    message.what = StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY;
+                    handler.sendMessage(message);
                 } else {
                     Log.e("PostRequestError", e.getMessage() + "===" + e.getCode());
                     Message message = new Message();

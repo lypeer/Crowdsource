@@ -80,7 +80,7 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
 //        holder.tvLeftTimeSecond.setText(timeList.get(2));
 
             AVQuery<AVObject> avQuery = new AVQuery<>("_User");
-            avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
+            avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_THEN_NETWORK);
             avQuery.whereEqualTo("username", bill.getPublisherPhone());
             avQuery.findInBackground(new FindCallback<AVObject>() {
                 @Override
@@ -94,8 +94,11 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
                         holder.tvSchool.setText(bill.getPublisherSchool());
                     } else {
                         Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
-                        Snackbar.make(holder.tvAward, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
+                        //没有缓存数据
+                        if (e.getCode() != 120) {
+                            Snackbar.make(holder.tvAward, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                    .setAction("Action", null).show();
+                        }
                     }
                 }
             });
@@ -118,7 +121,7 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
                     }
                 });
             }
-        }else {
+        } else {
             holder.sdvHeadPortrait.setBackground(App.getContext().getResources().getDrawable(R.drawable.ic_systemgg));
             holder.tvName.setText(R.string.system_name);
             holder.tvSchool.setText(R.string.system_major);

@@ -78,7 +78,7 @@ public class AcceptedBillAdapter extends RecyclerView.Adapter<AcceptedBillAdapte
 
             AVQuery<AVObject> avQuery = new AVQuery<>("_User");
             avQuery.whereEqualTo("username", bill.getPublisherPhone());
-            avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
+            avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_THEN_NETWORK);
             avQuery.findInBackground(new FindCallback<AVObject>() {
                 @Override
                 public void done(List<AVObject> list, AVException e) {
@@ -91,8 +91,11 @@ public class AcceptedBillAdapter extends RecyclerView.Adapter<AcceptedBillAdapte
                         holder.tvSchool.setText(bill.getPublisherSchool());
                     } else {
                         Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
-                        Snackbar.make(holder.tvAward, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
+                        //没有缓存数据
+                        if (e.getCode() != 120) {
+                            Snackbar.make(holder.tvAward, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                    .setAction("Action", null).show();
+                        }
                     }
                 }
             });
@@ -115,7 +118,7 @@ public class AcceptedBillAdapter extends RecyclerView.Adapter<AcceptedBillAdapte
                     }
                 });
             }
-        }else {
+        } else {
             holder.sdvHeadPortrait.setBackground(App.getContext().getResources().getDrawable(R.drawable.ic_systemgg));
             holder.tvName.setText(R.string.system_name);
             holder.tvSchool.setText(R.string.system_major);
