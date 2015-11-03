@@ -175,6 +175,8 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
                     if(bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
                         PushUtils.startPushTransaction(handler,StringUtils.PUSH_CONFIRMER_REMOVE_BILL,bill);
+                        Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:" + bill.getPublisherPhone()));
+                        startActivity(intent);
                     }
                     finish();
                     break;
@@ -455,6 +457,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         tvInstead.setVisibility(View.GONE);
         tvInstead.setHeight(444);
         ButtonFlat btflatUpOrDown = (ButtonFlat)findViewById(R.id.btflat_up_or_down);
+        btflatUpOrDown.setRippleSpeed(60.0f);
         btflatUpOrDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

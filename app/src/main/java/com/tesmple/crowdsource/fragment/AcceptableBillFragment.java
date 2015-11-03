@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Created by lypeer on 10/14/2015.
  */
-public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     /**
      * 根视图的对象
      */
@@ -77,21 +77,21 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
      */
     private static List<Bill> billList = new ArrayList<>();
 
-    private static Handler handler = new Handler(){
+    private static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY:
                     billList = BillUtils.getBillsList(StringUtils.FRAGMENT_ACCEPTABLE_BILL);
-//                    adapter.refresh(billList);
                     adapter.refresh(billList);
                     srlBill.setRefreshing(false);
                     isRefreshing = false;
+
                     break;
                 case StringUtils.START_GET_BILL_TRANSACTION_FAILED:
 //                    Snackbar.make(lvBill, R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
-                    Snackbar.make(rvBill, R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
                     srlBill.setRefreshing(false);
                     isRefreshing = false;
                     break;
@@ -102,8 +102,8 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(rootView == null){
-            rootView = inflater.inflate(R.layout.fragment_acceptable_bill , container , false);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_acceptable_bill, container, false);
             initView();
         }
         return rootView;
@@ -112,24 +112,26 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
     /**
      * 初始化fragment中的各种view的方法
      */
-    private void initView(){
-        srlBill = (SwipeRefreshLayout)rootView.findViewById(R.id.acceptable_bill_srl_bill);
+    private void initView() {
+        srlBill = (SwipeRefreshLayout) rootView.findViewById(R.id.acceptable_bill_srl_bill);
 //        lvBill = (ListView)rootView.findViewById(R.id.acceptable_bill_lv_main);
 //        adapter = new AcceptableBillAdapter(getActivity() , billList);
 //
 //        lvBill.setAdapter(adapter);
 //        lvBill.setDivider(new ColorDrawable(App.getContext().getResources().getColor(R.color.empty)));
 //        lvBill.setDividerHeight(16);
-        rvBill = (RecyclerView)rootView.findViewById(R.id.acceptable_bill_rv_bill);
-        adapter = new AcceptableAdapter(getActivity() , billList);
+        rvBill = (RecyclerView) rootView.findViewById(R.id.acceptable_bill_rv_bill);
+        adapter = new AcceptableAdapter(getActivity(), billList);
         adapter.setOnItemClickListener(new AcceptableAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Intent intent = new Intent(getActivity() , RequestDetailOfApplicant.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("bill" , billList.get(position));
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (billList.size() != 0) {
+                    Intent intent = new Intent(getActivity(), RequestDetailOfApplicant.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("bill", billList.get(position));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
 
             @Override
@@ -162,13 +164,13 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
         srlBill.setRefreshing(true);
         isRefreshing = true;
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTABLE_BILL);
-        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTABLE_BILL , handler , false , 0);
+        BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTABLE_BILL, handler, false, 0);
     }
 
     /**
      * 外部刷新内容
      */
-    public static void notifyDateChanged(){
+    public static void notifyDateChanged() {
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTABLE_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTABLE_BILL, handler, false, 0);
     }

@@ -344,6 +344,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
         tvInstead = (TextView)findViewById(R.id.requestdetailofapplicant_tv_instead);
         tvInstead.setVisibility(View.GONE);
         tvInstead.setHeight(444);
+        btflatUpOrDown.setRippleSpeed(60.0f);
         btflatUpOrDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

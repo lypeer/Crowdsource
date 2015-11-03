@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -41,6 +42,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
+import im.fir.sdk.FIR;
+import im.fir.sdk.callback.VersionCheckCallback;
+import im.fir.sdk.version.AppVersion;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Observer {
 
@@ -204,12 +209,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             finish();
         } else if (id == R.id.nav_version) {
-            showVersionDialog();
+//            showVersionDialog();
+            checkForNewVersion();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * 检查新版本的方法
+     */
+    private void checkForNewVersion(){
+        FIR.checkForUpdateInFIR("a317113b67b6856ebbcf9dc4745aae21", new VersionCheckCallback() {
+            @Override
+            public void onSuccess(AppVersion appVersion, boolean b) {
+                try {
+                    if (appVersion.getVersionName().equals(getVersionName())) {
+                        showVersionDialog();
+                    } else {
+                        showNewVersionDialog(appVersion.getChangeLog(), appVersion.getUpdateUrl());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail(String s, int i) {
+                Snackbar.make(tvName , R.string.error_someting_worng , Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("CheckNewVersionError" , e.getMessage() + "===" + e.getCause());
+                Snackbar.make(tvName , R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
     }
 
     /**
@@ -222,6 +269,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                }).show();
+    }
+
+    /**
+     * 显示有新版本的方法
+     * @param updateLog 新版本打印的log
+     * @param url 下载新版本的url
+     */
+    private void showNewVersionDialog(String updateLog , final String url){
+        new AlertDialog.Builder(this).setTitle(R.string.title_have_new_version)
+                .setMessage(updateLog)
+                .setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(url));
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(R.string.prompt_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
                 }).show();
     }

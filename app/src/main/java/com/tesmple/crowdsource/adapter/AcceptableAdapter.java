@@ -19,6 +19,7 @@ import com.avos.avoscloud.FindCallback;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.Card;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.TimeUtils;
@@ -50,76 +51,95 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
 
     /**
      * adpater的构造方法
-     * @param context 调用的activity的context
+     *
+     * @param context   调用的activity的context
      * @param billsList 装载单的数据的list
      */
-    public AcceptableAdapter(Context context , List<Bill> billsList){
+    public AcceptableAdapter(Context context, List<Bill> billsList) {
         this.context = context;
         this.billsList = billsList;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_acceptable_bill , parent , false));
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_acceptable_bill, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final Bill bill = billsList.get(position);
-        holder.tvStatus.setText(bill.getStatus());
-        holder.tvDetail.setText(bill.getDetail());
-        holder.tvAward.setText(bill.getAward());
-        //剩余时间
-        ArrayList<String> timeList = new ArrayList<String>();
-        timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
-        holder.tvLeftTimeHour.setText(timeList.get(0));
-        holder.tvLeftTimeMinutes.setText(timeList.get(1));
-        holder.tvLeftTimeSecond.setText(timeList.get(2));
+        if (billsList.size() != 0) {
+            final Bill bill = billsList.get(position);
+            holder.tvStatus.setText(bill.getStatus());
+            holder.tvDetail.setText(bill.getDetail());
+            holder.tvAward.setText(bill.getAward());
+            //剩余时间
+            ArrayList<String> timeList = new ArrayList<String>();
+            timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
+            holder.tvLeftTimeHour.setText(timeList.get(0));
+            holder.tvLeftTimeMinutes.setText(timeList.get(1));
+//        holder.tvLeftTimeSecond.setText(timeList.get(2));
 
-        AVQuery<AVObject> avQuery = new AVQuery<>("_User");
-        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
-        avQuery.whereEqualTo("username", bill.getPublisherPhone());
-        avQuery.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                if(e == null){
-                    bill.setPublisherName((String) list.get(0).get("nickname"));
-                    bill.setPublisherSchool((String) list.get(0).get("major"));
-                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false , 96 , 96));
-                    holder.sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
-                    holder.tvName.setText(bill.getPublisherName());
-                    holder.tvSchool.setText(bill.getPublisherSchool());
-                }else {
-                    Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
-                    Snackbar.make(holder.tvAward, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
+            AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+            avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_THEN_NETWORK);
+            avQuery.whereEqualTo("username", bill.getPublisherPhone());
+            avQuery.findInBackground(new FindCallback<AVObject>() {
+                @Override
+                public void done(List<AVObject> list, AVException e) {
+                    if (e == null) {
+                        bill.setPublisherName((String) list.get(0).get("nickname"));
+                        bill.setPublisherSchool((String) list.get(0).get("major"));
+                        bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96));
+                        holder.sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
+                        holder.tvName.setText(bill.getPublisherName());
+                        holder.tvSchool.setText(bill.getPublisherSchool());
+                    } else {
+                        Log.e("AcceptableAdapterError", e.getMessage() + "===" + e.getCode());
+                        //没有缓存数据
+                        if (e.getCode() != 120) {
+                            Snackbar.make(holder.tvAward, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                    .setAction("Action", null).show();
+                        }
+                    }
                 }
+            });
+
+            if (onItemClickListener != null) {
+                holder.cvBill.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        onItemClickListener.onItemClick(holder.cvBill, pos);
+                    }
+                });
+
+                holder.cvBill.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        int pos = holder.getLayoutPosition();
+                        onItemClickListener.onItemLongCick(holder.cvBill, pos);
+                        return false;
+                    }
+                });
             }
-        });
-
-        if (onItemClickListener != null) {
-            holder.cvBill.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    onItemClickListener.onItemClick(holder.cvBill, pos);
-                }
-            });
-
-            holder.cvBill.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    onItemClickListener.onItemLongCick(holder.cvBill, pos);
-                    return false;
-                }
-            });
+        } else {
+            holder.sdvHeadPortrait.setBackground(App.getContext().getResources().getDrawable(R.drawable.ic_systemgg));
+            holder.tvName.setText(R.string.system_name);
+            holder.tvSchool.setText(R.string.system_major);
+            holder.tvSchool.setText(R.string.system_status);
+            holder.tvDetail.setText(R.string.system_detail);
+            holder.tvAward.setText(R.string.system_award);
+            holder.tvLeftTimeHour.setText(R.string.system_hour);
+            holder.tvLeftTimeMinutes.setText(R.string.system_hour);
         }
     }
 
     @Override
     public int getItemCount() {
-        return billsList.size();
+        if (billsList.size() == 0) {
+            return 1;
+        } else {
+            return billsList.size();
+        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -169,15 +189,15 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
          */
         private TextView tvLeftTimeMinutes;
 
-        /**
-         * 剩下的时间的秒数
-         */
-        private TextView tvLeftTimeSecond;
+//        /**
+//         * 剩下的时间的秒数
+//         */
+//        private TextView tvLeftTimeSecond;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            cvBill = (CardView)itemView.findViewById(R.id.acceptable_bill_cv_bill);
+            cvBill = (CardView) itemView.findViewById(R.id.acceptable_bill_cv_bill);
             sdvHeadPortrait = (SimpleDraweeView) itemView.
                     findViewById(R.id.acceptable_bill_sdv_head_portrait);
             tvName = (TextView) itemView.findViewById(R.id.acceptable_bill_tv_name);
@@ -187,7 +207,7 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
             tvAward = (TextView) itemView.findViewById(R.id.acceptable_bill_tv_award);
             tvLeftTimeHour = (TextView) itemView.findViewById(R.id.acceptable_bill_tv_left_time_hour);
             tvLeftTimeMinutes = (TextView) itemView.findViewById(R.id.acceptable_bill_tv_left_time_minutes);
-            tvLeftTimeSecond = (TextView) itemView.findViewById(R.id.acceptable_bill_tv_left_time_second);
+//            tvLeftTimeSecond = (TextView) itemView.findViewById(R.id.acceptable_bill_tv_left_time_second);
         }
     }
 
@@ -219,9 +239,10 @@ public class AcceptableAdapter extends RecyclerView.Adapter<AcceptableAdapter.My
 
     /**
      * 提示数据有了变动，刷新数据的方法
+     *
      * @param billsList 变动之后的list
      */
-    public void refresh(List<Bill> billsList){
+    public void refresh(List<Bill> billsList) {
         this.billsList = billsList;
         notifyDataSetChanged();
     }

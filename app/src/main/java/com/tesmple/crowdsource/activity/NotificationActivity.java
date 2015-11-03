@@ -129,7 +129,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                         }
                     }
                     AVQuery<AVObject> avQuery = new AVQuery<>("UserHelper");
-                    avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
+                    avQuery.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
                     avQuery.whereEqualTo("username", User.getInstance().getUserName());
                     avQuery.findInBackground(new FindCallback<AVObject>() {
                         @Override

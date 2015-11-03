@@ -86,7 +86,7 @@ public class PushUtils {
                 break;
         }
         //开始寻找需要新建通知的单
-        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
+        avQuery.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(final List<AVObject> list, AVException e) {
@@ -137,26 +137,21 @@ public class PushUtils {
                         }
                         jsonObject.put("action", "com.tesmple.action");
                         jsonObject.put("alert", message);
-                        jsonObject.put("is_read" , false);
+                        jsonObject.put("is_read", false);
                         jsonObject.put("time", String.valueOf(System.currentTimeMillis()));
                         size = userHelperList.size();
                         sBooleanList1 = new ArrayList<>();
                         sBooleanList2 = new ArrayList<>();
                         for (int i = 0; i < userHelperList.size(); i++) {
                             JSONArray jsonArray = userHelperList.get(i).getJSONArray("notification");
-                            try {
-                                //判断原先是否有通知，如果没有就新建一个，避免空异常
-                                if (jsonArray != null) {
-                                    jsonArray.put(jsonArray.length(), jsonObject);
-                                } else {
-                                    jsonArray = new JSONArray();
-                                    jsonArray.put(jsonObject);
-                                }
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
+                            //判断原先是否有通知，如果没有就新建一个，避免空异常
+                            if (jsonArray != null) {
+                                jsonArray.put(jsonObject);
+                            } else {
+                                jsonArray = new JSONArray();
+                                jsonArray.put(jsonObject);
                             }
-                            //本来想让他和i一样成为一个指标的，结果好像有问题。。。
-                            userHelperList.get(i).put("notification" , jsonArray);
+                            userHelperList.get(i).put("notification", jsonArray);
                             userHelperList.get(i).saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(AVException e) {
@@ -164,7 +159,7 @@ public class PushUtils {
                                         sBooleanList1.add(true);
                                         AVQuery<AVObject> avQuery1 = new AVQuery<>("_User");
                                         avQuery1.whereEqualTo("username", userHelperList.get(sBooleanList1.size() - 1).get("username"));
-                                        avQuery1.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
+                                        avQuery1.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
                                         avQuery1.findInBackground(new FindCallback<AVObject>() {
                                             @Override
                                             public void done(List<AVObject> list, AVException e) {
@@ -220,7 +215,7 @@ public class PushUtils {
                                                                 }
                                                             }
                                                         });
-                                                    }else {
+                                                    } else {
                                                         Message message1 = new Message();
                                                         message1.what = StringUtils.PUSH_FAILED;
                                                         handler.sendMessage(message1);
@@ -233,7 +228,7 @@ public class PushUtils {
                                                 }
                                             }
                                         });
-                                    }else {
+                                    } else {
                                         Log.e("PushUtilsSaveError", e.getMessage() + "===" + e.getCode());
                                         Message message1 = new Message();
                                         message1.what = StringUtils.PUSH_FAILED;
@@ -242,7 +237,7 @@ public class PushUtils {
                                 }
                             });
                         }
-                    }else {
+                    } else {
                         Message message1 = new Message();
                         message1.what = StringUtils.PUSH_FAILED;
                         handler.sendMessage(message1);
@@ -255,28 +250,27 @@ public class PushUtils {
                 }
             }
         });
-
     }
 
-    public static String getPushType(String content){
+    public static String getPushType(String content) {
         String type = null;
-        if(content.equals(App.getContext().getString(R.string.push_become_applicant))){
+        if (content.equals(App.getContext().getString(R.string.push_become_applicant))) {
             type = StringUtils.PUSH_BECOME_APPLICANT;
-        }else if (content.equals(App.getContext().getString(R.string.push_become_confirmer))){
+        } else if (content.equals(App.getContext().getString(R.string.push_become_confirmer))) {
             type = StringUtils.PUSH_BECOME_COMFIRMER;
-        } else if (content.equals(App.getContext().getString(R.string.push_not_become_applicant))){
+        } else if (content.equals(App.getContext().getString(R.string.push_not_become_applicant))) {
             type = StringUtils.PUSH_NOT_BECOME_COMFIRMER;
-        }else if (content.equals(App.getContext().getString(R.string.push_have_robbed))){
+        } else if (content.equals(App.getContext().getString(R.string.push_have_robbed))) {
             type = StringUtils.PUSH_HAVE_ROBBED;
-        }else if (content.equals(App.getContext().getString(R.string.push_publisher_remove_bill))){
+        } else if (content.equals(App.getContext().getString(R.string.push_publisher_remove_bill))) {
             type = StringUtils.PUSH_PUBLISHER_REMOVE_BILL;
-        }else if (content.equals(App.getContext().getString(R.string.push_confirmer_remove_bill))){
+        } else if (content.equals(App.getContext().getString(R.string.push_confirmer_remove_bill))) {
             type = StringUtils.PUSH_CONFIRMER_REMOVE_BILL;
-        }else if (content.equals(App.getContext().getString(R.string.push_finish_bill))){
+        } else if (content.equals(App.getContext().getString(R.string.push_finish_bill))) {
             type = StringUtils.PUSH_FINISH_BILL;
-        }else if (content.equals(App.getContext().getString(R.string.push_remind_publisher))){
+        } else if (content.equals(App.getContext().getString(R.string.push_remind_publisher))) {
             type = StringUtils.PUSH_REMIND_PUBLISHER;
-        }else if (content.equals(App.getContext().getString(R.string.push_system_finish))){
+        } else if (content.equals(App.getContext().getString(R.string.push_system_finish))) {
             type = StringUtils.PUSH_SYSTEM_FINISH;
         }
         return type;

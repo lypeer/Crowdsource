@@ -12,6 +12,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
 
+import im.fir.sdk.FIR;
+
 /**
  * Created by lypeer on 10/7/2015.
  */
@@ -36,53 +38,9 @@ public class App extends Application {
      */
     private static ProgressBarCircularIndeterminate proBarProgress;
 
-//    /**
-//     * AcceptableBill界面的进度条外部layout
-//     */
-//    private static LinearLayout llProgressbarAcceptableBill;
-//
-//    /**
-//     * AcceptableBill界面的进度条外部layout底下的那个linearlayout
-//     */
-//    private static LinearLayout llBackgroundAcceptableBill;
-//
-//    /**
-//     * AcceptableBill界面的加载progressBar
-//     */
-//    private static ProgressBarCircularIndeterminate proBarProgressAcceptableBill;
-//
-//    /**
-//     * AcceptedBill界面的进度条外部layout
-//     */
-//    private static LinearLayout llProgressbarAcceptedBill;
-//
-//    /**
-//     * AcceptedBill界面的进度条外部layout底下的那个linearlayout
-//     */
-//    private static LinearLayout llBackgroundAcceptedBill;
-//
-//    /**
-//     * AcceptedBill界面的加载progressBar
-//     */
-//    private static ProgressBarCircularIndeterminate proBarProgressAcceptedBill;
-//
-//    /**
-//     * MyPublish界面的进度条外部layout
-//     */
-//    private static LinearLayout llProgressbarMyPublish;
-//
-//    /**
-//     * MyPublish界面的进度条外部layout底下的那个linearlayout
-//     */
-//    private static LinearLayout llBackgroundMyPublish;
-//
-//    /**
-//     * MyPublish界面的加载progressBar
-//     */
-//    private static ProgressBarCircularIndeterminate proBarProgressMyPublish;
-
     @Override
     public void onCreate() {
+        FIR.init(this);
         super.onCreate();
         mAppContext = getApplicationContext();
         AVOSCloud.initialize(this, "ToU9po43RDw6nyqcjzPL57si", "GiI6qViVwvAsCpz46SjLarm2");

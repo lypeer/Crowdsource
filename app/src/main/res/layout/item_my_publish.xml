@@ -25,8 +25,8 @@
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/my_publish_sdv_head_portrait"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     fresco:actualImageScaleType="fitCenter"
                     android:background="@drawable/ic_account_circle_blue_grey_500_48dp"
                     fresco:roundAsCircle="true"/>
@@ -173,19 +173,19 @@
                         android:layout_height="wrap_content"
                         android:text="@string/prompt_minutes"/>
 
-                    <TextView
-                        android:id="@+id/my_publish_tv_left_time_second"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/test_second"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="24sp"
-                        android:textStyle="bold"/>
+                    <!--<TextView-->
+                        <!--android:id="@+id/my_publish_tv_left_time_second"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="@string/test_second"-->
+                        <!--android:textColor="@color/colorPrimary"-->
+                        <!--android:textSize="24sp"-->
+                        <!--android:textStyle="bold"/>-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/prompt_second"/>
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="@string/prompt_second"/>-->
                 </LinearLayout>
             </LinearLayout>
 

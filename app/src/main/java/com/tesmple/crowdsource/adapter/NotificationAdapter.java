@@ -74,31 +74,34 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 System.currentTimeMillis() - Long.valueOf(notification.getTime())));
         holder.tvContent.setText(notification.getContent());
 
-        if(!notification.isRead()){
+        if (!notification.isRead()) {
             holder.ivHaveNotRead.setVisibility(View.VISIBLE);
             holder.ivHaveNotRead.bringToFront();
-        }else {
+        } else {
             holder.ivHaveNotRead.setVisibility(View.GONE);
         }
 
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.whereEqualTo("username", notification.getPublisher());
-        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
+        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_THEN_NETWORK);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
                 if (e == null) {
                     holder.tvName.setText((String) list.get(0).get("nickname"));
-                    holder.sdvHeadPortrait.setImageURI(Uri.parse(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false , 96 , 96)));
-                    if(list.get(0).get("gender").equals(App.getContext().getString(R.string.man))){
-                       holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
-                    }else {
+                    holder.sdvHeadPortrait.setImageURI(Uri.parse(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96)));
+                    if (list.get(0).get("gender").equals(App.getContext().getString(R.string.man))) {
+                        holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
+                    } else {
                         holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
                     }
                 } else {
                     Log.e("NotificationAdaptError", e.getMessage() + "===" + e.getCode());
-                    Snackbar.make(holder.tvContent, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
+                    //没有缓存数据
+                    if (e.getCode() != 120) {
+                        Snackbar.make(holder.tvContent, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
+                    }
                 }
             }
         });
@@ -170,7 +173,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             sdvHeadPortrait = (SimpleDraweeView) itemView.
                     findViewById(R.id.notification_sdv_head_portrait);
-            ivHaveNotRead = (ImageView)itemView.findViewById(R.id.notification_iv_have_not_read);
+            ivHaveNotRead = (ImageView) itemView.findViewById(R.id.notification_iv_have_not_read);
             ivGender = (ImageView) itemView.findViewById(R.id.notification_sdv_gender);
             tvName = (TextView) itemView.findViewById(R.id.notification_tv_name);
             tvTime = (TextView) itemView.findViewById(R.id.notification_tv_time);

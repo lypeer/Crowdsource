@@ -80,8 +80,8 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
             super.handleMessage(msg);
             switch (msg.what) {
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
-                    PushUtils.startPushTransaction(mHandler, StringUtils.PUSH_BECOME_COMFIRMER, bill);
                     PushUtils.startPushTransaction(mHandler, StringUtils.PUSH_NOT_BECOME_COMFIRMER, bill);
+                    PushUtils.startPushTransaction(mHandler, StringUtils.PUSH_BECOME_COMFIRMER, bill);
                     Intent intent = new Intent(getActivity(), ConfirmSuccessfullyActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString(getString(R.string.billDeadLine), bill.getDeadline().toString());

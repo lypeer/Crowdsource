@@ -11,9 +11,9 @@
     android:layout_marginTop="7dp">
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/applicant_sdv_head_portrait"
-        android:layout_width="wrap_content"
+        android:layout_width="48dp"
         fresco:actualImageScaleType="fitCenter"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:background="@drawable/ic_account_circle_blue_grey_500_48dp"
         fresco:roundAsCircle="true"/>
     <LinearLayout

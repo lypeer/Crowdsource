@@ -1,5 +1,7 @@
 package com.tesmple.crowdsource.object;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,13 @@ public class NotificationLab extends Observable{
      */
     public static NotificationLab getInstance(){
         if(sNotificationLab == null){
+            //双重检验锁防止被多次实例化
+            synchronized (NotificationLab.class) {
+                if (sNotificationLab == null) {
+                    sNotificationLab = new NotificationLab();
+                    sNotificationList = new ArrayList<>();
+                }
+            }
             sNotificationLab = new NotificationLab();
         }
         return sNotificationLab;
@@ -38,10 +47,7 @@ public class NotificationLab extends Observable{
      * @param notification 要增加的通知
      */
     public void addNotification(Notification notification){
-        if(sNotificationList == null){
-            sNotificationList = new ArrayList<>();
-        }
-        sNotificationList.add(notification);
+        getNotificationList().add(notification);
         setChanged();
         notifyObservers();
     }
@@ -51,9 +57,6 @@ public class NotificationLab extends Observable{
      * @return 返回当前用户的消息队列
      */
     public List<Notification> getNotificationList(){
-        if(sNotificationList == null){
-            sNotificationList = new ArrayList<>();
-        }
         return sNotificationList;
     }
 
@@ -66,7 +69,7 @@ public class NotificationLab extends Observable{
             return false;
         }else {
             for(Notification notification : getNotificationList()){
-                if(!notification.isRead()){
+                if(!notification.isRead() && notification.getPublisher() != null){
                     return true;
                 }
             }

@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
@@ -21,6 +22,7 @@ import com.tesmple.crowdsource.object.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.helper.StringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -92,13 +94,14 @@ public class BillUtils {
             case StringUtils.FRAGMENT_ACCEPTED_BILL:
                 //表示我报名了还没有选定的筛选条件
                 //此处存疑
+                String[] statusAccptedBill = {StringUtils.BILL_STATUS_TWO , StringUtils.BILL_STATUS_THREE, StringUtils.BILL_STATUS_FOUR};
                 AVQuery<AVObject> myApplicant = AVQuery.getQuery("Bill");
                 myApplicant.whereContains("applicant", User.getInstance().getUserName());
                 myApplicant.whereEqualTo("status", StringUtils.BILL_STATUS_ONE);
                 //表示我被确认了并且订单的状态是进行中的筛选条件
                 AVQuery<AVObject> myConfirm = AVQuery.getQuery("Bill");
                 myConfirm.whereEqualTo("confirmer", User.getInstance().getUserName());
-                myConfirm.whereNotEqualTo("status", StringUtils.BILL_STATUS_ONE);
+                myConfirm.whereContainedIn("status", Arrays.asList(statusAccptedBill));
 
                 List<AVQuery<AVObject>> queries = new ArrayList<>();
                 queries.add(myApplicant);
@@ -130,39 +133,51 @@ public class BillUtils {
             public void done(List<AVObject> list, AVException e) {
                 if (e == null) {
                     for (AVObject avObject : list) {
-                        Bill bill = new Bill();
-                        bill.setObjectId(avObject.getObjectId());
-                        bill.setPublisherPhone((String) avObject.get("publisher_phone"));
-                        bill.setAward((String) avObject.get("award"));
-                        bill.setDetail((String) avObject.get("detail"));
-                        bill.setDeadline(avObject.getLong("deadline"));
-                        bill.setAddress((String) avObject.get("address"));
-                        bill.setStatus((String) avObject.get("status"));
-                        bill.setApplicant((String) avObject.get("applicant"));
-                        bill.setConfirmer((String) avObject.get("confirmer"));
-                        bill.setNeedNum((String) avObject.get("need_num"));
-                        bill.setRobType((String) avObject.get("rob_type"));
-                        bill.setLocation((String) avObject.get("location"));
-                        bill.setAcceptDeadline((String) avObject.get("accept_deadline"));
-                        bill.setContactWay((String) avObject.get("contact_way"));
-                        switch (targetFragment) {
-                            case StringUtils.FRAGMENT_ACCEPTABLE_BILL:
-                                if (userIsApplicant(bill)) {
-                                    break;
-                                } else {
-                                    acceptableBillList.add(bill);
+                        if (avObject.getLong("deadline") < System.currentTimeMillis() && avObject.get("status").equals(StringUtils.BILL_STATUS_ONE)) {
+                            avObject.deleteInBackground(new DeleteCallback() {
+                                @Override
+                                public void done(AVException e) {
+                                    if (e != null) {
+                                        Log.e("BillUtilsDeleteError", e.getMessage() + "===" + e.getCode());
+                                    }
                                 }
-                                break;
-                            case StringUtils.FRAGMENT_MY_PUBLISH:
-                                myPublishList.add(bill);
-                                break;
-                            case StringUtils.FRAGMENT_ACCEPTED_BILL:
-                                acceptedBillList.add(bill);
-                                break;
-                            case StringUtils.FRAGMENT_HISTORY_BILL:
-                                historyBillList.add(bill);
-                                break;
+                            });
+                        } else {
+                            Bill bill = new Bill();
+                            bill.setObjectId(avObject.getObjectId());
+                            bill.setPublisherPhone((String) avObject.get("publisher_phone"));
+                            bill.setAward((String) avObject.get("award"));
+                            bill.setDetail((String) avObject.get("detail"));
+                            bill.setDeadline(avObject.getLong("deadline"));
+                            bill.setAddress((String) avObject.get("address"));
+                            bill.setStatus((String) avObject.get("status"));
+                            bill.setApplicant((String) avObject.get("applicant"));
+                            bill.setConfirmer((String) avObject.get("confirmer"));
+                            bill.setNeedNum((String) avObject.get("need_num"));
+                            bill.setRobType((String) avObject.get("rob_type"));
+                            bill.setLocation((String) avObject.get("location"));
+                            bill.setAcceptDeadline((String) avObject.get("accept_deadline"));
+                            bill.setContactWay((String) avObject.get("contact_way"));
+                            switch (targetFragment) {
+                                case StringUtils.FRAGMENT_ACCEPTABLE_BILL:
+                                    if (userIsApplicant(bill)) {
+                                        break;
+                                    } else {
+                                        acceptableBillList.add(bill);
+                                    }
+                                    break;
+                                case StringUtils.FRAGMENT_MY_PUBLISH:
+                                    myPublishList.add(bill);
+                                    break;
+                                case StringUtils.FRAGMENT_ACCEPTED_BILL:
+                                    acceptedBillList.add(bill);
+                                    break;
+                                case StringUtils.FRAGMENT_HISTORY_BILL:
+                                    historyBillList.add(bill);
+                                    break;
+                            }
                         }
+
                     }
                     Message message = new Message();
                     message.what = StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY;
