@@ -1,5 +1,6 @@
 package com.tesmple.crowdsource.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,12 +19,15 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.adapter.NotificationAdapter;
+import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.Notification;
 import com.tesmple.crowdsource.object.NotificationLab;
 import com.tesmple.crowdsource.object.User;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.PushUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 
@@ -81,8 +85,9 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+        ActivityCollector.addActivity(NotificationActivity.this);
         initToolBar();
-
+        NotificationLab.getInstance().clearList();
         init();
     }
 
@@ -114,6 +119,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
             public void onItemClick(View v, final int position) {
                 if (!NotificationLab.getInstance().getNotificationList().get(position).isRead()) {
                     NotificationLab.getInstance().getNotificationList().get(position).setIsRead(true);
+                    //反转一次，以输入notification存储
                     NotificationLab.getInstance().reverseList();
                     final JSONArray jsonArray = new JSONArray();
                     for (Notification notification : NotificationLab.getInstance().getNotificationList()) {
@@ -122,12 +128,15 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                             jsonObject.put("is_read", notification.isRead());
                             jsonObject.put("alert", notification.getContent());
                             jsonObject.put("time", notification.getTime());
+                            jsonObject.put("bill_id", notification.getBillId());
                             jsonObject.put("sender", notification.getPublisher());
                             jsonArray.put(jsonObject);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
+                    //再反转一次，回复原来的顺序
+                    NotificationLab.getInstance().reverseList();
                     AVQuery<AVObject> avQuery = new AVQuery<>("UserHelper");
                     avQuery.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
                     avQuery.whereEqualTo("username", User.getInstance().getUserName());
@@ -140,7 +149,8 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                                     @Override
                                     public void done(AVException e) {
                                         if (e == null) {
-                                            jump(NotificationLab.getInstance().getNotificationList().get(position).getType());
+                                            Notification notification = NotificationLab.getInstance().getNotificationList().get(position);
+                                            jump(notification.getType(), notification.getBillId());
                                         } else {
                                             Log.e("NotificActSaveError", e.getMessage() + "===" + e.getCode());
                                             Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
@@ -154,7 +164,8 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                         }
                     });
                 } else {
-                    jump(NotificationLab.getInstance().getNotificationList().get(position).getType());
+                    Notification notification = NotificationLab.getInstance().getNotificationList().get(position);
+                    jump(notification.getType(), notification.getBillId());
                 }
             }
 
@@ -169,10 +180,6 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
         rvBill.setItemAnimator(new DefaultItemAnimator());
 
         srlBill.setOnRefreshListener(this);
-        srlBill.setRefreshing(true);
-        isRefreshing = true;
-        NotificationLab.getInstance().clearList();
-        getNotifications();
 
         rvBill.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -189,23 +196,60 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     /**
      * 跳转到别的地方去的方法
      *
-     * @param type 这个通知的类型
+     * @param type   这个通知的类型
+     * @param billId 单的id
      */
-    private void jump(String type) {
-        if (type.equals(StringUtils.PUSH_BECOME_APPLICANT) ||
-                type.equals(StringUtils.PUSH_HAVE_ROBBED) ||
-                type.equals(StringUtils.PUSH_CONFIRMER_REMOVE_BILL) ||
-                type.equals(StringUtils.PUSH_REMIND_PUBLISHER) ||
-                type.equals(StringUtils.PUSH_SYSTEM_FINISH)) {
-            finish();
-            MainActivity.changeViewpagerItem(1);
-        } else if (type.equals(StringUtils.PUSH_BECOME_COMFIRMER) ||
-                type.equals(StringUtils.PUSH_NOT_BECOME_COMFIRMER) ||
-                type.equals(StringUtils.PUSH_PUBLISHER_REMOVE_BILL) ||
-                type.equals(StringUtils.PUSH_FINISH_BILL)) {
-            finish();
-            MainActivity.changeViewpagerItem(2);
-        }
+    private void jump(final String type, final String billId) {
+        AVQuery<AVObject> avQuery = new AVQuery<>("Bill");
+        avQuery.getInBackground(billId, new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if (e == null) {
+                    Bill bill = new Bill();
+                    bill.setObjectId(avObject.getObjectId());
+                    bill.setPublisherPhone((String) avObject.get("publisher_phone"));
+                    bill.setAward((String) avObject.get("award"));
+                    bill.setDetail((String) avObject.get("detail"));
+                    bill.setDeadline(avObject.getLong("deadline"));
+                    bill.setAddress((String) avObject.get("address"));
+                    bill.setStatus((String) avObject.get("status"));
+                    bill.setApplicant((String) avObject.get("applicant"));
+                    bill.setConfirmer((String) avObject.get("confirmer"));
+                    bill.setNeedNum((String) avObject.get("need_num"));
+                    bill.setRobType((String) avObject.get("rob_type"));
+                    bill.setLocation((String) avObject.get("location"));
+                    bill.setAcceptDeadline((String) avObject.get("accept_deadline"));
+                    bill.setContactWay((String) avObject.get("contact_way"));
+
+                    if (type.equals(StringUtils.PUSH_BECOME_APPLICANT) ||
+                            type.equals(StringUtils.PUSH_HAVE_ROBBED) ||
+                            type.equals(StringUtils.PUSH_CONFIRMER_REMOVE_BILL) ||
+                            type.equals(StringUtils.PUSH_REMIND_PUBLISHER) ||
+                            type.equals(StringUtils.PUSH_SYSTEM_FINISH)) {
+                        Intent intent = new Intent(NotificationActivity.this, RequestDetailOfPublisher.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("bill", bill);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    } else if (type.equals(StringUtils.PUSH_BECOME_COMFIRMER) ||
+
+                            type.equals(StringUtils.PUSH_FINISH_BILL)) {
+                        Intent intent = new Intent(NotificationActivity.this, RequestDetailOfApplicanted.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("bill", bill);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    } else if (type.equals(StringUtils.PUSH_NOT_BECOME_COMFIRMER) ||
+                            type.equals(StringUtils.PUSH_PUBLISHER_REMOVE_BILL)) {
+
+                    }
+                } else {
+                    Log.e("NotifitionFindBillError", e.getMessage() + "===" + e.getCode() + "===" + billId);
+                    Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -227,28 +271,35 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
             @Override
             public void done(List<AVObject> list, AVException e) {
                 if (e == null) {
-                    JSONArray jsonArray = list.get(0).getJSONArray("notification");
-                    if (jsonArray != null) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            Notification notification = new Notification();
-                            try {
-                                JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
-                                notification.setTime((String) tempJsonObject.get("time"));
-                                notification.setContent(tempJsonObject.getString("alert"));
-                                notification.setIsRead(tempJsonObject.getBoolean("is_read"));
-                                notification.setPublisher(tempJsonObject.getString("sender"));
-                                notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-                            NotificationLab.getInstance().addNotification(notification);
+                    if (list.size() != 0) {
+                        JSONArray jsonArray = list.get(0).getJSONArray("notification");
+                        if (jsonArray != null) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Notification notification = new Notification();
+                                try {
+                                    JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
+                                    notification.setTime(tempJsonObject.get("time").toString());
+                                    notification.setContent(tempJsonObject.getString("alert"));
+                                    notification.setIsRead(tempJsonObject.getBoolean("is_read"));
+                                    notification.setPublisher(tempJsonObject.getString("sender"));
+                                    notification.setBillId(tempJsonObject.getString("bill_id"));
+                                    notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                                NotificationLab.getInstance().addNotification(notification);
 
+                            }
                         }
+                        NotificationLab.getInstance().reverseList();
+                        Message message = new Message();
+                        message.what = StringUtils.GET_NOTIFICATION_SUCCESSFULLY;
+                        mHandler.sendMessage(message);
+                    } else {
+                        Message message = new Message();
+                        message.what = StringUtils.GET_NOTIFICATION_FAILED;
+                        mHandler.sendMessage(message);
                     }
-                    NotificationLab.getInstance().reverseList();
-                    Message message = new Message();
-                    message.what = StringUtils.GET_NOTIFICATION_SUCCESSFULLY;
-                    mHandler.sendMessage(message);
                 } else {
                     Log.e("BillUtilsUserHelper", e.getMessage() + "===" + e.getCode());
                     Message message = new Message();
@@ -257,6 +308,21 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        srlBill.setRefreshing(true);
+        isRefreshing = true;
+        NotificationLab.getInstance().clearList();
+        getNotifications();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }
 

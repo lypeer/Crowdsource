@@ -139,6 +139,8 @@ public class PushUtils {
                         jsonObject.put("alert", message);
                         jsonObject.put("is_read", false);
                         jsonObject.put("time", String.valueOf(System.currentTimeMillis()));
+                        Log.e("PushUtils" , bill.getObjectId());
+                        jsonObject.put("bill_id" , bill.getObjectId());
                         size = userHelperList.size();
                         sBooleanList1 = new ArrayList<>();
                         sBooleanList2 = new ArrayList<>();

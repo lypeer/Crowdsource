@@ -94,7 +94,7 @@ public class BillUtils {
             case StringUtils.FRAGMENT_ACCEPTED_BILL:
                 //表示我报名了还没有选定的筛选条件
                 //此处存疑
-                String[] statusAccptedBill = {StringUtils.BILL_STATUS_TWO , StringUtils.BILL_STATUS_THREE, StringUtils.BILL_STATUS_FOUR};
+                String[] statusAccptedBill = {StringUtils.BILL_STATUS_TWO, StringUtils.BILL_STATUS_THREE, StringUtils.BILL_STATUS_FOUR};
                 AVQuery<AVObject> myApplicant = AVQuery.getQuery("Bill");
                 myApplicant.whereContains("applicant", User.getInstance().getUserName());
                 myApplicant.whereEqualTo("status", StringUtils.BILL_STATUS_ONE);
@@ -198,25 +198,28 @@ public class BillUtils {
             @Override
             public void done(List<AVObject> list, AVException e) {
                 if (e == null) {
-                    JSONArray jsonArray = list.get(0).getJSONArray("notification");
-                    if (jsonArray != null) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            Notification notification = new Notification();
-                            try {
-                                JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
-                                notification.setTime((String) tempJsonObject.get("time"));
-                                notification.setContent(tempJsonObject.getString("alert"));
-                                notification.setIsRead(tempJsonObject.getBoolean("is_read"));
-                                notification.setPublisher(tempJsonObject.getString("sender"));
-                                notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-                            NotificationLab.getInstance().addNotification(notification);
+                    if (list.size() != 0) {
+                        JSONArray jsonArray = list.get(0).getJSONArray("notification");
+                        if (jsonArray != null) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Notification notification = new Notification();
+                                try {
+                                    JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
+                                    notification.setTime( tempJsonObject.get("time").toString());
+                                    notification.setContent(tempJsonObject.getString("alert"));
+                                    notification.setIsRead(tempJsonObject.getBoolean("is_read"));
+                                    notification.setBillId(tempJsonObject.getString("bill_id"));
+                                    notification.setPublisher(tempJsonObject.getString("sender"));
+                                    notification.setType(PushUtils.getPushType(tempJsonObject.getString("alert")));
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                                NotificationLab.getInstance().addNotification(notification);
 
+                            }
                         }
+                        NotificationLab.getInstance().reverseList();
                     }
-                    NotificationLab.getInstance().reverseList();
                 } else {
                     Log.e("BillUtilsUserHelper", e.getMessage() + "===" + e.getCode());
                 }

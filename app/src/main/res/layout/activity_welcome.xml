@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:src="@drawable/bg_welcome"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         android:id="@+id/iv_welcome"
         android:layout_height="match_parent"/>
 </LinearLayout>

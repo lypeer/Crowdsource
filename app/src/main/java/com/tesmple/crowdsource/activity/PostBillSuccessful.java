@@ -60,11 +60,11 @@ public class PostBillSuccessful extends AppCompatActivity {
      */
     private ArrayList<String> timeList = new ArrayList<String>();
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case  StringUtils.postSuccessfully_needchangetime:
+            switch (msg.what) {
+                case StringUtils.postSuccessfully_needchangetime:
                     setDeadline();
                     break;
             }
@@ -72,8 +72,9 @@ public class PostBillSuccessful extends AppCompatActivity {
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCollector.addActivity(PostBillSuccessful.this);
         setContentView(R.layout.activity_postbillsuccessful);
         getBundleInfo();
         initView();
@@ -86,7 +87,7 @@ public class PostBillSuccessful extends AppCompatActivity {
     /**
      * 获取到bundle信息
      */
-    private void getBundleInfo(){
+    private void getBundleInfo() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         stBillDeadLine = bundle.getString(getResources().getString(R.string.billDeadLine));
@@ -95,8 +96,8 @@ public class PostBillSuccessful extends AppCompatActivity {
     /**
      * 初始化toolbar
      */
-    private void initToolbar(){
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("发布成功");
         toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
@@ -111,22 +112,22 @@ public class PostBillSuccessful extends AppCompatActivity {
     /**
      * 视图绑定
      */
-    private void initView(){
-        tvHour = (TextView)findViewById(R.id.postbillsuccessful_tv_hour);
-        tvMinute = (TextView)findViewById(R.id.postbillsuccessful_tv_minute);
-        tvSecond = (TextView)findViewById(R.id.postbillsuccessful_tv_second);
+    private void initView() {
+        tvHour = (TextView) findViewById(R.id.postbillsuccessful_tv_hour);
+        tvMinute = (TextView) findViewById(R.id.postbillsuccessful_tv_minute);
+        tvSecond = (TextView) findViewById(R.id.postbillsuccessful_tv_second);
     }
 
     /**
      * 设置倒计时信息
      */
-    private void setDeadline(){
+    private void setDeadline() {
         tvHour.setText(timeList.get(0));
         tvMinute.setText(timeList.get(1));
         tvSecond.setText(timeList.get(2));
     }
 
-    private void starDeadline(){
+    private void starDeadline() {
         Timer time = new Timer(true);
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -140,12 +141,12 @@ public class PostBillSuccessful extends AppCompatActivity {
         time.schedule(timerTask, 0, 1000);
     }
 
-    private void goBack(){
+    private void goBack() {
         Timer timer = new Timer(true);
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(PostBillSuccessful.this,MainActivity.class);
+                Intent intent = new Intent(PostBillSuccessful.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -154,8 +155,10 @@ public class PostBillSuccessful extends AppCompatActivity {
     }
 
     @Override
-    public void finish(){
-        MainActivity.changeViewpagerItem(1);
+    public void finish() {
+        if (MainActivity.vpMain  != null) {
+            MainActivity.changeViewpagerItem(1);
+        }
         super.finish();
     }
 

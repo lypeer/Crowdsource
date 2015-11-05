@@ -21,6 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
@@ -171,11 +175,22 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
                         bill.setConfirmer(User.getInstance().getUserName());
                         BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_TWO);
                         PushUtils.startPushTransaction(handler, StringUtils.PUSH_HAVE_ROBBED, bill);
+                        finish();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(getString(R.string.billDeadLine), bill.getDeadline().toString());
+                        Intent intent = new Intent(RequestDetailOfApplicant.this, RobBillSuccessfullyActivity.class);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     }//抢单模式
                     else if (bill.getRobType().equals(getString(R.string.bill_robtype_receivebillmode))){
                         Toast.makeText(App.getContext(),"报名成功！",Toast.LENGTH_LONG).show();
-                        PushUtils.startPushTransaction(handler , StringUtils.PUSH_BECOME_APPLICANT , bill);
+                        PushUtils.startPushTransaction(handler, StringUtils.PUSH_BECOME_APPLICANT, bill);
                         finish();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(getString(R.string.billDeadLine),bill.getDeadline().toString());
+                        Intent intent = new Intent(RequestDetailOfApplicant.this, ApplicantSuccessfullyActivity.class);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     }//接单模式
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
@@ -219,6 +234,7 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requestdetailofapplicant);
+        ActivityCollector.addActivity(RequestDetailOfApplicant.this);
         initView();
         getBundle();
         initToolbar();
@@ -316,8 +332,28 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
      * 设置bill详情
      */
     private void setView(){
-        sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
-        tvName.setText(bill.getPublisherName());
+        AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+        avQuery.whereEqualTo("username", bill.getPublisherPhone());
+        avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_THEN_NETWORK);
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (e == null) {
+                    bill.setPublisherName((String) list.get(0).get("nickname"));
+                    bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96));
+                    sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
+                    tvName.setText(bill.getPublisherName());
+
+                } else {
+                    Log.e("RequestDetailAppliError", e.getMessage() + "===" + e.getCode());
+                    //没有缓存数据
+                    if (e.getCode() != 120) {
+                        Snackbar.make(sdvHeadPortrait, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
+                    }
+                }
+            }
+        });
         tvSchool.setText(bill.getPublisherSchool());
         tvDetail.setText(bill.getDetail());
         tvAward.setText(bill.getAward());
@@ -410,5 +446,11 @@ public class RequestDetailOfApplicant extends AppCompatActivity {
             bill.setApplicant(bill.getApplicant() + "=" + User.getInstance().getUserName());
         }
         BillUtils.changeApplicantor(handler, bill, true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

@@ -34,7 +34,9 @@ import java.util.regex.Pattern;
 /**
  * Created by lypeer on 10/23/2015.
  */
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
+public class
+
+        NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
 
     /**
      * 建立实例的activity的context

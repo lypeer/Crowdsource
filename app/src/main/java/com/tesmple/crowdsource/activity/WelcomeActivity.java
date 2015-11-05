@@ -19,6 +19,7 @@ import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.Notification;
 import com.tesmple.crowdsource.object.NotificationLab;
 import com.tesmple.crowdsource.object.User;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.PushUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
@@ -40,6 +41,7 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        ActivityCollector.addActivity(WelcomeActivity.this);
         init();
     }
 
@@ -151,7 +153,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                                         Notification notification = new Notification();
                                                         try {
                                                             JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
-                                                            notification.setTime((String) tempJsonObject.get("time"));
+                                                            notification.setTime(tempJsonObject.get("time").toString());
                                                             notification.setContent(tempJsonObject.getString("alert"));
                                                             notification.setIsRead(tempJsonObject.getBoolean("is_read"));
                                                             notification.setPublisher(tempJsonObject.getString("sender"));
@@ -200,5 +202,11 @@ public class WelcomeActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }
