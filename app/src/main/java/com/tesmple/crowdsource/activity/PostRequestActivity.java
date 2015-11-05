@@ -1,5 +1,6 @@
 package com.tesmple.crowdsource.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -8,17 +9,15 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -27,16 +26,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 /*
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.SaveCallback;*/
 import com.gc.materialdesign.views.ButtonFlat;
-import com.gc.materialdesign.widgets.SnackBar;
 import com.tesmple.crowdsource.R;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.LabelUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
@@ -45,23 +42,17 @@ import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
+import com.tesmple.crowdsource.view.RevealBackgroundView;
 
-import org.json.JSONArray;
-
-import java.sql.Date;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * Created by ESIR on 2015/10/10.
  */
-public class PostRequestActivity extends AppCompatActivity {
+public class PostRequestActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener{
+
+    public static final String ARG_REVEAL_START_LOCATION = "reveal_start_location";
 
     /**
      *  postrequest界面的具体描述EditText
@@ -123,6 +114,8 @@ public class PostRequestActivity extends AppCompatActivity {
      */
     private ButtonRectangle postrequestBtrecPostbill;
 
+    RevealBackgroundView vRevealBackground;
+
     /**
      * 存放标签的list
      */
@@ -171,6 +164,9 @@ public class PostRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postrequest);
+        ActivityCollector.addActivity(PostRequestActivity.this);
+        setupUserProfileGrid();
+        setupRevealBackground(savedInstanceState);
         /*ArrayList<String> fuck  = TimeUtils.long2hourminutesecond(70000);*/
         initViewBind();
         initToolbar();
@@ -303,7 +299,7 @@ public class PostRequestActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 int isAdd = 1;
-                if(count == 1){
+                if (count == 1) {
                     if (s.charAt(start) == '#') {
                         if (start != 0) {
                             int selectionStart = postrequestEtBillDescription.getSelectionStart();
@@ -361,7 +357,7 @@ public class PostRequestActivity extends AppCompatActivity {
                         }
                     }
                 }
-                if(count > 1 && isUserInput == 1){
+                if (count > 1 && isUserInput == 1) {
                     int selectionStart = postrequestEtBillDescription.getSelectionStart();
                     int lastPos = 0;
                     String temp = postrequestEtBillDescription.getText().toString();
@@ -388,6 +384,7 @@ public class PostRequestActivity extends AppCompatActivity {
      * 初始化视图依赖
      */
     private void initViewBind(){
+
         postrequestEtBillDescription = (EditText)findViewById(R.id.postrequest_et_billdescription);
         postrequestLiBillDescription = (LinearLayout)findViewById(R.id.postrequest_li_billdescription);
         postrequestLiBillDescription.requestFocus();
@@ -580,5 +577,61 @@ public class PostRequestActivity extends AppCompatActivity {
             checkReplyInApp = 1;
         }
         return String.valueOf(checkPhone) + String.valueOf(checkMessage) + String.valueOf(checkReplyInApp);
+    }
+
+    public static void startUserProfileFromLocation(int[] startingLocation, Activity startingActivity) {
+        Intent intent = new Intent(startingActivity, PostRequestActivity.class);
+        intent.putExtra(ARG_REVEAL_START_LOCATION, startingLocation);
+        startingActivity.startActivity(intent);
+    }
+
+    private void setupRevealBackground(Bundle savedInstanceState) {
+        vRevealBackground = (RevealBackgroundView)findViewById(R.id.rbv_round);
+
+        vRevealBackground.setOnStateChangeListener(this);
+        if (savedInstanceState == null) {
+            final int[] startingLocation = getIntent().getIntArrayExtra(ARG_REVEAL_START_LOCATION);
+            vRevealBackground.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    vRevealBackground.getViewTreeObserver().removeOnPreDrawListener(this);
+                    vRevealBackground.startFromLocation(startingLocation);
+                    return false;
+                }
+            });
+        } else {
+//            userPhotosAdapter.setLockedAnimations(true);
+            vRevealBackground.setToFinishedFrame();
+        }
+    }
+
+    private void setupUserProfileGrid() {
+        final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+//        rvUserProfile.setLayoutManager(layoutManager);
+//        rvUserProfile.setOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                userPhotosAdapter.setLockedAnimations(true);
+//            }
+//        });
+    }
+
+    @Override
+    public void onStateChange(int state) {
+        if (RevealBackgroundView.STATE_FINISHED == state) {
+            findViewById(R.id.post_sv_main).setVisibility(View.VISIBLE);
+            findViewById(R.id.rbv_round).setVisibility(View.INVISIBLE);
+//            userPhotosAdapter = new UserProfileAdapter(this);
+//            rvUserProfile.setAdapter(userPhotosAdapter);
+        } else {
+            findViewById(R.id.rbv_round).setAlpha(1.0f);
+            findViewById(R.id.post_sv_main).setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

@@ -26,9 +26,22 @@ public class Notification {
     private String content;
 
     /**
+     * bill的objectid
+     */
+    private String billId;
+
+    /**
      * 用户是否已读这条通知，如果已读就为true，如果未读就为false
      */
     private boolean isRead;
+
+    public String getBillId() {
+        return billId;
+    }
+
+    public void setBillId(String billId) {
+        this.billId = billId;
+    }
 
     public boolean isRead() {
         return isRead;

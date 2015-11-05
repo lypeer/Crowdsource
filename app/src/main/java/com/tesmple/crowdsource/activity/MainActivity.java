@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * 主界面的viewpager
      */
-    private static ViewPager vpMain;
+    public static ViewPager vpMain;
 
     /**
      * 装viewpager的每一个界面的list
@@ -144,12 +145,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void init() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.clearAnimation();
+        fab.cancelLongPress();
+        fab.setAnimation(null);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, PostRequestActivity.class);
-                startActivity(intent);
-                NotificationLab.getInstance().addNotification(new Notification());
+            public void onClick(final View view) {
+
+                int[] startingLocation = new int[2];
+                view.getLocationOnScreen(startingLocation);
+                startingLocation[0] += view.getWidth() / 2;
+                PostRequestActivity.startUserProfileFromLocation(startingLocation, MainActivity.this);
+                overridePendingTransition(0, 0);
+//                Intent intent = new Intent(MainActivity.this, PostRequestActivity.class);
+//                startActivity(intent);
+//                NotificationLab.getInstance().addNotification(new Notification());
             }
         });
 
@@ -221,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * 检查新版本的方法
      */
-    private void checkForNewVersion(){
+    private void checkForNewVersion() {
         FIR.checkForUpdateInFIR("a317113b67b6856ebbcf9dc4745aae21", new VersionCheckCallback() {
             @Override
             public void onSuccess(AppVersion appVersion, boolean b) {
@@ -238,13 +248,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onFail(String s, int i) {
-                Snackbar.make(tvName , R.string.error_someting_worng , Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(tvName, R.string.error_someting_worng, Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e("CheckNewVersionError" , e.getMessage() + "===" + e.getCause());
-                Snackbar.make(tvName , R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
+                Log.e("CheckNewVersionError", e.getMessage() + "===" + e.getCause());
+                Snackbar.make(tvName, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
@@ -262,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * 显示关于版本号的dialog
      */
-    private void showVersionDialog(){
+    private void showVersionDialog() {
         new AlertDialog.Builder(this).setTitle(R.string.title_remind)
                 .setMessage(R.string.prompt_new_version_now)
                 .setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
@@ -275,10 +285,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * 显示有新版本的方法
+     *
      * @param updateLog 新版本打印的log
-     * @param url 下载新版本的url
+     * @param url       下载新版本的url
      */
-    private void showNewVersionDialog(String updateLog , final String url){
+    private void showNewVersionDialog(String updateLog, final String url) {
         new AlertDialog.Builder(this).setTitle(R.string.title_have_new_version)
                 .setMessage(updateLog)
                 .setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
@@ -328,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (NotificationLab.getInstance().isExistNotRead()) {
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_new_notification);
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_new_24dp);
@@ -336,11 +347,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_notification);
             toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         }
-        try {
-            navigationView.getMenu().getItem(4).setTitle(getString(R.string.prompt_versoin) + "\t(" + getVersionName() + ")");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        FIR.checkForUpdateInFIR("a317113b67b6856ebbcf9dc4745aae21", new VersionCheckCallback() {
+            @Override
+            public void onSuccess(AppVersion appVersion, boolean b) {
+                try {
+                    if (!appVersion.getVersionName().equals(getVersionName())) {
+                        navigationView.getMenu().getItem(4).setTitle(getString(R.string.prompt_versoin) + getVersionName() +
+                                "\t\t(有新版本)");
+                        toolbar.setNavigationIcon(R.drawable.ic_menu_white_new_24dp);
+                    } else {
+                        navigationView.getMenu().getItem(4).setTitle(getString(R.string.prompt_versoin) + "\t(" + getVersionName() + ")");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail(String s, int i) {
+                try {
+                    navigationView.getMenu().getItem(4).setTitle(getString(R.string.prompt_versoin) + "\t(" + getVersionName() + ")");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("CheckNewVersionError", e.getMessage() + "===" + e.getCause());
+                try {
+                    navigationView.getMenu().getItem(4).setTitle(getString(R.string.prompt_versoin) + "\t(" + getVersionName() + ")");
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
 
         sdvHeadPortrait.setImageURI(Uri.parse(AVUser.getCurrentUser().getAVFile("head_portrait").getUrl()));
         tvName.setText(AVUser.getCurrentUser().get("nickname").toString());
@@ -349,15 +401,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * 获得版本号的方法
-     * @return  当前应用的版本号
+     *
+     * @return 当前应用的版本号
      * @throws Exception
      */
     private String getVersionName() throws Exception {
         // 获取packagemanager的实例
         PackageManager packageManager = getPackageManager();
         // getPackageName()是你当前类的包名，0代表是获取版本信息
-        PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(),0);
+        PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(), 0);
         String version = packInfo.versionName;
         return version;
     }
+
 }

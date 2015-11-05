@@ -67,6 +67,7 @@ public class ConfirmSuccessfullyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_successfully);
+        ActivityCollector.addActivity(ConfirmSuccessfullyActivity.this);
         getBundleInfo();
         initView();
         initToolbar();

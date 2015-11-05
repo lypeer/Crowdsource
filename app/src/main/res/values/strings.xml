@@ -100,7 +100,7 @@
     <string name="accepted_bill">已抢订单</string>
     <string name="test_name">loading..</string>
     <string name="test_actioning">进行中</string>
-    <string name="test_bill_detail">帮忙#占座#，#大物讲座#，#A308#帮忙#占座#，#大物讲座#，#A308#帮忙#占座#，#大物讲座#，#A308#</string>
+    <string name="test_bill_detail">#抢#帮忙#占座#，#大物讲座#，#A308#帮忙#占座#，#大物讲座#，#A308#帮忙#占座#，#大物讲座#，#A308#</string>
     <string name="rmb">¥</string>
     <string name="test_award">1</string>
     <string name="prompt_look_detail">\t查看详情\t</string>
@@ -182,6 +182,10 @@
     <string name="system_detail0">还没有接单，快去接个单吧~</string>
     <string name="title_have_new_version">有新版本！</string>
     <string name="error_someting_worng">服务器开小差了，请稍后再试！</string>
+    <string name="prompt_applicant_successfully">报名成功啦！\n对方选择后我们会通知你！</string>
+    <string name="prompt_applicant_successflly">报名成功</string>
+    <string name="prompt_to_my_bill">\t\t前往我的订单\t\t</string>
+    <string name="prompt_rob_bill_successfully">抢单成功！\n快去完成任务吧！</string>
 
     <array name="get_photo_type">
         <item>拍照</item>

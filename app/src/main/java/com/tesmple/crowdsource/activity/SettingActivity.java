@@ -28,6 +28,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.User;
+import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 
 import java.io.File;
@@ -83,6 +84,7 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        ActivityCollector.addActivity(SettingActivity.this);
         initToolBar();
         init();
     }
@@ -292,6 +294,7 @@ public class SettingActivity extends AppCompatActivity {
         if (mOutputImage.exists()) {
             mOutputImage.delete();
         }
+            ActivityCollector.removeActivity(this);
         super.onDestroy();
     }
 

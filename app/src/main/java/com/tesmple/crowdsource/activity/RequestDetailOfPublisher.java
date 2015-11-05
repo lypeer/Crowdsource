@@ -23,6 +23,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVUser;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gc.materialdesign.views.ButtonFlat;
 import com.tesmple.crowdsource.R;
@@ -211,6 +212,7 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requestdetailofpublisher);
+        ActivityCollector.addActivity(RequestDetailOfPublisher.this);
         initView();
         getBundle();
         initToolbar();
@@ -364,8 +366,8 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
      * 设置bill详情
      */
     private void setView(){
-        sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
-        tvName.setText(bill.getPublisherName());
+        sdvHeadPortrait.setImageURI(Uri.parse(AVUser.getCurrentUser().getAVFile("head_portrait").getUrl()));
+        tvName.setText(AVUser.getCurrentUser().get("nickname").toString());
         tvSchool.setText(bill.getPublisherSchool());
         tvStatus.setText(bill.getStatus());
         tvDetail.setText(bill.getDetail());
@@ -396,20 +398,21 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
         btrCancelBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(tvHour.getText().equals("0") && tvMinute.getText().equals("0") && tvMinute.getText().equals("0")){
+                if (tvHour.getText().equals("0") && tvMinute.getText().equals("0") && tvMinute.getText().equals("0")) {
                     new AlertDialog.Builder(RequestDetailOfPublisher.this).setTitle(R.string.prompt_remind)
                             .setMessage("完成当前到期任务吗？如果选择未完成请及时与接单者联系")
                             .setPositiveButton("完成", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            attempCompliteBill();
-                        }})
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    attempCompliteBill();
+                                }
+                            })
                             .setNegativeButton("未完成", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            attempCancelBill();
-                        }
-                    }).
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    attempCancelBill();
+                                }
+                            }).
                             setNeutralButton("取消", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -417,14 +420,15 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
                                 }
                             })
                             .show();
-                }else {
+                } else {
                     new AlertDialog.Builder(RequestDetailOfPublisher.this).setTitle(R.string.prompt_remind)
                             .setMessage("完成当前任务吗？")
                             .setPositiveButton("完成", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     attempCompliteBill();
-                                }})
+                                }
+                            })
                             .setNeutralButton("取消", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -522,5 +526,11 @@ public class RequestDetailOfPublisher extends AppCompatActivity {
     private void attempCompliteBill(){
         bill.setStatus(StringUtils.BILL_STATUS_THREE);
         BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_THREE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }
