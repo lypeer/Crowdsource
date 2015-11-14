@@ -234,6 +234,11 @@ public class StringUtils {
     public static final String PUSH_SYSTEM_FINISH = "push_system_finish";
 
     /**
+     * 表示订单超时没有人报名或者没有确认接单者时自动将单变成未完成的推送
+     */
+    public static final String PUSH_BILL_USELESS = "push_bill_useless";
+
+    /**
      * 一分钟的毫秒值
      */
     public static final long ONE_MINUTE = 60 * 1000;

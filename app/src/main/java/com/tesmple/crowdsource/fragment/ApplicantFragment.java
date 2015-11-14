@@ -24,6 +24,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.App;
 import com.tesmple.crowdsource.activity.ConfirmSuccessfullyActivity;
@@ -123,7 +124,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
         srlApplicant = (SwipeRefreshLayout) rootView.findViewById(R.id.applicant_srl_applicant);
         rvApplicant = (RecyclerView) rootView.findViewById(R.id.applicant_rv_applicant);
 
-        applicantAdapter = new ApplicantAdapter(getActivity(), applicantList,bill);
+        applicantAdapter = new ApplicantAdapter(getActivity(), applicantList, bill);
 
         rvApplicant.setAdapter(applicantAdapter);
         rvApplicant.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -135,7 +136,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
         applicantList.clear();
         setApplicantList();
 
-        if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+        if (bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)) {
             applicantAdapter.setOnItemClickListener(new ApplicantAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v, int position) {
@@ -147,7 +148,7 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
 
                 }
             });
-        }else if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
+        } else if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)) {
             applicantAdapter.setOnItemClickListener(null);
         }
 
@@ -164,66 +165,82 @@ public class ApplicantFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     private void setApplicantList() {
-        if (bill.getApplicant() == null) {
+        AVQuery<AVObject> avQuery = new AVQuery<>("Bill");
+        avQuery.getInBackground(bill.getObjectId(), new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if( e== null){
+                    if (bill.getApplicant() == null) {
 
-        } else if (!bill.getApplicant().contains("=")) {
-            //final Applicant applicant = new Applicant();
-            AVQuery<AVObject> avQuery = new AVQuery<>("_User");
-            avQuery.whereEqualTo("username", bill.getApplicant());
-            avQuery.findInBackground(new FindCallback<AVObject>() {
-                @Override
-                public void done(List<AVObject> list, AVException e) {
-                    if (e == null) {
-                        if (list.size() != 0) {
-                            Applicant applicant = new Applicant();
-                            applicant.setUsername(list.get(0).get("username").toString());
-                            applicant.setApplicantName(list.get(0).get("nickname").toString());
-                            applicant.setApplicantSchool(list.get(0).get("department").toString());
-                            applicant.setApplicantHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
-                            applicant.setApplicantIsChecked(true);
-                            applicantList.add(applicant);
-                            Log.i("applicantlist", String.valueOf(applicantList.size()));
-                            srlApplicant.setRefreshing(false);
-                            isRefreshing = false;
-                            applicantAdapter.refresh(applicantList);
-                        }
-                    } else {
-                        Log.i("e1", e.getMessage());
-                    }
-                }
-            });
-        } else {
-            final String[] tempList = bill.getApplicant().split("=");
-            for (int i = 0; i < tempList.length; i++) {
-                AVQuery<AVObject> avQuery = new AVQuery<>("_User");
-                avQuery.whereEqualTo("username", tempList[i]);
-                avQuery.findInBackground(new FindCallback<AVObject>() {
-                    @Override
-                    public void done(List<AVObject> list, AVException e) {
-                        if (e == null) {
-                            Applicant applicant = new Applicant();
-                            applicant.setUsername(list.get(0).get("username").toString());
-                            applicant.setApplicantName(list.get(0).get("nickname").toString());
-                            applicant.setApplicantSchool(list.get(0).get("department").toString());
-                            applicant.setApplicantHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
-                            Log.i("checklinfo", bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) + " " + applicant.getUsername() + " " + bill.getConfirmer());
-                            if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) && applicant.getUsername().equals(bill.getConfirmer())){
-                                applicant.setApplicantIsChecked(true);
-                            }else {
-                                applicant.setApplicantIsChecked(false);
+                    } else if (!bill.getApplicant().contains("=")) {
+                        //final Applicant applicant = new Applicant();
+                        AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+                        avQuery.whereEqualTo("username", bill.getApplicant());
+                        avQuery.findInBackground(new FindCallback<AVObject>() {
+                            @Override
+                            public void done(List<AVObject> list, AVException e) {
+                                if (e == null) {
+                                    if (list.size() != 0) {
+                                        Applicant applicant = new Applicant();
+                                        applicant.setUsername(list.get(0).get("username").toString());
+                                        applicant.setApplicantName(list.get(0).get("nickname").toString());
+                                        applicant.setApplicantSchool(list.get(0).get("department").toString());
+                                        applicant.setApplicantHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
+                                        if (bill.getConfirmer() == null || bill.getConfirmer().equals("")) {
+                                            applicant.setApplicantIsChecked(false);
+                                        }else {
+                                            applicant.setApplicantIsChecked(true);
+                                        }
+                                        applicantList.add(applicant);
+                                        Log.i("applicantlist", String.valueOf(applicantList.size()));
+                                        srlApplicant.setRefreshing(false);
+                                        isRefreshing = false;
+                                        applicantAdapter.refresh(applicantList);
+                                    }
+                                } else {
+                                    Log.i("e1", e.getMessage());
+                                }
                             }
-                            applicantList.add(applicant);
-                            srlApplicant.setRefreshing(false);
-                            isRefreshing = false;
-                            applicantAdapter.refresh(applicantList);
-                            Log.i("applicantlist", String.valueOf(applicantList.size()));
-                        } else {
-                            Log.i("e2", e.getMessage());
+                        });
+                    } else {
+                        final String[] tempList = bill.getApplicant().split("=");
+                        for (int i = 0; i < tempList.length; i++) {
+                            AVQuery<AVObject> avQuery = new AVQuery<>("_User");
+                            avQuery.whereEqualTo("username", tempList[i]);
+                            avQuery.findInBackground(new FindCallback<AVObject>() {
+                                @Override
+                                public void done(List<AVObject> list, AVException e) {
+                                    if (e == null) {
+                                        Applicant applicant = new Applicant();
+                                        applicant.setUsername(list.get(0).get("username").toString());
+                                        applicant.setApplicantName(list.get(0).get("nickname").toString());
+                                        applicant.setApplicantSchool(list.get(0).get("department").toString());
+                                        applicant.setApplicantHeadPortrait(list.get(0).getAVFile("head_portrait").getUrl());
+                                        Log.i("checklinfo", bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) + " " + applicant.getUsername() + " " + bill.getConfirmer());
+                                        if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO) && applicant.getUsername().equals(bill.getConfirmer())) {
+                                            applicant.setApplicantIsChecked(true);
+                                        } else {
+                                            applicant.setApplicantIsChecked(false);
+                                        }
+                                        applicantList.add(applicant);
+                                        srlApplicant.setRefreshing(false);
+                                        isRefreshing = false;
+                                        applicantAdapter.refresh(applicantList);
+                                        Log.i("applicantlist", String.valueOf(applicantList.size()));
+                                    } else {
+                                        Log.e("e2", e.getMessage());
+                                    }
+                                }
+                            });
                         }
                     }
-                });
+                }else {
+                    Log.e("ApplicantFragmentError" , e.getMessage() + "===" + e.getCode());
+                    Snackbar.make(rvApplicant , R.string.please_check_your_network , Snackbar.LENGTH_SHORT).show();
+                }
             }
-        }
+        });
+
     }
 
     /**

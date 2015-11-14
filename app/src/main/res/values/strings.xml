@@ -186,6 +186,18 @@
     <string name="prompt_applicant_successflly">报名成功</string>
     <string name="prompt_to_my_bill">\t\t前往我的订单\t\t</string>
     <string name="prompt_rob_bill_successfully">抢单成功！\n快去完成任务吧！</string>
+    <string name="have_finish_bill">任务完成啦？别忘了支付报酬哦~</string>
+    <string name="prompt_confirmer_remove_bill">不好意思，临时有事\n无法完成你的订单了*_*</string>
+    <string name="prompt_to_publish">\t\t重新发单\t\t</string>
+    <string name="prompt_to_rob_bill">\t\t还是不了\t\t</string>
+    <string name="prompt_delate_successfully">删除成功！</string>
+    <string name="prompt_check_all_have_read">全部标为已读？</string>
+    <string name="prompt_check_all_read_successfully">成功标为已读！</string>
+    <string name="prompt_bill_useless">由于截止时间前没有人报名或未作出选择，该任务已无效</string>
+    <string name="system">system</string>
+    <string name="prompt_input_zhengshu">¥ >=0</string>
+    <string name="prompt_not_open">此功能暂未开放！</string>
+    <string name="prompt_try_again">出了点问题，请重试！</string>
 
     <array name="get_photo_type">
         <item>拍照</item>

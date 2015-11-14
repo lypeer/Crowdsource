@@ -15,6 +15,7 @@ import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import org.w3c.dom.Text;
 
@@ -166,5 +167,14 @@ public class PostBillSuccessful extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

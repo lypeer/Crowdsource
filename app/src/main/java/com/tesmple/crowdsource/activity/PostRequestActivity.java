@@ -1,5 +1,7 @@
 package com.tesmple.crowdsource.activity;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -18,6 +20,11 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -43,6 +50,7 @@ import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.RevealBackgroundView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,12 +58,12 @@ import java.util.Calendar;
 /**
  * Created by ESIR on 2015/10/10.
  */
-public class PostRequestActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener{
+public class PostRequestActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener {
 
     public static final String ARG_REVEAL_START_LOCATION = "reveal_start_location";
 
     /**
-     *  postrequest界面的具体描述EditText
+     * postrequest界面的具体描述EditText
      */
     private EditText postrequestEtBillDescription;
 
@@ -141,32 +149,40 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
      */
     private Bill newBill;
 
-    public final android.os.Handler handler = new android.os.Handler(){
-      public void handleMessage(Message msg){
-          switch (msg.what){
-              case StringUtils.POST_REQUEST_SUCCESSFULLY:
-                  BillUtils.getBillsList(StringUtils.FRAGMENT_MY_PUBLISH).add(newBill);
-                  Bundle bundle = new Bundle();
-                  bundle.putString(getString(R.string.billDeadLine),newBill.getDeadline().toString());
-                  Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
-                  intent.putExtras(bundle);
-                  startActivity(intent);
-                  finish();
-                  break;
-              case StringUtils.POST_REQUEST_FAILED:
-                  Snackbar.make(postrequestBtrecPostbill,"发送失败",Snackbar.LENGTH_LONG).show();
-                  break;
-          }
-      }
+    /**
+     * 用户以前的单
+     */
+    private Bill oldBill;
+
+    public final android.os.Handler handler = new android.os.Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case StringUtils.POST_REQUEST_SUCCESSFULLY:
+                    BillUtils.getBillsList(StringUtils.FRAGMENT_MY_PUBLISH).add(newBill);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(getString(R.string.billDeadLine), newBill.getDeadline().toString());
+                    Intent intent = new Intent(PostRequestActivity.this, PostBillSuccessful.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    finish();
+                    break;
+                case StringUtils.POST_REQUEST_FAILED:
+                    Snackbar.make(postrequestBtrecPostbill, "发送失败", Snackbar.LENGTH_LONG).show();
+                    break;
+            }
+        }
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkIntent();
+
         setContentView(R.layout.activity_postrequest);
         ActivityCollector.addActivity(PostRequestActivity.this);
-        setupUserProfileGrid();
-        setupRevealBackground(savedInstanceState);
+        if (oldBill == null) {
+            setupRevealBackground(savedInstanceState);
+        }
         /*ArrayList<String> fuck  = TimeUtils.long2hourminutesecond(70000);*/
         initViewBind();
         initToolbar();
@@ -177,12 +193,51 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
         setDatePicker();
         setTimePicker();
         setButtons();
+
+        if (oldBill != null) {
+            initData();
+        }
+    }
+
+    /**
+     * 检查intent来的信息
+     */
+    private void checkIntent() {
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            oldBill = (Bill) bundle.getSerializable("bill");
+        }
+    }
+
+    /**
+     * 如果那啥的话就初始化值
+     */
+    private void initData() {
+        postrequestEtBillDescription.setText(oldBill.getDetail());
+        if (oldBill.getContactWay().toCharArray()[0] != '1') {
+            postrequestCbPhone.setChecked(false);
+        }
+        if (((int) oldBill.getContactWay().toCharArray()[1]) != '1') {
+            postrequestCbMessage.setChecked(false);
+        }
+        if (((int) oldBill.getContactWay().toCharArray()[2]) != '1') {
+            postrequestCbReplyinapp.setChecked(false);
+        }
+        postrequestEtAward.setText(oldBill.getAward());
+        if (oldBill.getRobType().equals(getString(R.string.bill_robtype_grabbillmode))) {
+            postrequestRbGrabbillmode.setChecked(true);
+            postrequestRbReceivebillmode.setChecked(false);
+        } else {
+            postrequestRbGrabbillmode.setChecked(false);
+            postrequestRbReceivebillmode.setChecked(true);
+        }
     }
 
     /**
      * 设置date选择监听
      */
-    private void setDatePicker(){
+    private void setDatePicker() {
         postrequestBtflatDatepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,7 +266,7 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
     /**
      * 设置time选择监听
      */
-    private void setTimePicker(){
+    private void setTimePicker() {
         postrequestBtflatTimepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -232,7 +287,7 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
     /**
      * 限制支付奖励的数值为两位小数
      */
-    private void setAwardEditText(){
+    private void setAwardEditText() {
         postrequestEtAward.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -258,7 +313,7 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
     /**
      * 设置描述界面的添加标签能力
      */
-    private void setDescriptionEditText(){
+    private void setDescriptionEditText() {
         postrequestEtBillDescription.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -268,7 +323,7 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
                     for (int i = 0; i < labelUtilses.size(); i++) { //循环遍历所有标签
                         if ((lastPos = postrequestEtBillDescription.getText().toString().indexOf(labelUtilses.get(i).getLabelName(), 0)) != -1) {
                             if ((selectionStart != 0) && (selectionStart == lastPos + 1 || selectionStart == (lastPos + labelUtilses.get(i).getLabelName().length()))) {
-                                Log.i("label",labelUtilses.get(i).getLabelName().length()+" "+labelUtilses.get(i).getLabelName().toString());
+                                Log.i("label", labelUtilses.get(i).getLabelName().length() + " " + labelUtilses.get(i).getLabelName().toString());
                                 String sss = postrequestEtBillDescription.getText().toString();
                                 postrequestEtBillDescription.setText(sss.substring(0, lastPos) + sss.substring(lastPos + labelUtilses.get(i).getLabelName().length())); //字符串替换，删掉符合条件的字符串
                                 labelUtilses.remove(i); //删除对应实体
@@ -276,11 +331,11 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
                                 return true;
                             } else if ((selectionStart != 0) && (selectionStart > (lastPos + 1) && selectionStart < (lastPos + labelUtilses.get(i).getLabelName().length()))) {
                                 String temp = labelUtilses.get(i).getLabelName();
-                                temp = temp.substring(0, selectionStart - lastPos - 1) + temp.substring(selectionStart-lastPos);/*, temp.length()-selectionStart);*/
+                                temp = temp.substring(0, selectionStart - lastPos - 1) + temp.substring(selectionStart - lastPos);/*, temp.length()-selectionStart);*/
                                 labelUtilses.get(i).setLabelName(temp);
                                 String sss = postrequestEtBillDescription.getText().toString();
                                 postrequestEtBillDescription.setText(sss.substring(0, lastPos) + temp + sss.substring(lastPos + labelUtilses.get(i).getLabelName().length() + 1)); //字符串替换，删掉符合条件的字符串
-                                postrequestEtBillDescription.setSelection(selectionStart-1);
+                                postrequestEtBillDescription.setSelection(selectionStart - 1);
                                 return true;
                             }
                         }
@@ -383,25 +438,25 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
     /**
      * 初始化视图依赖
      */
-    private void initViewBind(){
+    private void initViewBind() {
 
-        postrequestEtBillDescription = (EditText)findViewById(R.id.postrequest_et_billdescription);
-        postrequestLiBillDescription = (LinearLayout)findViewById(R.id.postrequest_li_billdescription);
+        postrequestEtBillDescription = (EditText) findViewById(R.id.postrequest_et_billdescription);
+        postrequestLiBillDescription = (LinearLayout) findViewById(R.id.postrequest_li_billdescription);
         postrequestLiBillDescription.requestFocus();
-        postrequestBtflatDatepicker = (ButtonFlat)findViewById(R.id.postrequest_btflat_datepicker);
-        postrequestBtflatTimepicker = (ButtonFlat)findViewById(R.id.postrequest_btflat_timepicker);
+        postrequestBtflatDatepicker = (ButtonFlat) findViewById(R.id.postrequest_btflat_datepicker);
+        postrequestBtflatTimepicker = (ButtonFlat) findViewById(R.id.postrequest_btflat_timepicker);
 
-        postrequestCbPhone = (CheckBox)findViewById(R.id.postrequest_cb_phone);
-        postrequestCbMessage = (CheckBox)findViewById(R.id.postrequest_cb_message);
-        postrequestCbReplyinapp = (CheckBox)findViewById(R.id.postrequest_cb_replyinapp);
+        postrequestCbPhone = (CheckBox) findViewById(R.id.postrequest_cb_phone);
+        postrequestCbMessage = (CheckBox) findViewById(R.id.postrequest_cb_message);
+        postrequestCbReplyinapp = (CheckBox) findViewById(R.id.postrequest_cb_replyinapp);
 
-        postrequestEtAward = (AutoCompleteTextView)findViewById(R.id.postrequest_et_award);
+        postrequestEtAward = (AutoCompleteTextView) findViewById(R.id.postrequest_et_award);
 
-        postrequestRgBillmode = (RadioGroup)findViewById(R.id.postrequest_rg_billmode);
-        postrequestRbGrabbillmode = (RadioButton)findViewById(R.id.postrequest_rb_grabbillmode);
-        postrequestRbReceivebillmode = (RadioButton)findViewById(R.id.postrequest_rb_receivebillmode);
+        postrequestRgBillmode = (RadioGroup) findViewById(R.id.postrequest_rg_billmode);
+        postrequestRbGrabbillmode = (RadioButton) findViewById(R.id.postrequest_rb_grabbillmode);
+        postrequestRbReceivebillmode = (RadioButton) findViewById(R.id.postrequest_rb_receivebillmode);
 
-        postrequestCbPhone = (CheckBox)findViewById(R.id.postrequest_cb_phone);
+        postrequestCbPhone = (CheckBox) findViewById(R.id.postrequest_cb_phone);
         postrequestCbMessage = (CheckBox) findViewById(R.id.postrequest_cb_message);
         postrequestCbReplyinapp = (CheckBox) findViewById(R.id.postrequest_cb_replyinapp);
 
@@ -412,9 +467,10 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
 
     /**
      * 当滑动事件冲突的时候拦截parent的方法
-     * @param editText  目标edittext
+     *
+     * @param editText 目标edittext
      */
-    public static void stopParentScroll(EditText editText){
+    public static void stopParentScroll(EditText editText) {
         editText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -432,8 +488,8 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
     /**
      * 初始化toolbar
      */
-    private void initToolbar(){
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("发布请求");
         toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
@@ -448,17 +504,17 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
     /**
      * 初始化RadioGroup,预选
      */
-    private void initRadioGroup(){
+    private void initRadioGroup() {
         postrequestRgBillmode.check(postrequestRbGrabbillmode.getId());
     }
 
     /**
      * 初始化日期时间按钮
      */
-    private void initDateAndTimeButton(){
+    private void initDateAndTimeButton() {
         String stYear, stMonth, stDay;
         stYear = String.valueOf(TimeUtils.getNowYear());
-        stMonth = String.valueOf((TimeUtils.getNowMonth() < 10) ? "0" + (TimeUtils.getNowMonth() ) : TimeUtils.getNowMonth() );
+        stMonth = String.valueOf((TimeUtils.getNowMonth() < 10) ? "0" + (TimeUtils.getNowMonth()) : TimeUtils.getNowMonth());
         stDay = String.valueOf((TimeUtils.getNowDay() < 10) ? "0" + TimeUtils.getNowDay() : TimeUtils.getNowDay());
         postrequestBtflatDatepicker.setText(stYear + "-" + stMonth + "-" + stDay);
 
@@ -492,37 +548,37 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
     /**
      * 尝试发布订单
      */
-    private void attempPostBill(){
+    private void attempPostBill() {
         String award = postrequestEtAward.getText().toString();
-        String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText()+":00";
-        if (!EditTextUtils.isNumber(award) || EditTextUtils.isEmpty(award)){
-            Snackbar.make(postrequestBtrecPostbill, R.string.please_input_right_award,Snackbar.LENGTH_LONG).show();
+        String deadline = postrequestBtflatDatepicker.getText() + " " + postrequestBtflatTimepicker.getText() + ":00";
+        if (!EditTextUtils.isNumber(award) || EditTextUtils.isEmpty(award)) {
+            Snackbar.make(postrequestBtrecPostbill, R.string.please_input_right_award, Snackbar.LENGTH_LONG).show();
             return;
         }
-        if (EditTextUtils.isEmpty(postrequestEtBillDescription.getText().toString())){
-            Snackbar.make(postrequestBtrecPostbill, R.string.bill_description_cannot_be_empty,Snackbar.LENGTH_LONG).show();
+        if (EditTextUtils.isEmpty(postrequestEtBillDescription.getText().toString())) {
+            Snackbar.make(postrequestBtrecPostbill, R.string.bill_description_cannot_be_empty, Snackbar.LENGTH_LONG).show();
             return;
         }
         java.util.Date tempDate = TimeUtils.strToDateLong(deadline);
         Long longTempTime = TimeUtils.dateToLong(tempDate);
-        if (longTempTime - System.currentTimeMillis() <= 0){
-            Snackbar.make(postrequestBtrecPostbill,"截止时间不可以是过去时哦(＞﹏＜)",Snackbar.LENGTH_LONG).show();
+        if (longTempTime - System.currentTimeMillis() <= 0) {
+            Snackbar.make(postrequestBtrecPostbill, "截止时间不可以是过去时哦(＞﹏＜)", Snackbar.LENGTH_LONG).show();
             return;
         }
-        if (longTempTime - System.currentTimeMillis() <= 5 * 60 * 1000){
-            Snackbar.make(postrequestBtrecPostbill,"截止时间小于5分钟哦，发布失败(＞﹏＜)",Snackbar.LENGTH_LONG).show();
+        if (longTempTime - System.currentTimeMillis() <= 5 * 60 * 1000) {
+            Snackbar.make(postrequestBtrecPostbill, "截止时间小于5分钟哦，发布失败(＞﹏＜)", Snackbar.LENGTH_LONG).show();
             return;
         }
-        if (longTempTime - System.currentTimeMillis() >= 72 * 60 * 60 *1000){
-            Snackbar.make(postrequestBtrecPostbill,"截止时间超过72小时啦，发布失败(＞﹏＜)",Snackbar.LENGTH_LONG).show();
+        if (longTempTime - System.currentTimeMillis() >= 72 * 60 * 60 * 1000) {
+            Snackbar.make(postrequestBtrecPostbill, "截止时间超过72小时啦，发布失败(＞﹏＜)", Snackbar.LENGTH_LONG).show();
             return;
         }
-        if (EditTextUtils.isEmpty(postrequestEtBillDescription.getText().toString())){
-            Snackbar.make(postrequestBtrecPostbill,"具体描述不可以为空",Snackbar.LENGTH_LONG).show();
+        if (EditTextUtils.isEmpty(postrequestEtBillDescription.getText().toString())) {
+            Snackbar.make(postrequestBtrecPostbill, "具体描述不可以为空", Snackbar.LENGTH_LONG).show();
             return;
         }
-        if (getContactWay().equals("000")){
-            Snackbar.make(postrequestBtrecPostbill,"请选择至少一种联系途径",Snackbar.LENGTH_LONG).show();
+        if (getContactWay().equals("000")) {
+            Snackbar.make(postrequestBtrecPostbill, "请选择至少一种联系途径", Snackbar.LENGTH_LONG).show();
             return;
         }
 
@@ -542,15 +598,15 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
         newBill.setLocation("");
         newBill.setAcceptDeadline("");
         newBill.setContactWay(getContactWay());
-        BillUtils. publishBill(handler , newBill);
+        BillUtils.publishBill(handler, newBill);
     }
 
     /**
      * 获得订单模式
      * 返回"抢单模式"或"接单模式"
      */
-    private String getRobtype(){
-        switch (postrequestRgBillmode.getCheckedRadioButtonId()){
+    private String getRobtype() {
+        switch (postrequestRgBillmode.getCheckedRadioButtonId()) {
             case R.id.postrequest_rb_grabbillmode:
                 return getString(R.string.bill_robtype_grabbillmode);
             case R.id.postrequest_rb_receivebillmode:
@@ -565,15 +621,15 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
      * 获得联系方式选择框的结果
      * 返回一个3位二进制数字字符串，从高到低依次为电话、短信、站内信方式的布尔值
      */
-    private String getContactWay(){
-        int checkPhone = 0,checkMessage = 0,checkReplyInApp = 0;
-        if(postrequestCbPhone.isChecked()){
+    private String getContactWay() {
+        int checkPhone = 0, checkMessage = 0, checkReplyInApp = 0;
+        if (postrequestCbPhone.isChecked()) {
             checkPhone = 1;
         }
-        if(postrequestCbMessage.isChecked()){
+        if (postrequestCbMessage.isChecked()) {
             checkMessage = 1;
         }
-        if(postrequestCbReplyinapp.isChecked()){
+        if (postrequestCbReplyinapp.isChecked()) {
             checkReplyInApp = 1;
         }
         return String.valueOf(checkPhone) + String.valueOf(checkMessage) + String.valueOf(checkReplyInApp);
@@ -586,7 +642,7 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
     }
 
     private void setupRevealBackground(Bundle savedInstanceState) {
-        vRevealBackground = (RevealBackgroundView)findViewById(R.id.rbv_round);
+        vRevealBackground = (RevealBackgroundView) findViewById(R.id.rbv_round);
 
         vRevealBackground.setOnStateChangeListener(this);
         if (savedInstanceState == null) {
@@ -600,29 +656,16 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
                 }
             });
         } else {
-//            userPhotosAdapter.setLockedAnimations(true);
             vRevealBackground.setToFinishedFrame();
         }
-    }
-
-    private void setupUserProfileGrid() {
-        final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-//        rvUserProfile.setLayoutManager(layoutManager);
-//        rvUserProfile.setOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                userPhotosAdapter.setLockedAnimations(true);
-//            }
-//        });
     }
 
     @Override
     public void onStateChange(int state) {
         if (RevealBackgroundView.STATE_FINISHED == state) {
             findViewById(R.id.post_sv_main).setVisibility(View.VISIBLE);
-            findViewById(R.id.rbv_round).setVisibility(View.INVISIBLE);
-//            userPhotosAdapter = new UserProfileAdapter(this);
-//            rvUserProfile.setAdapter(userPhotosAdapter);
+//            findViewById(R.id.rbv_round).setVisibility(View.INVISIBLE);
+            animationAppera();
         } else {
             findViewById(R.id.rbv_round).setAlpha(1.0f);
             findViewById(R.id.post_sv_main).setVisibility(View.INVISIBLE);
@@ -634,4 +677,30 @@ public class PostRequestActivity extends AppCompatActivity implements RevealBack
         super.onDestroy();
         ActivityCollector.removeActivity(this);
     }
+
+    private void animationAppera() {
+        AnimatorSet set = new AnimatorSet();
+
+
+        ObjectAnimator translateAnimation = ObjectAnimator.ofFloat(findViewById(R.id.post_sv_main),
+                "Y", 300, 0);
+        translateAnimation.setDuration(200);
+        ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(findViewById(R.id.post_sv_main),
+                "alpha", 0f, 1f);
+        alphaAnimation.setDuration(400);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.play(translateAnimation).with(alphaAnimation);
+        set.start();
+
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
 }

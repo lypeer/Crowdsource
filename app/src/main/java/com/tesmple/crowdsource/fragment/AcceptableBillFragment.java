@@ -29,8 +29,10 @@ import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -114,12 +116,6 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
      */
     private void initView() {
         srlBill = (SwipeRefreshLayout) rootView.findViewById(R.id.acceptable_bill_srl_bill);
-//        lvBill = (ListView)rootView.findViewById(R.id.acceptable_bill_lv_main);
-//        adapter = new AcceptableBillAdapter(getActivity() , billList);
-//
-//        lvBill.setAdapter(adapter);
-//        lvBill.setDivider(new ColorDrawable(App.getContext().getResources().getColor(R.color.empty)));
-//        lvBill.setDividerHeight(16);
         rvBill = (RecyclerView) rootView.findViewById(R.id.acceptable_bill_rv_bill);
         adapter = new AcceptableAdapter(getActivity(), billList);
         adapter.setOnItemClickListener(new AcceptableAdapter.OnItemClickListener() {
@@ -127,13 +123,16 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
             public void onItemClick(View v, int position) {
                 if (billList.size() != 0) {
                     Intent intent = new Intent(getActivity(), RequestDetailOfApplicant.class);
+                    int[] startingLocation = new int[2];
+                    v.getLocationOnScreen(startingLocation);
+                    intent.putExtra(RequestDetailOfApplicant.ARG_DRAWING_START_LOCATION, startingLocation[1]);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("bill", billList.get(position));
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    getActivity().overridePendingTransition(0, 0);
                 }
             }
-
             @Override
             public void onItemLongCick(View v, int position) {
 
@@ -165,6 +164,11 @@ public class AcceptableBillFragment extends Fragment implements SwipeRefreshLayo
         isRefreshing = true;
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTABLE_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTABLE_BILL, handler, false, 0);
+        HashMap<String , String> map = new HashMap<>();
+        map.put("phone" , User.getInstance().getUserName());
+        map.put("stu_num" , User.getInstance().getStuNum());
+        map.put("name" , User.getInstance().getName());
+        MobclickAgent.onEvent(getActivity(), "acceptable_bill_refresh" , map);
     }
 
     /**

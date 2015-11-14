@@ -25,6 +25,7 @@ import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.ButtonUtils;
 import com.tesmple.crowdsource.utils.EditTextUtils;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by ESIR on 2015/10/7.
@@ -115,7 +116,7 @@ public class LoginActivity extends AppCompatActivity{
         loginBtnForgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this , ForgetPasswordActivity.class);
+                Intent intent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
                 startActivity(intent);
             }
         });
@@ -123,7 +124,7 @@ public class LoginActivity extends AppCompatActivity{
         loginBtnRegisterAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this , RegisterActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
@@ -239,4 +240,14 @@ public class LoginActivity extends AppCompatActivity{
         super.onDestroy();
         ActivityCollector.removeActivity(LoginActivity.this);
     }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
 }

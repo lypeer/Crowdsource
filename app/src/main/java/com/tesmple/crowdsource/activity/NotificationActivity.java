@@ -1,17 +1,21 @@
 package com.tesmple.crowdsource.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -30,11 +34,13 @@ import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.PushUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,6 +67,11 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
      * 表示是否在刷新的布尔值，false表示没有刷新，true表示正在刷新
      */
     private static boolean isRefreshing = false;
+
+    /**
+     * 表征
+     */
+    private List<Boolean> mReadBooleans;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -105,6 +116,27 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                 finish();
             }
         });
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                new AlertDialog.Builder(NotificationActivity.this)
+                        .setTitle(R.string.title_remind)
+                        .setMessage(R.string.prompt_check_all_have_read)
+                        .setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                checkAllRead();
+                            }
+                        })
+                        .setNegativeButton(R.string.prompt_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+                return true;
+            }
+        });
     }
 
     /**
@@ -116,7 +148,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
         adapter = new NotificationAdapter(this, NotificationLab.getInstance().getNotificationList());
         adapter.setOnItemClickListener(new NotificationAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View v, final int position) {
+            public void onItemClick(final View v, final int position) {
                 if (!NotificationLab.getInstance().getNotificationList().get(position).isRead()) {
                     NotificationLab.getInstance().getNotificationList().get(position).setIsRead(true);
                     //反转一次，以输入notification存储
@@ -150,7 +182,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                                     public void done(AVException e) {
                                         if (e == null) {
                                             Notification notification = NotificationLab.getInstance().getNotificationList().get(position);
-                                            jump(notification.getType(), notification.getBillId());
+                                            jump(v, notification.getType(), notification.getBillId());
                                         } else {
                                             Log.e("NotificActSaveError", e.getMessage() + "===" + e.getCode());
                                             Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
@@ -165,7 +197,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
                     });
                 } else {
                     Notification notification = NotificationLab.getInstance().getNotificationList().get(position);
-                    jump(notification.getType(), notification.getBillId());
+                    jump(v, notification.getType(), notification.getBillId());
                 }
             }
 
@@ -194,12 +226,71 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     }
 
     /**
+     * 将所有的通知都标为已读的方法
+     */
+    private void checkAllRead() {
+        mReadBooleans = new ArrayList<>();
+        //反转一次，以输入notification存储
+        NotificationLab.getInstance().reverseList();
+        final JSONArray jsonArray = new JSONArray();
+        for (Notification notification : NotificationLab.getInstance().getNotificationList()) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("is_read", true);
+                jsonObject.put("alert", notification.getContent());
+                jsonObject.put("time", notification.getTime());
+                jsonObject.put("bill_id", notification.getBillId());
+                jsonObject.put("sender", notification.getPublisher());
+                jsonArray.put(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        //再反转一次，回复原来的顺序
+        NotificationLab.getInstance().reverseList();
+        AVQuery<AVObject> avQuery = new AVQuery<>("UserHelper");
+        avQuery.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
+        avQuery.whereEqualTo("username", User.getInstance().getUserName());
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                if (e == null) {
+                    if (list.size() != 0) {
+                        list.get(0).put("notification", jsonArray);
+                        list.get(0).saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (e == null) {
+                                    Snackbar.make(rvBill, R.string.prompt_check_all_read_successfully, Snackbar.LENGTH_SHORT).show();
+                                    srlBill.setRefreshing(true);
+                                    isRefreshing = true;
+                                    NotificationLab.getInstance().clearList();
+                                    getNotifications();
+                                } else {
+                                    Log.e("NotificActSaveError", e.getMessage() + "===" + e.getCode());
+                                    Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        Snackbar.make(rvBill, R.string.prompt_try_again, Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e("NotificActSaveError", e.getMessage() + "===" + e.getCode());
+                    Snackbar.make(rvBill, R.string.please_check_your_network, Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /**
      * 跳转到别的地方去的方法
      *
+     * @param v 点击的动画
      * @param type   这个通知的类型
      * @param billId 单的id
      */
-    private void jump(final String type, final String billId) {
+    private void jump(final View v , final String type, final String billId) {
         AVQuery<AVObject> avQuery = new AVQuery<>("Bill");
         avQuery.getInBackground(billId, new GetCallback<AVObject>() {
             @Override
@@ -223,25 +314,38 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
 
                     if (type.equals(StringUtils.PUSH_BECOME_APPLICANT) ||
                             type.equals(StringUtils.PUSH_HAVE_ROBBED) ||
-                            type.equals(StringUtils.PUSH_CONFIRMER_REMOVE_BILL) ||
                             type.equals(StringUtils.PUSH_REMIND_PUBLISHER) ||
-                            type.equals(StringUtils.PUSH_SYSTEM_FINISH)) {
+                            type.equals(StringUtils.PUSH_BILL_USELESS)) {
                         Intent intent = new Intent(NotificationActivity.this, RequestDetailOfPublisher.class);
+                        int[] startingLocation = new int[2];
+                        v.getLocationOnScreen(startingLocation);
+                        intent.putExtra(RequestDetailOfPublisher.ARG_DRAWING_START_LOCATION, startingLocation[1]);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("bill", bill);
                         intent.putExtras(bundle);
                         startActivity(intent);
+                        overridePendingTransition(0, 0);
                     } else if (type.equals(StringUtils.PUSH_BECOME_COMFIRMER) ||
-
-                            type.equals(StringUtils.PUSH_FINISH_BILL)) {
+                            type.equals(StringUtils.PUSH_FINISH_BILL) ||
+                            type.equals(StringUtils.PUSH_PUBLISHER_REMOVE_BILL) ||
+                            type.equals(StringUtils.PUSH_SYSTEM_FINISH)) {
                         Intent intent = new Intent(NotificationActivity.this, RequestDetailOfApplicanted.class);
+                        int[] startingLocation = new int[2];
+                        v.getLocationOnScreen(startingLocation);
+                        intent.putExtra(RequestDetailOfApplicanted.ARG_DRAWING_START_LOCATION, startingLocation[1]);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("bill", bill);
                         intent.putExtras(bundle);
                         startActivity(intent);
-                    } else if (type.equals(StringUtils.PUSH_NOT_BECOME_COMFIRMER) ||
-                            type.equals(StringUtils.PUSH_PUBLISHER_REMOVE_BILL)) {
+                        overridePendingTransition(0, 0);
+                    } else if (type.equals(StringUtils.PUSH_NOT_BECOME_COMFIRMER)) {
 
+                    } else if (type.equals(StringUtils.PUSH_CONFIRMER_REMOVE_BILL)) {
+                        Intent intent = new Intent(NotificationActivity.this, ConfimerRemoveBillActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("bill", bill);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     }
                 } else {
                     Log.e("NotifitionFindBillError", e.getMessage() + "===" + e.getCode() + "===" + billId);
@@ -313,6 +417,7 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
         srlBill.setRefreshing(true);
         isRefreshing = true;
         NotificationLab.getInstance().clearList();
@@ -323,6 +428,17 @@ public class NotificationActivity extends AppCompatActivity implements SwipeRefr
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_notification, menu);
+        return true;
+    }
+
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }
 

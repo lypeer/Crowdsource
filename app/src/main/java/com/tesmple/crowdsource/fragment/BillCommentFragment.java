@@ -29,8 +29,10 @@ import com.tesmple.crowdsource.utils.BillCommentUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -89,6 +91,11 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
                     //App.dismissDialog();
                     commentList = BillCommentUtils.getBillCommentList(StringUtils.FRAGMENT_BILL_COMMENT);
                     commentAdapter.refresh(commentList);
+                    if(commentList.size() == 0){
+                        srlComment.setBackground(App.getContext().getResources().getDrawable(R.drawable.bg_no_commen_downt));
+                    }else {
+                        srlComment.setBackground(null);
+                    }
                     srlComment.setRefreshing(false);
                     isRefreshing = false;
                     break;
@@ -171,6 +178,11 @@ public class BillCommentFragment extends Fragment implements SwipeRefreshLayout.
             public void onClick(View v) {
                 try {
                     attempCommitComment();
+                    HashMap<String , String> map = new HashMap<>();
+                    map.put("phone" , User.getInstance().getUserName());
+                    map.put("stu_num" , User.getInstance().getStuNum());
+                    map.put("name" , User.getInstance().getName());
+                    MobclickAgent.onEvent(getActivity(), "comment_num", map);
                 } catch (AVException e) {
                     Log.i("comment===e",e.getMessage()+"+"+e.getCode());
                     e.printStackTrace();

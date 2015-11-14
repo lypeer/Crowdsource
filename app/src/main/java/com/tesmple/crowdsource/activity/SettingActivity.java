@@ -30,6 +30,7 @@ import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.EditTextUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -302,5 +303,11 @@ public class SettingActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         tvName.setText(User.getInstance().getNickName());
+        MobclickAgent.onResume(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

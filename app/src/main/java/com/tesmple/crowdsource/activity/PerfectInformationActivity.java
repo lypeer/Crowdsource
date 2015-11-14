@@ -39,6 +39,7 @@ import com.tesmple.crowdsource.view.Button;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.view.LoopListener;
 import com.tesmple.crowdsource.view.LoopView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -403,5 +404,14 @@ public class PerfectInformationActivity extends AppCompatActivity {
         if (!isShowing) {
             super.onBackPressed();
         }
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

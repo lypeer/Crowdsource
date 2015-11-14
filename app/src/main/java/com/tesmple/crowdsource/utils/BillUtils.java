@@ -133,31 +133,57 @@ public class BillUtils {
             public void done(List<AVObject> list, AVException e) {
                 if (e == null) {
                     for (AVObject avObject : list) {
-                        if (avObject.getLong("deadline") < System.currentTimeMillis() && avObject.get("status").equals(StringUtils.BILL_STATUS_ONE)) {
-                            avObject.deleteInBackground(new DeleteCallback() {
+
+
+                        final Bill bill = new Bill();
+                        bill.setObjectId(avObject.getObjectId());
+                        bill.setPublisherPhone((String) avObject.get("publisher_phone"));
+                        bill.setAward((String) avObject.get("award"));
+                        bill.setDetail((String) avObject.get("detail"));
+
+                        //将未完成状态的单的剩余时间都设置为0
+                        if (avObject.get("status").equals(StringUtils.BILL_STATUS_FOUR) && avObject.getLong("deadline") > System.currentTimeMillis()) {
+                            bill.setDeadline(System.currentTimeMillis());
+                            avObject.put("deadline", System.currentTimeMillis());
+                            avObject.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(AVException e) {
-                                    if (e != null) {
-                                        Log.e("BillUtilsDeleteError", e.getMessage() + "===" + e.getCode());
+                                    //不需要反馈
+                                    if(e == null){
+
+                                    }else {
+                                        Log.e("BillUtilsSave1Error", e.getMessage() + "===" + e.getCode());
                                     }
                                 }
                             });
                         } else {
-                            Bill bill = new Bill();
-                            bill.setObjectId(avObject.getObjectId());
-                            bill.setPublisherPhone((String) avObject.get("publisher_phone"));
-                            bill.setAward((String) avObject.get("award"));
-                            bill.setDetail((String) avObject.get("detail"));
                             bill.setDeadline(avObject.getLong("deadline"));
-                            bill.setAddress((String) avObject.get("address"));
-                            bill.setStatus((String) avObject.get("status"));
-                            bill.setApplicant((String) avObject.get("applicant"));
-                            bill.setConfirmer((String) avObject.get("confirmer"));
-                            bill.setNeedNum((String) avObject.get("need_num"));
-                            bill.setRobType((String) avObject.get("rob_type"));
-                            bill.setLocation((String) avObject.get("location"));
-                            bill.setAcceptDeadline((String) avObject.get("accept_deadline"));
-                            bill.setContactWay((String) avObject.get("contact_way"));
+                        }
+
+                        bill.setAddress((String) avObject.get("address"));
+                        bill.setStatus((String) avObject.get("status"));
+                        bill.setApplicant((String) avObject.get("applicant"));
+                        bill.setConfirmer((String) avObject.get("confirmer"));
+                        bill.setNeedNum((String) avObject.get("need_num"));
+                        bill.setRobType((String) avObject.get("rob_type"));
+                        bill.setLocation((String) avObject.get("location"));
+                        bill.setAcceptDeadline((String) avObject.get("accept_deadline"));
+                        bill.setContactWay((String) avObject.get("contact_way"));
+
+                        //表示时间到了但是仍然处于报名状态的单
+                        if (avObject.getLong("deadline") <= System.currentTimeMillis() && avObject.get("status").equals(StringUtils.BILL_STATUS_ONE)) {
+                            avObject.put("status", StringUtils.BILL_STATUS_FOUR);
+                            avObject.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(AVException e) {
+                                    if (e == null) {
+                                        PushUtils.startPushTransaction(handler, StringUtils.PUSH_BILL_USELESS, bill);
+                                    } else {
+                                        Log.e("BillUtilsSaveError", e.getMessage() + "===" + e.getCode());
+                                    }
+                                }
+                            });
+                        } else {
                             switch (targetFragment) {
                                 case StringUtils.FRAGMENT_ACCEPTABLE_BILL:
                                     if (userIsApplicant(bill)) {
@@ -177,13 +203,12 @@ public class BillUtils {
                                     break;
                             }
                         }
-
                     }
                     Message message = new Message();
                     message.what = StringUtils.START_GET_BILL_TRANSACTION_SUCCESSFULLY;
                     handler.sendMessage(message);
                 } else {
-                    Log.e("PostRequestError", e.getMessage() + "===" + e.getCode());
+                    Log.e("BillUtilsFindError", e.getMessage() + "===" + e.getCode());
                     Message message = new Message();
                     message.what = StringUtils.START_GET_BILL_TRANSACTION_FAILED;
                     handler.sendMessage(message);
@@ -205,7 +230,7 @@ public class BillUtils {
                                 Notification notification = new Notification();
                                 try {
                                     JSONObject tempJsonObject = new JSONObject(jsonArray.get(i).toString());
-                                    notification.setTime( tempJsonObject.get("time").toString());
+                                    notification.setTime(tempJsonObject.get("time").toString());
                                     notification.setContent(tempJsonObject.getString("alert"));
                                     notification.setIsRead(tempJsonObject.getBoolean("is_read"));
                                     notification.setBillId(tempJsonObject.getString("bill_id"));
@@ -215,7 +240,6 @@ public class BillUtils {
                                     e1.printStackTrace();
                                 }
                                 NotificationLab.getInstance().addNotification(notification);
-
                             }
                         }
                         NotificationLab.getInstance().reverseList();

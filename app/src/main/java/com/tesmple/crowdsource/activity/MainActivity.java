@@ -38,6 +38,7 @@ import com.tesmple.crowdsource.object.Notification;
 import com.tesmple.crowdsource.object.NotificationLab;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -209,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_history) {
-
+            Snackbar.make(toolbar , R.string.prompt_not_open , Snackbar.LENGTH_SHORT).show();
         } else if (id == R.id.nav_setting) {
             Intent intent = new Intent(MainActivity.this, SettingActivity.class);
             startActivity(intent);
@@ -339,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (NotificationLab.getInstance().isExistNotRead()) {
             navigationView.getMenu().getItem(0).setTitle(R.string.prompt_new_notification);
@@ -413,5 +415,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String version = packInfo.versionName;
         return version;
     }
+
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
 
 }

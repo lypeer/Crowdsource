@@ -1,80 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff">
-    <include layout="@layout/include_toolbar"></include>
+    android:background="@color/bg_wechat"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_toolbar"/>
+
     <com.tesmple.crowdsource.view.ImageLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_wait"/>
+            android:scaleType="centerInside"
+            android:src="@drawable/bg_post"/>
     </com.tesmple.crowdsource.view.ImageLinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/postbillsuccessful_textone"
             android:gravity="center"
+            android:text="@string/postbillsuccessful_textone"
             android:textSize="20sp"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/postbillsuccessful_texttwo"
             android:layout_marginTop="3dp"
             android:gravity="center"
+            android:text="@string/postbillsuccessful_texttwo"
             android:textSize="20sp"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="36dp"
         android:gravity="center_horizontal|bottom"
-        android:layout_marginTop="56dp">
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tv_lasttime"
-            android:layout_marginRight="16dp"/>
+            android:layout_marginRight="16dp"
+            android:text="@string/tv_lasttime"/>
+
         <TextView
             android:id="@+id/postbillsuccessful_tv_hour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="01"
-            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textColor="@color/colorPrimary"/>
+            android:textStyle="bold"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/hour"/>
+
         <TextView
             android:id="@+id/postbillsuccessful_tv_minute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12"
-            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textColor="@color/colorPrimary"/>
+            android:textStyle="bold"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/minute" />
+            android:text="@string/minute"/>
+
         <TextView
             android:id="@+id/postbillsuccessful_tv_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="45"
-            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textColor="@color/colorPrimary"/>
+            android:textStyle="bold"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

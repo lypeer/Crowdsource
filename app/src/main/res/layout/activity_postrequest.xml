@@ -199,7 +199,7 @@
                                 android:layout_marginRight="16dp"
                                 android:layout_weight="1"
                                 android:gravity="center"
-                                android:hint="￥"
+                                android:hint="@string/prompt_input_zhengshu"
                                 android:inputType="number"
                                 android:maxLength="4"
                                 android:maxLines="1"

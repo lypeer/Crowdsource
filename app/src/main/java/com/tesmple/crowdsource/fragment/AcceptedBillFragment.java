@@ -28,8 +28,10 @@ import com.tesmple.crowdsource.object.Bill;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -113,10 +115,14 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
                     } else {
                         intent = new Intent(getActivity(), RequestDetailOfApplicanted.class);
                     }
+                    int[] startingLocation = new int[2];
+                    v.getLocationOnScreen(startingLocation);
+                    intent.putExtra(RequestDetailOfApplicanted.ARG_DRAWING_START_LOCATION, startingLocation[1]);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("bill", billList.get(position));
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    getActivity().overridePendingTransition(0, 0);
                 }
             }
 
@@ -151,6 +157,11 @@ public class AcceptedBillFragment extends Fragment implements SwipeRefreshLayout
 
         BillUtils.clearList(StringUtils.FRAGMENT_ACCEPTED_BILL);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_ACCEPTED_BILL, handler, false, 0);
+        HashMap<String , String> map = new HashMap<>();
+        map.put("phone", User.getInstance().getUserName());
+        map.put("stu_num" , User.getInstance().getStuNum());
+        map.put("name", User.getInstance().getName());
+        MobclickAgent.onEvent(getActivity(), "accepted_bill_refresh", map);
     }
 
     /**

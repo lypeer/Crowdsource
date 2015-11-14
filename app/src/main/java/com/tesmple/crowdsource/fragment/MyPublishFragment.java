@@ -20,10 +20,13 @@ import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.activity.RequestDetailOfPublisher;
 import com.tesmple.crowdsource.adapter.MyPublishAdapter;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.BillUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -102,11 +105,15 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
             @Override
             public void onItemClick(View v, int position) {
                 if (billList.size() != 0) {
-                    Intent intent = new Intent(getActivity(), RequestDetailOfPublisher.class);
+                    final Intent intent = new Intent(getActivity(), RequestDetailOfPublisher.class);
+                    int[] startingLocation = new int[2];
+                    v.getLocationOnScreen(startingLocation);
+                    intent.putExtra(RequestDetailOfPublisher.ARG_DRAWING_START_LOCATION, startingLocation[1]);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("bill", billList.get(position));
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    getActivity().overridePendingTransition(0, 0);
                 }
             }
 
@@ -140,6 +147,11 @@ public class MyPublishFragment extends Fragment implements SwipeRefreshLayout.On
         isRefreshing = true;
         BillUtils.clearList(StringUtils.FRAGMENT_MY_PUBLISH);
         BillUtils.startGetBillTransaction(StringUtils.FRAGMENT_MY_PUBLISH, handler, false, 0);
+        HashMap<String , String> map = new HashMap<>();
+        map.put("phone", User.getInstance().getUserName());
+        map.put("stu_num" , User.getInstance().getStuNum());
+        map.put("name", User.getInstance().getName());
+        MobclickAgent.onEvent(getActivity(), "my_publish_refresh", map);
     }
 
     /**

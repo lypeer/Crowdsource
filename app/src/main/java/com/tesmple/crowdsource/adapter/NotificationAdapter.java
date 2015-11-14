@@ -72,9 +72,12 @@ public class
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final Notification notification = notificationsList.get(position);
-        holder.tvTime.setText(TimeUtils.judgeTime(Long.valueOf(notification.getTime()),
-                System.currentTimeMillis() - Long.valueOf(notification.getTime())));
+        if (notification.getTime() != null) {
+            holder.tvTime.setText(TimeUtils.judgeTime(Long.valueOf(notification.getTime()),
+                    System.currentTimeMillis() - Long.valueOf(notification.getTime())));
+        }
         holder.tvContent.setText(notification.getContent());
+        holder.btnMain.setRippleSpeed(90f);
 
         if (!notification.isRead()) {
             holder.ivHaveNotRead.setVisibility(View.VISIBLE);
@@ -90,12 +93,14 @@ public class
             @Override
             public void done(List<AVObject> list, AVException e) {
                 if (e == null) {
-                    holder.tvName.setText((String) list.get(0).get("nickname"));
-                    holder.sdvHeadPortrait.setImageURI(Uri.parse(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96)));
-                    if (list.get(0).get("gender").equals(App.getContext().getString(R.string.man))) {
-                        holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
-                    } else {
-                        holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
+                    if (list.get(0) != null) {
+                        holder.tvName.setText((String) list.get(0).get("nickname"));
+                        holder.sdvHeadPortrait.setImageURI(Uri.parse(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96)));
+                        if (list.get(0).get("gender").equals(App.getContext().getString(R.string.man))) {
+                            holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
+                        } else {
+                            holder.ivGender.setBackground(App.getContext().getResources().getDrawable(R.drawable.icon_male));
+                        }
                     }
                 } else {
                     Log.e("NotificationAdaptError", e.getMessage() + "===" + e.getCode());

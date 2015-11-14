@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
@@ -81,6 +82,11 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
             holder.tvLeftTimeHour.setText(timeList.get(0));
             holder.tvLeftTimeMinutes.setText(timeList.get(1));
 //        holder.tvLeftTimeSecond.setText(timeList.get(2));
+            if(bill.getRobType().equals(App.getContext().getString(R.string.bill_robtype_receivebillmode))){
+                holder.ivBillType.setBackground(App.getContext().getResources().getDrawable(R.drawable.prompt_accept));
+            }else {
+                holder.ivBillType.setBackground(App.getContext().getResources().getDrawable(R.drawable.prompt_rob));
+            }
 
             AVQuery<AVObject> avQuery = new AVQuery<>("_User");
             avQuery.whereEqualTo("username", bill.getPublisherPhone());
@@ -192,6 +198,11 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
          */
         private TextView tvLeftTimeMinutes;
 
+        /**
+         * 表示订单是接单模式还是抢单模式的imageview
+         */
+        private ImageView ivBillType;
+
 //        /**
 //         * 剩下的时间的秒数
 //         */
@@ -210,6 +221,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.MyVi
             tvApplicantNum = (TextView) itemView.findViewById(R.id.my_publish_tv_applicant_num);
             tvLeftTimeHour = (TextView) itemView.findViewById(R.id.my_publish_tv_left_time_hour);
             tvLeftTimeMinutes = (TextView) itemView.findViewById(R.id.my_publish_tv_left_time_minutes);
+            ivBillType = (ImageView)itemView.findViewById(R.id.my_publish_iv_bill_type);
 //            tvLeftTimeSecond = (TextView) itemView.findViewById(R.id.my_publish_tv_left_time_second);
         }
     }

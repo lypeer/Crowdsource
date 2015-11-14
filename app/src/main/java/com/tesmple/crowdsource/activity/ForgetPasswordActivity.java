@@ -23,6 +23,7 @@ import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -299,4 +300,14 @@ public class ForgetPasswordActivity extends AppCompatActivity{
         super.onDestroy();
         ActivityCollector.removeActivity(this);
     }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
 }

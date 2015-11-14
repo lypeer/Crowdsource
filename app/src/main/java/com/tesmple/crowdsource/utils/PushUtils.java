@@ -65,6 +65,7 @@ public class PushUtils {
             case StringUtils.PUSH_CONFIRMER_REMOVE_BILL:
             case StringUtils.PUSH_REMIND_PUBLISHER:
             case StringUtils.PUSH_SYSTEM_FINISH:
+            case StringUtils.PUSH_BILL_USELESS:
                 avQuery.whereEqualTo("username", bill.getPublisherPhone());
                 break;
             case StringUtils.PUSH_BECOME_COMFIRMER:
@@ -134,13 +135,16 @@ public class PushUtils {
                                 message = App.getContext().getString(R.string.push_system_finish);
                                 jsonObject.put("sender", "system");
                                 break;
+                            case StringUtils.PUSH_BILL_USELESS:
+                                message = App.getContext().getString(R.string.prompt_bill_useless);
+                                jsonObject.put("sender" , "system");
+                                break;
                         }
                         jsonObject.put("action", "com.tesmple.action");
                         jsonObject.put("alert", message);
                         jsonObject.put("is_read", false);
                         jsonObject.put("time", String.valueOf(System.currentTimeMillis()));
-                        Log.e("PushUtils" , bill.getObjectId());
-                        jsonObject.put("bill_id" , bill.getObjectId());
+                        jsonObject.put("bill_id", bill.getObjectId());
                         size = userHelperList.size();
                         sBooleanList1 = new ArrayList<>();
                         sBooleanList2 = new ArrayList<>();
@@ -196,6 +200,9 @@ public class PushUtils {
                                                                 break;
                                                             case StringUtils.PUSH_SYSTEM_FINISH:
                                                                 message = App.getContext().getString(R.string.push_system_finish);
+                                                                break;
+                                                            case StringUtils.PUSH_BILL_USELESS:
+                                                                message = App.getContext().getString(R.string.prompt_bill_useless);
                                                                 break;
                                                         }
                                                         pushQuery.whereEqualTo("installationId", list.get(0).get("installationId"));
@@ -274,6 +281,8 @@ public class PushUtils {
             type = StringUtils.PUSH_REMIND_PUBLISHER;
         } else if (content.equals(App.getContext().getString(R.string.push_system_finish))) {
             type = StringUtils.PUSH_SYSTEM_FINISH;
+        }else if (content.equals(App.getContext().getString(R.string.prompt_bill_useless))) {
+            type = StringUtils.PUSH_BILL_USELESS;
         }
         return type;
     }

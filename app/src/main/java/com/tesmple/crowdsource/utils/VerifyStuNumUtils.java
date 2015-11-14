@@ -75,7 +75,8 @@ public class VerifyStuNumUtils {
                                                     AsyncHttpClient client = new AsyncHttpClient();
                                                     PersistentCookieStore myCookieStore = new PersistentCookieStore(App.getContext());
                                                     client.setCookieStore(myCookieStore);
-                                                    client.get("http://eams.uestc.edu.cn/eams/home!childmenus.action?menu.id=845", new AsyncHttpResponseHandler() {
+                                                    client.get("http://eams.uestc.edu.cn/eams/home!childmenus.action?menu.id=845",
+                                                            new AsyncHttpResponseHandler() {
                                                         @Override
                                                         public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
                                                             //进入我的信息页面，开始往学籍信息里面跳转
@@ -84,7 +85,8 @@ public class VerifyStuNumUtils {
                                                             client.setCookieStore(myCookieStore);
                                                             client.get("http://eams.uestc.edu.cn/eams/stdDetail.action", new AsyncHttpResponseHandler() {
                                                                 @Override
-                                                                public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                                                                public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers,
+                                                                                      byte[] responseBody) {
                                                                     Document doc2 = Jsoup.parse(new String(responseBody));
                                                                     Elements elements = doc2.getElementsByTag("td");
                                                                     Message msg = new Message();
@@ -95,7 +97,8 @@ public class VerifyStuNumUtils {
                                                                     handler.sendMessage(msg);
                                                                 }
                                                                 @Override
-                                                                public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                                                                public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers,
+                                                                                      byte[] responseBody, Throwable error) {
                                                                     Log.e("VerifyError1" , statusCode + "===" + error.getMessage() + "===" + error.getCause());
                                                                     Message message = new Message();
                                                                     message.what  = StringUtils.NETWORK_ERROE;
@@ -104,7 +107,8 @@ public class VerifyStuNumUtils {
                                                             });
                                                         }
                                                         @Override
-                                                        public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                                                        public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers,
+                                                                              byte[] responseBody, Throwable error) {
                                                             Log.e("VerifyError2" , statusCode + "===" + error.getMessage() + "===" + error.getCause());
                                                             Message message = new Message();
                                                             message.what  = StringUtils.NETWORK_ERROE;
@@ -113,7 +117,8 @@ public class VerifyStuNumUtils {
                                                     });
                                                 }
                                                 @Override
-                                                public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                                                public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers,
+                                                                      byte[] responseBody, Throwable error) {
                                                     Log.e("VerifyError3" , statusCode + "===" + error.getMessage() + "===" + error.getCause());
                                                     Message message = new Message();
                                                     message.what  = StringUtils.NETWORK_ERROE;
@@ -123,7 +128,8 @@ public class VerifyStuNumUtils {
 
                                         }
                                         @Override
-                                        public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                                        public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers,
+                                                              byte[] responseBody, Throwable error) {
                                             Log.e("VerifyError4" , statusCode + "===" + error.getMessage() + "===" + error.getCause());
                                             Message message = new Message();
                                             message.what  = StringUtils.NETWORK_ERROE;
@@ -138,7 +144,8 @@ public class VerifyStuNumUtils {
 
                             }
                             @Override
-                            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers,
+                                                  byte[] responseBody, Throwable error) {
                                 Log.e("VerifyError5" , statusCode + "===" + error.getMessage() + "===" + error.getCause());
                                 Message message = new Message();
                                 message.what  = StringUtils.NETWORK_ERROE;

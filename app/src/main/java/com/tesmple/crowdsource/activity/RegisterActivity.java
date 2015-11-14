@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -26,13 +27,13 @@ import com.avos.avoscloud.RequestMobileCodeCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.SignUpCallback;
 import com.gc.materialdesign.views.ButtonFlat;
-import com.gc.materialdesign.views.CheckBox;
 import com.tesmple.crowdsource.R;
 import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.view.ButtonRectangle;
 import com.tesmple.crowdsource.utils.EditTextUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 
@@ -147,12 +148,7 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword.setError(null);
         etProveCode.setError(null);
 
-        cbAgreeAgreement.post(new Runnable() {
-            @Override
-            public void run() {
-                cbAgreeAgreement.setChecked(true);
-            }
-        });
+       cbAgreeAgreement.setChecked(true);
 
         btnGetProveCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +167,7 @@ public class RegisterActivity extends AppCompatActivity {
                     String proveCode = etProveCode.getText().toString().trim();
                     if (!EditTextUtils.isProveCode(proveCode)) {
                         etProveCode.setError(getString(R.string.error_prove_code_should_be));
-                    } else if (!cbAgreeAgreement.isCheck()) {
+                    } else if (!cbAgreeAgreement.isChecked()) {
                         Snackbar.make(btnRegister, R.string.error_please_check_agreement, Snackbar.LENGTH_SHORT)
                                 .setAction("Action", null).show();
                     } else {
@@ -264,7 +260,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         if (e == null) {
                                             Intent intent = new Intent(RegisterActivity.this, PerfectInformationActivity.class);
                                             startActivity(intent);
-                                        }else {
+                                        } else {
                                             Log.e("RegisterHelperSaveError", e.getMessage() + "===" + e.getCode());
                                             Snackbar.make(btnRegister, R.string.please_check_your_network, Snackbar.LENGTH_SHORT)
                                                     .setAction("Action", null).show();
@@ -387,5 +383,14 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

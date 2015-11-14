@@ -1,8 +1,12 @@
 package com.tesmple.crowdsource.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +22,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,6 +42,7 @@ import com.tesmple.crowdsource.fragment.AcceptedBillFragment;
 import com.tesmple.crowdsource.fragment.BillCommentFragment;
 import com.tesmple.crowdsource.fragment.MyPublishFragment;
 import com.tesmple.crowdsource.object.Bill;
+import com.tesmple.crowdsource.object.User;
 import com.tesmple.crowdsource.utils.ActivityCollector;
 import com.tesmple.crowdsource.utils.BillCommentUtils;
 import com.tesmple.crowdsource.utils.BillUtils;
@@ -42,8 +50,10 @@ import com.tesmple.crowdsource.utils.PushUtils;
 import com.tesmple.crowdsource.utils.StringUtils;
 import com.tesmple.crowdsource.utils.TimeUtils;
 import com.tesmple.crowdsource.view.ButtonRectangle;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,6 +62,8 @@ import java.util.TimerTask;
  * Created by ESIR on 2015/10/24.
  */
 public class RequestDetailOfApplicanted extends AppCompatActivity {
+    public static final String ARG_DRAWING_START_LOCATION = "arg_drawing_start_location";
+
     /**
      * 详情界面的tablayout
      */
@@ -157,13 +169,25 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
      */
     private LinearLayout liUpInfo;
 
+    private int drawingStartLocation;
+
+    /**
+     * 背景的布局
+     */
+    private LinearLayout llyBackground;
+
+    /**
+     * 主界面的布局
+     */
+    private LinearLayout llyMain;
+
     /**
      * 展开按钮显示内容
      */
     private LinearLayout liDownInfo;
-    public final Handler handler = new android.os.Handler(){
-        public void handleMessage(Message msg){
-            switch (msg.what){
+    public final Handler handler = new android.os.Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
                 case 1:
                     timeList = TimeUtils.long2hourminutesecond(bill.getDeadline() - System.currentTimeMillis());
                     tvHour.setText(timeList.get(0));
@@ -178,10 +202,18 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                     Snackbar.make(btrCancelBill, getString(R.string.please_check_your_network), Snackbar.LENGTH_LONG).show();
                     break;
                 case StringUtils.CHANGE_BILL_STATUS_SUCCESSFULLY:
-                    if(bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)){
-                        PushUtils.startPushTransaction(handler,StringUtils.PUSH_CONFIRMER_REMOVE_BILL,bill);
-                        Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:" + bill.getPublisherPhone()));
+                    if (bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR)) {
+                        HashMap<String , String> map = new HashMap<>();
+                        map.put("phone", User.getInstance().getUserName());
+                        map.put("stu_num" , User.getInstance().getStuNum());
+                        map.put("name", User.getInstance().getName());
+                        map.put("role" , "confirmer");
+                        MobclickAgent.onEvent(RequestDetailOfApplicanted.this, "bill_cancel", map);
+                        PushUtils.startPushTransaction(handler, StringUtils.PUSH_CONFIRMER_REMOVE_BILL, bill);
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + bill.getPublisherPhone()));
                         startActivity(intent);
+                    } else if (bill.getStatus().equals(StringUtils.BILL_STATUS_FIVE)) {
+                        Snackbar.make(btrCancelBill, getString(R.string.prompt_delate_successfully), Snackbar.LENGTH_LONG).show();
                     }
                     finish();
                     break;
@@ -194,7 +226,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                     tvInstead.setHeight(444);
                     Log.i("height2", String.valueOf(444));
                     Log.i("tvinstead", String.valueOf(tvInstead.getHeight()));
-                    ObjectAnimator objectAnimator = ObjectAnimator.ofInt(tvInstead, "Height", 444 , 0);
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofInt(tvInstead, "Height", 444, 0);
                     objectAnimator.setDuration(300);
                     objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
                     objectAnimator.start();
@@ -217,9 +249,27 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requestdetailofapplicanted);
+
+        drawingStartLocation = getIntent().getIntExtra(ARG_DRAWING_START_LOCATION, 0);
+        llyBackground = (LinearLayout) findViewById(R.id.request_detail_of_applicanted_lly_background);
+        llyMain = (LinearLayout) findViewById(R.id.request_detail_of_applicanted_lly_main);
+        //为了显示动画先将主界面干掉
+        llyBackground.setVisibility(View.VISIBLE);
+        llyMain.setVisibility(View.GONE);
+        if (savedInstanceState == null) {
+            llyBackground.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    llyBackground.getViewTreeObserver().removeOnPreDrawListener(this);
+                    startIntroAnimation();
+                    return true;
+                }
+            });
+        }
+
         ActivityCollector.addActivity(RequestDetailOfApplicanted.this);
         initView();
         initToolbar();
@@ -230,32 +280,88 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         setButtons();
     }
 
+
+    private void startIntroAnimation() {
+        llyBackground.setScaleY(0.1f);
+        llyBackground.setPivotY(drawingStartLocation);
+
+        llyBackground.animate()
+                .scaleY(1)
+                .setDuration(300)
+                .setInterpolator(new AccelerateInterpolator())
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        animateContent();
+                    }
+                })
+                .start();
+    }
+
+    private void animateContent() {
+        llyBackground.setVisibility(View.GONE);
+        llyMain.setVisibility(View.VISIBLE);
+        llyMain.setBackgroundColor(App.getContext().getResources().getColor(R.color.bg_wechat));
+
+        animateMain();
+    }
+
+    /**
+     * 主界面显示之后加载的动画
+     */
+    private void animateMain() {
+        final View card = findViewById(R.id.request_detail_of_applicanted_cv_bill);
+        final View other = findViewById(R.id.request_detail_of_applicanted_cv_other);
+        card.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                llyBackground.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                AnimatorSet set = new AnimatorSet();
+                ObjectAnimator transAnimBill = ObjectAnimator.ofFloat(card,
+                        "Y", (4 * Resources.getSystem().getDisplayMetrics().density) - 300, (4 * Resources.getSystem().getDisplayMetrics().density));
+                transAnimBill.setDuration(350);
+
+                ObjectAnimator transAnimOther = ObjectAnimator.ofFloat(other,
+                        "Y", card.getHeight() + findViewById(R.id.toolbar).getHeight() +
+                                (12 * Resources.getSystem().getDisplayMetrics().density) + 300,
+                        card.getHeight() + findViewById(R.id.toolbar).getHeight() +
+                                (12 * Resources.getSystem().getDisplayMetrics().density));
+                transAnimOther.setDuration(500);
+
+                set.setInterpolator(new DecelerateInterpolator());
+                set.play(transAnimBill).with(transAnimOther);
+                set.start();
+            }
+        });
+    }
+
+
     /**
      * 绑定试图
      */
-    private void initView(){
-        sdvHeadPortrait = (SimpleDraweeView)findViewById(R.id.requestdetailofapplicanted_sdv_head_portrait);
-        tvName = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_name);
-        tvSchool = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_school);
-        tvDetail = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_detail);
-        tvAward = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_award);
-        tvHour = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_left_time_hour);
-        tvMinute = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_left_time_minutes);
-        tvSecond = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_left_time_second);
+    private void initView() {
+        sdvHeadPortrait = (SimpleDraweeView) findViewById(R.id.requestdetailofapplicanted_sdv_head_portrait);
+        tvName = (TextView) findViewById(R.id.requestdetailofapplicanted_tv_name);
+        tvSchool = (TextView) findViewById(R.id.requestdetailofapplicanted_tv_school);
+        tvDetail = (TextView) findViewById(R.id.requestdetailofapplicanted_tv_detail);
+        tvAward = (TextView) findViewById(R.id.requestdetailofapplicanted_tv_award);
+        tvHour = (TextView) findViewById(R.id.requestdetailofapplicanted_tv_left_time_hour);
+        tvMinute = (TextView) findViewById(R.id.requestdetailofapplicanted_tv_left_time_minutes);
+        tvSecond = (TextView) findViewById(R.id.requestdetailofapplicanted_tv_left_time_second);
         //btrPostApplication = (ButtonRectangle)findViewById(R.id.requestdetailofapplicanted_btr_postapplication);
-        tvStatus = (TextView)findViewById(R.id.requestdetailofapplicanted_tv_status);
-        btrCancelBill = (ButtonRectangle)findViewById(R.id.requestdetailofapplicanted_btr_cancelapplicant);
-        liNeedgone = (LinearLayout)findViewById(R.id.li_needgone);
-        tvInstead = (TextView)findViewById(R.id.tv_instead);
-        liUpInfo = (LinearLayout)findViewById(R.id.li_upinfo);
-        liDownInfo = (LinearLayout)findViewById(R.id.li_downinfo);
+        tvStatus = (TextView) findViewById(R.id.requestdetailofapplicanted_tv_status);
+        btrCancelBill = (ButtonRectangle) findViewById(R.id.requestdetailofapplicanted_btr_cancelapplicant);
+        liNeedgone = (LinearLayout) findViewById(R.id.li_needgone);
+        tvInstead = (TextView) findViewById(R.id.tv_instead);
+        liUpInfo = (LinearLayout) findViewById(R.id.li_upinfo);
+        liDownInfo = (LinearLayout) findViewById(R.id.li_downinfo);
     }
 
     /**
      * 初始化toolbar
      */
-    private void initToolbar(){
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("任务详情");
         toolbar.setNavigationIcon(R.drawable.ic_back);
         setSupportActionBar(toolbar);
@@ -270,40 +376,62 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_delete:
-                        if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+                        if (bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)) {
                             new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
                                     .setMessage("确定取消报名")
                                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             attemptCancelApplicant();
-                                        }})
+                                        }
+                                    })
                                     .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                         }
                                     })
                                     .show();
-                        }else if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
+                        } else if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)) {
                             new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
                                     .setMessage("不能完成了吗？记得联系分派任务者哦~")
-                                    .setPositiveButton("无法完成", new DialogInterface.OnClickListener() {
+                                    .setPositiveButton("去联系", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             attempCancelBill();
-                                        }})
+                                        }
+                                    })
                                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                         }
                                     })
                                     .show();
+                        } else if (bill.getStatus().equals(StringUtils.BILL_STATUS_FOUR) || bill.getStatus().equals(StringUtils.BILL_STATUS_THREE)) {
+                            new AlertDialog.Builder(RequestDetailOfApplicanted.this).setTitle(R.string.prompt_remind)
+                                    .setMessage("删除当前任务？").setPositiveButton(R.string.prompt_sure, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    attempDeleteBill();
+                                }
+                            }).setNegativeButton(R.string.prompt_cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
                         }
                         break;
                 }
                 return true;
             }
         });
+    }
+
+    /**
+     * 尝试删除bill
+     */
+    private void attempDeleteBill() {
+        bill.setStatus(StringUtils.BILL_STATUS_FIVE);
+        BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_FIVE);
     }
 
     @Override
@@ -315,18 +443,18 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     /**
      * 获取bundle值
      */
-    private void getBundle(){
+    private void getBundle() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        bill = (Bill)bundle.getSerializable("bill");
+        bill = (Bill) bundle.getSerializable("bill");
     }
 
     /**
      * 初始化tablayout和viewpager
      */
-    private void initTabAndViewPager(){
-        tlComment = (TabLayout)findViewById(R.id.requestdetailofapplicanted_tl_compliantandcomment);
-        vpComment = (ViewPager)findViewById(R.id.requestdetailofapplicanted_vp_compliantandcomment);
+    private void initTabAndViewPager() {
+        tlComment = (TabLayout) findViewById(R.id.requestdetailofapplicanted_tl_compliantandcomment);
+        vpComment = (ViewPager) findViewById(R.id.requestdetailofapplicanted_vp_compliantandcomment);
         initList();
 
         vpComment.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), titleList, fragmentList));
@@ -337,7 +465,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     /**
      * 初始化tablayout和fragment
      */
-    private void initList(){
+    private void initList() {
         titleList = new ArrayList<>();
         fragmentList = new ArrayList<>();
         titleList.add("评论");
@@ -347,7 +475,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     /**
      * 设置bill详情
      */
-    private void setView(){
+    private void setView() {
         AVQuery<AVObject> avQuery = new AVQuery<>("_User");
         avQuery.whereEqualTo("username", bill.getPublisherPhone());
         avQuery.setCachePolicy(AVQuery.CachePolicy.CACHE_THEN_NETWORK);
@@ -358,7 +486,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                     bill.setPublisherName((String) list.get(0).get("nickname"));
                     bill.setPublisherHeadPortrait(list.get(0).getAVFile("head_portrait").getThumbnailUrl(false, 96, 96));
                     sdvHeadPortrait.setImageURI(Uri.parse(bill.getPublisherHeadPortrait()));
-                   tvName.setText(bill.getPublisherName());
+                    tvName.setText(bill.getPublisherName());
 
                 } else {
                     Log.e("RequestDetailAppliError", e.getMessage() + "===" + e.getCode());
@@ -380,12 +508,20 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
         tvMinute.setText(timeList.get(1));
         tvSecond.setText(timeList.get(2));
 
-        if(bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)){
+        if (bill.getStatus().equals(StringUtils.BILL_STATUS_ONE)) {
             btrCancelBill.setVisibility(View.GONE);
-        }else if(bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)){
+        } else if (bill.getStatus().equals(StringUtils.BILL_STATUS_TWO)) {
             btrCancelBill.setText("联系TA");
-        }else {
+        } else {
             btrCancelBill.setVisibility(View.GONE);
+        }
+
+        if(bill.getRobType().equals(App.getContext().getString(R.string.bill_robtype_receivebillmode))){
+            findViewById(R.id.request_detail_of_applicanted_iv_bill_type).
+                    setBackground(App.getContext().getResources().getDrawable(R.drawable.prompt_accept));
+        }else {
+            findViewById(R.id.request_detail_of_applicanted_iv_bill_type).
+                    setBackground(App.getContext().getResources().getDrawable(R.drawable.prompt_rob));
         }
     }
 
@@ -408,7 +544,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     /**
      * 按钮绑定和设置
      */
-    private void setButtons(){
+    private void setButtons() {
         btrCancelBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -418,17 +554,18 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                         .setPositiveButton("短信", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Uri smsToUri = Uri.parse("smsto:"+bill.getPublisherPhone());
-                                Intent intent = new Intent( android.content.Intent.ACTION_SENDTO, smsToUri );
+                                Uri smsToUri = Uri.parse("smsto:" + bill.getPublisherPhone());
+                                Intent intent = new Intent(android.content.Intent.ACTION_SENDTO, smsToUri);
                                 intent.putExtra("sms_body", "Hello~很高兴通过校园众包app认识你，有些事要跟你说哦。。。");
-                                startActivity( intent );
-                            }})
+                                startActivity(intent);
+                            }
+                        })
                         .setNegativeButton("电话", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 /*Intent intent=new Intent("android.intent.action.CALL",Uri.parse("tel:"+bill.getPublisherPhone()));
                                 startActivity(intent);*/
-                                Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:" + bill.getPublisherPhone()));
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + bill.getPublisherPhone()));
                                 startActivity(intent);
                             }
                         })
@@ -478,11 +615,11 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
             }
         });
 
-        liNeedgone = (LinearLayout)findViewById(R.id.li_needgone);
-        tvInstead = (TextView)findViewById(R.id.tv_instead);
+        liNeedgone = (LinearLayout) findViewById(R.id.li_needgone);
+        tvInstead = (TextView) findViewById(R.id.tv_instead);
         tvInstead.setVisibility(View.GONE);
         tvInstead.setHeight(444);
-        ButtonFlat btflatUpOrDown = (ButtonFlat)findViewById(R.id.btflat_up_or_down);
+        ButtonFlat btflatUpOrDown = (ButtonFlat) findViewById(R.id.btflat_up_or_down);
         btflatUpOrDown.setRippleSpeed(60.0f);
         btflatUpOrDown.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -495,8 +632,8 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     /**
      * 开始收起展开动画
      */
-    private void starAnimation(){
-        if(isRequestShow){
+    private void starAnimation() {
+        if (isRequestShow) {
             btrCancelBill.setClickable(false);
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(liNeedgone, "Alpha", 1.0f, 0.0f);
             objectAnimator.setDuration(300);
@@ -512,9 +649,8 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                     handler.sendMessage(message);
                 }
             };
-            timer.schedule(timerTask,300);
-        }
-        else {
+            timer.schedule(timerTask, 300);
+        } else {
             btrCancelBill.setClickable(true);
             tvInstead.setVisibility(View.VISIBLE);
             tvInstead.setHeight(0);
@@ -533,21 +669,21 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
                     handler.sendMessage(message);
                 }
             };
-            timer.schedule(timerTask,300);
+            timer.schedule(timerTask, 300);
         }
     }
 
     /**
      * 尝试取消报名
      */
-    private void attemptCancelApplicant(){
-        BillUtils.changeApplicantor(handler,bill,false);
+    private void attemptCancelApplicant() {
+        BillUtils.changeApplicantor(handler, bill, false);
     }
 
     /**
      * 尝试完成订单
      */
-    private void attempCompliteBill(){
+    private void attempCompliteBill() {
         bill.setStatus(StringUtils.BILL_STATUS_THREE);
         BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_THREE);
     }
@@ -555,7 +691,7 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     /**
      * 尝试未完成订单
      */
-    private void attempCancelBill(){
+    private void attempCancelBill() {
         bill.setStatus(StringUtils.BILL_STATUS_FOUR);
         BillUtils.changeBillStatus(handler, bill, StringUtils.BILL_STATUS_FOUR);
     }
@@ -564,5 +700,14 @@ public class RequestDetailOfApplicanted extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

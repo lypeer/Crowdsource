@@ -11,6 +11,8 @@ import com.avos.avoscloud.PushService;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.tesmple.crowdsource.R;
+import com.umeng.analytics.AnalyticsConfig;
+import com.umeng.analytics.MobclickAgent;
 
 import im.fir.sdk.FIR;
 
@@ -47,7 +49,8 @@ public class App extends Application {
         Fresco.initialize(mAppContext);
         PushService.setDefaultPushCallback(mAppContext, NotificationActivity.class);
         PushService.subscribe(mAppContext, "public", NotificationActivity.class);
-
+        MobclickAgent.updateOnlineConfig(mAppContext);
+        AnalyticsConfig.enableEncrypt(true);
     }
 
     /**
